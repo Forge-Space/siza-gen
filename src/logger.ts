@@ -17,19 +17,23 @@ function initLogger(): Logger {
 
   const isDevelopment = config.NODE_ENV !== 'production';
 
-  loggerInstance = pino({
-    level: config.LOG_LEVEL,
-    transport: isDevelopment
-      ? {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            translateTime: 'HH:MM:ss',
-            ignore: 'pid,hostname',
-          },
-        }
-      : undefined,
-  });
+  loggerInstance = pino(
+    {
+      level: config.LOG_LEVEL,
+      transport: isDevelopment
+        ? {
+            target: 'pino-pretty',
+            options: {
+              colorize: true,
+              translateTime: 'HH:MM:ss',
+              ignore: 'pid,hostname',
+              destination: 2,
+            },
+          }
+        : undefined,
+    },
+    isDevelopment ? undefined : pino.destination(2),
+  );
 
   return loggerInstance;
 }
