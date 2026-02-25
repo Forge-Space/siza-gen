@@ -4,6 +4,7 @@ export * from './ml/index.js';
 // Generators
 export { GeneratorFactory, generateComponent } from './generators/generator-factory.js';
 export { BaseGenerator, type ComponentLibrary } from './generators/base-generator.js';
+export { DEFAULT_DESIGN_CONTEXT } from './generators/default-design-context.js';
 export { ReactGenerator } from './generators/react-generator.js';
 export { VueGenerator } from './generators/vue-generator.js';
 export { AngularGenerator } from './generators/angular-generator.js';
@@ -51,8 +52,9 @@ export type { BackendCategory, BackendFramework, IBackendSnippet } from './regis
 // Database
 export { getDatabase, closeDatabase } from './registry/database/store.js';
 
-// Registry Presets
-export { getPreset, listPresets, PRESETS, DEFAULT_PRESET as DEFAULT_PRESET_NAME } from './registry/index.js';
+// Registry Presets, Design References & Component Libraries
+export * from './registry/index.js';
+export { COMPONENT_LIBRARIES, getComponentLibrariesForFramework, getRecommendedLibrary } from './registry/component-libraries.js';
 
 // Template Compositions
 export {
@@ -161,11 +163,14 @@ export type {
   IImageAnalysis,
   IDesignAnalysisResult,
   IComponentLibrary,
+  IFigmaDesignToken,
+  ITailwindMapping,
+  IPatternMatch,
 } from './types.js';
 
 // Config & Logger
 export { loadConfig, getConfig, safeJSONParse, type Config } from './config.js';
-export { createLogger } from './logger.js';
+export { createLogger, logger } from './logger.js';
 
 // Utils
 export * from './utils/index.js';
