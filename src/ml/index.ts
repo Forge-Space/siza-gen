@@ -89,3 +89,7 @@ export type { IEnhancedPrompt, IEnhancementContext } from './prompt-enhancer.js'
 export { recommendStyle } from './style-recommender.js';
 
 export type { IStyleRecommendation, IStyleContext } from './style-recommender.js';
+
+export { extractDesignPatterns } from './image-design-analyzer.js';
+
+export { storeDesignLearning } from './design-to-training-data.js';

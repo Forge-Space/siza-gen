@@ -12,7 +12,7 @@ export default defineConfig({
   treeshake: true,
   minify: false,
   bundle: true,
-  external: ['pino', 'pino-pretty'],
+  external: ['pino', 'pino-pretty', 'tailwindcss-animate'],
   esbuildOptions(options, _context) {
     options.platform = 'node';
   },

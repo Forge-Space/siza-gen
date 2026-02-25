@@ -2,8 +2,8 @@
 export * from './ml/index.js';
 
 // Generators
-export { GeneratorFactory } from './generators/generator-factory.js';
-export { BaseGenerator } from './generators/base-generator.js';
+export { GeneratorFactory, generateComponent } from './generators/generator-factory.js';
+export { BaseGenerator, type ComponentLibrary } from './generators/base-generator.js';
 export { ReactGenerator } from './generators/react-generator.js';
 export { VueGenerator } from './generators/vue-generator.js';
 export { AngularGenerator } from './generators/angular-generator.js';
@@ -46,6 +46,13 @@ export type {
 
 // Backend Registry
 export { initializeBackendRegistry, searchBackendSnippets } from './registry/backend-registry/index.js';
+export type { BackendCategory, BackendFramework, IBackendSnippet } from './registry/backend-registry/types.js';
+
+// Database
+export { getDatabase, closeDatabase } from './registry/database/store.js';
+
+// Registry Presets
+export { getPreset, listPresets, PRESETS, DEFAULT_PRESET as DEFAULT_PRESET_NAME } from './registry/index.js';
 
 // Template Compositions
 export {
@@ -123,6 +130,18 @@ export * from './artifacts/index.js';
 // Design Context
 export { designContextStore, DEFAULT_CONTEXT } from './design-context.js';
 
+// Component Libraries
+export {
+  getAvailableComponentLibraries,
+  setupComponentLibraryProject,
+  generateComponentFromLibrary,
+  getComponentLibrary,
+  getAvailableComponentsForLibrary,
+  getAvailablePatternsForLibrary,
+  type ComponentLibraryIntegration,
+  type ComponentLibrarySetupOptions,
+} from './component-libraries/index.js';
+
 // Shared Types
 export type {
   Framework,
@@ -130,6 +149,18 @@ export type {
   IDesignContext,
   Architecture,
   StateManagement,
+  PageTemplateType,
+  ImageType,
+  ComponentLibraryId,
+  IScreenElement,
+  ITransition,
+  IFigmaVariable,
+  IAccessibilityIssue,
+  IAccessibilityReport,
+  IScrapedPage,
+  IImageAnalysis,
+  IDesignAnalysisResult,
+  IComponentLibrary,
 } from './types.js';
 
 // Config & Logger
