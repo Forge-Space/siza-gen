@@ -1,7 +1,7 @@
 {
   "name": "@forgespace/siza-gen",
-  "version": "0.1.1",
-  "description": "Siza AI generation engine \u2014 multi-framework code generation, component registry, and ML-powered quality scoring",
+  "version": "0.2.0",
+  "description": "Siza AI generation engine — multi-framework code generation, component registry, and ML-powered quality scoring",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -61,8 +61,12 @@
   "engines": {
     "node": ">=22"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
+    "!dist/**/*.map",
     "README.md",
     "LICENSE"
   ],
