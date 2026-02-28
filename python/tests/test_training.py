@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import tempfile
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -18,9 +17,11 @@ def mock_model():
     fake = MagicMock()
     fake.get_sentence_embedding_dimension.return_value = 384
     fake.encode = lambda text, **kw: np.random.randn(384).astype(np.float32)
-    with patch("siza_ml.embeddings._model", fake):
-        with patch("siza_ml.embeddings._get_model", return_value=fake):
-            yield
+    with (
+        patch("siza_ml.embeddings._model", fake),
+        patch("siza_ml.embeddings._get_model", return_value=fake),
+    ):
+        yield
 
 
 @pytest.fixture
@@ -34,7 +35,10 @@ async def client():
 def training_data_file():
     with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
         for i in range(5):
-            entry = {"prompt": f"Create component {i}", "code": f"function C{i}() {{ return <div>{i}</div> }}"}
+            entry = {
+                "prompt": f"Create component {i}",
+                "code": f"function C{i}() {{ return <div>{i}</div> }}",
+            }
             f.write(json.dumps(entry) + "\n")
         return f.name
 

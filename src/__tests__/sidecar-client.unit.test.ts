@@ -30,10 +30,7 @@ beforeEach(() => {
   fetchCalls = [];
   fetchResponses = [];
 
-  globalThis.fetch = (async (
-    input: RequestInfo | URL,
-    init?: RequestInit
-  ) => {
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input.toString();
     fetchCalls.push({ url, init });
 
@@ -105,16 +102,12 @@ describe('sidecarEmbed', () => {
     await sidecarEmbed('test text');
     expect(fetchCalls[0]!.url).toBe('http://localhost:8100/embed');
     expect(fetchCalls[0]!.init?.method).toBe('POST');
-    expect(fetchCalls[0]!.init?.body).toBe(
-      JSON.stringify({ text: 'test text' })
-    );
+    expect(fetchCalls[0]!.init?.body).toBe(JSON.stringify({ text: 'test text' }));
   });
 
   it('throws on HTTP error', async () => {
     mockFetchResponse({}, 500);
-    await expect(sidecarEmbed('fail')).rejects.toThrow(
-      'Sidecar /embed: 500'
-    );
+    await expect(sidecarEmbed('fail')).rejects.toThrow('Sidecar /embed: 500');
   });
 });
 
@@ -138,12 +131,7 @@ describe('sidecarScoreQuality', () => {
       source: 'sidecar',
     };
     mockFetchResponse(body);
-    const result = await sidecarScoreQuality(
-      'make a button',
-      '<button>Click</button>',
-      'button',
-      'react'
-    );
+    const result = await sidecarScoreQuality('make a button', '<button>Click</button>', 'button', 'react');
     expect(result.score).toBe(7.5);
     expect(result.source).toBe('sidecar');
   });

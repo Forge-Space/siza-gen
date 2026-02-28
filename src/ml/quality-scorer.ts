@@ -70,15 +70,17 @@ export async function scoreQuality(
 
   try {
     if (await isSidecarAvailable()) {
-      const result = await sidecarScoreQuality(
-        prompt, generatedCode, params?.componentType, params?.framework
+      const result = await sidecarScoreQuality(prompt, generatedCode, params?.componentType, params?.framework);
+      return blendScores(
+        heuristic,
+        {
+          score: result.score,
+          confidence: result.confidence,
+          source: 'model',
+          latencyMs: Date.now() - start,
+        },
+        start
       );
-      return blendScores(heuristic, {
-        score: result.score,
-        confidence: result.confidence,
-        source: 'model',
-        latencyMs: Date.now() - start,
-      }, start);
     }
   } catch (err) {
     logger.debug({ error: (err as Error).message }, 'Sidecar scoring failed');

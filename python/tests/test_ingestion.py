@@ -19,10 +19,12 @@ def mock_model():
     fake.encode = lambda texts, **kw: np.random.randn(
         len(texts) if isinstance(texts, list) else 1, DIMS
     ).astype(np.float32)
-    with patch("siza_ml.embeddings._model", fake):
-        with patch("siza_ml.embeddings._get_model", return_value=fake):
-            with patch("siza_ml.data_ingestion._get_model", return_value=fake):
-                yield
+    with (
+        patch("siza_ml.embeddings._model", fake),
+        patch("siza_ml.embeddings._get_model", return_value=fake),
+        patch("siza_ml.data_ingestion._get_model", return_value=fake),
+    ):
+        yield
 
 
 @pytest.fixture
@@ -67,7 +69,7 @@ class TestBundledRules:
 
 class TestUICodeDetection:
     def test_react_component(self):
-        code = 'export default function Button({ onClick }) { return (<button onClick={onClick}>Click</button>) }'
+        code = "export default function Button({ onClick }) { return (<button onClick={onClick}>Click</button>) }"
         assert _looks_like_ui_code(code) is True
 
     def test_non_ui_code(self):

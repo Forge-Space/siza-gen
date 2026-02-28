@@ -352,12 +352,7 @@ export function getTrainingSummary(db: Database.Database): {
   };
 }
 
-function pollSidecarTraining(
-  dbJobId: number,
-  sidecarJobId: string,
-  adapter: AdapterType,
-  db: Database.Database
-): void {
+function pollSidecarTraining(dbJobId: number, sidecarJobId: string, adapter: AdapterType, db: Database.Database): void {
   const interval = setInterval(async () => {
     try {
       const status = await sidecarGetTrainingStatus(sidecarJobId);

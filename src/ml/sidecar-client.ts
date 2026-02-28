@@ -27,11 +27,7 @@ function decodeBase64Vector(b64: string): Float32Array {
   return new Float32Array(bytes.buffer);
 }
 
-async function sidecarFetch<T>(
-  path: string,
-  body?: unknown,
-  timeoutMs: number = REQUEST_TIMEOUT_MS
-): Promise<T> {
+async function sidecarFetch<T>(path: string, body?: unknown, timeoutMs: number = REQUEST_TIMEOUT_MS): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -76,16 +72,11 @@ export function resetAvailabilityCache(): void {
 }
 
 export async function sidecarEmbed(text: string): Promise<Float32Array> {
-  const result = await sidecarFetch<{ vector: string; dimensions: number }>(
-    '/embed',
-    { text }
-  );
+  const result = await sidecarFetch<{ vector: string; dimensions: number }>('/embed', { text });
   return decodeBase64Vector(result.vector);
 }
 
-export async function sidecarEmbedBatch(
-  texts: string[]
-): Promise<Float32Array[]> {
+export async function sidecarEmbedBatch(texts: string[]): Promise<Float32Array[]> {
   const result = await sidecarFetch<{
     vectors: string[];
     dimensions: number;
@@ -107,12 +98,16 @@ export async function sidecarScoreQuality(
   componentType?: string,
   framework?: string
 ): Promise<ISidecarScoreResult> {
-  return sidecarFetch<ISidecarScoreResult>('/score', {
-    prompt,
-    code,
-    component_type: componentType,
-    framework,
-  }, 10_000);
+  return sidecarFetch<ISidecarScoreResult>(
+    '/score',
+    {
+      prompt,
+      code,
+      component_type: componentType,
+      framework,
+    },
+    10_000
+  );
 }
 
 export interface ISidecarEnhanceResult {
@@ -131,14 +126,18 @@ export async function sidecarEnhancePrompt(
     industry?: string;
   }
 ): Promise<ISidecarEnhanceResult> {
-  return sidecarFetch<ISidecarEnhanceResult>('/enhance', {
-    prompt,
-    component_type: context?.componentType,
-    framework: context?.framework,
-    style: context?.style,
-    mood: context?.mood,
-    industry: context?.industry,
-  }, 10_000);
+  return sidecarFetch<ISidecarEnhanceResult>(
+    '/enhance',
+    {
+      prompt,
+      component_type: context?.componentType,
+      framework: context?.framework,
+      style: context?.style,
+      mood: context?.mood,
+      industry: context?.industry,
+    },
+    10_000
+  );
 }
 
 export interface ISidecarVectorSearchResult {
@@ -184,16 +183,18 @@ export async function sidecarStartTraining(
     batchSize?: number;
   }
 ): Promise<ISidecarTrainingJob> {
-  return sidecarFetch<ISidecarTrainingJob>('/train/start', {
-    adapter_type: adapterType,
-    data_path: dataPath,
-    config,
-  }, 10_000);
+  return sidecarFetch<ISidecarTrainingJob>(
+    '/train/start',
+    {
+      adapter_type: adapterType,
+      data_path: dataPath,
+      config,
+    },
+    10_000
+  );
 }
 
-export async function sidecarGetTrainingStatus(
-  jobId: string
-): Promise<{
+export async function sidecarGetTrainingStatus(jobId: string): Promise<{
   job_id: string;
   status: string;
   progress: number;
@@ -202,11 +203,6 @@ export async function sidecarGetTrainingStatus(
   return sidecarFetch(`/train/status/${jobId}`);
 }
 
-export async function sidecarCancelTraining(
-  jobId: string
-): Promise<{ cancelled: boolean }> {
-  return sidecarFetch<{ cancelled: boolean }>(
-    `/train/cancel/${jobId}`,
-    {}
-  );
+export async function sidecarCancelTraining(jobId: string): Promise<{ cancelled: boolean }> {
+  return sidecarFetch<{ cancelled: boolean }>(`/train/cancel/${jobId}`, {});
 }

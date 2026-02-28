@@ -76,9 +76,8 @@ const designContext = brandToDesignContext(brandIdentity);
 
 ## Python ML Sidecar
 
-An optional Python FastAPI sidecar handles compute-intensive ML operations.
-When unavailable, the system gracefully degrades to Transformers.js and
-heuristics.
+An optional Python FastAPI sidecar handles compute-intensive ML operations. When
+unavailable, the system gracefully degrades to Transformers.js and heuristics.
 
 ```bash
 cd python && pip install -e ".[dev]"
@@ -92,16 +91,16 @@ npm run sidecar:start     # Launch Python sidecar
 npm run sidecar:test      # Run Python tests (41 tests)
 ```
 
-| Endpoint             | Description                            |
-| -------------------- | -------------------------------------- |
-| `POST /embed`        | Sentence-transformer embeddings        |
-| `POST /embed/batch`  | Batch embeddings                       |
-| `POST /vector/search`| FAISS k-NN similarity search           |
-| `POST /score`        | LLM-based quality scoring              |
-| `POST /enhance`      | LLM-based prompt enhancement           |
-| `POST /train/start`  | LoRA fine-tuning via PEFT              |
-| `GET /health`        | Liveness check                         |
-| `GET /metrics/report`| ML observability metrics               |
+| Endpoint              | Description                     |
+| --------------------- | ------------------------------- |
+| `POST /embed`         | Sentence-transformer embeddings |
+| `POST /embed/batch`   | Batch embeddings                |
+| `POST /vector/search` | FAISS k-NN similarity search    |
+| `POST /score`         | LLM-based quality scoring       |
+| `POST /enhance`       | LLM-based prompt enhancement    |
+| `POST /train/start`   | LoRA fine-tuning via PEFT       |
+| `GET /health`         | Liveness check                  |
+| `GET /metrics/report` | ML observability metrics        |
 
 **Fallback chain**: Python sidecar → Transformers.js/local LLM → heuristics.
 

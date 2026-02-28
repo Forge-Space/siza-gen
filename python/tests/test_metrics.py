@@ -16,9 +16,11 @@ def mock_model():
     fake = MagicMock()
     fake.get_sentence_embedding_dimension.return_value = 384
     fake.encode = lambda text, **kw: np.random.randn(384).astype(np.float32)
-    with patch("siza_ml.embeddings._model", fake):
-        with patch("siza_ml.embeddings._get_model", return_value=fake):
-            yield
+    with (
+        patch("siza_ml.embeddings._model", fake),
+        patch("siza_ml.embeddings._get_model", return_value=fake),
+    ):
+        yield
 
 
 @pytest.fixture(autouse=True)

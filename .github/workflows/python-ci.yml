@@ -3,10 +3,10 @@ name: Python CI
 on:
   push:
     branches: [main]
-    paths: ['python/**']
+    paths: ["python/**"]
   pull_request:
     branches: [main]
-    paths: ['python/**']
+    paths: ["python/**"]
 
 jobs:
   lint-and-test:
@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: pip install -e ".[dev]"

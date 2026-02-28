@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import base64
-import struct
 from unittest.mock import patch
 
 import numpy as np
@@ -9,7 +8,6 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 from siza_ml.app import app
-from siza_ml.vector_store import _get_index
 
 DIMS = 384
 
@@ -37,9 +35,11 @@ def mock_model():
     fake = MagicMock()
     fake.get_sentence_embedding_dimension.return_value = DIMS
     fake.encode = lambda text, **kw: np.random.randn(DIMS).astype(np.float32)
-    with patch("siza_ml.embeddings._model", fake):
-        with patch("siza_ml.embeddings._get_model", return_value=fake):
-            yield
+    with (
+        patch("siza_ml.embeddings._model", fake),
+        patch("siza_ml.embeddings._get_model", return_value=fake),
+    ):
+        yield
 
 
 @pytest.fixture

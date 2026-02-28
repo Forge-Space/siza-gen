@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import base64
-import struct
 from unittest.mock import MagicMock, patch
 
 import numpy as np
@@ -30,9 +29,11 @@ def make_fake_model():
 @pytest.fixture(autouse=True)
 def mock_model():
     fake = make_fake_model()
-    with patch("siza_ml.embeddings._model", fake):
-        with patch("siza_ml.embeddings._get_model", return_value=fake):
-            yield fake
+    with (
+        patch("siza_ml.embeddings._model", fake),
+        patch("siza_ml.embeddings._get_model", return_value=fake),
+    ):
+        yield fake
 
 
 @pytest.fixture
