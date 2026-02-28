@@ -10,14 +10,16 @@
 ## Architecture
 
 ```
-src/
+src/                          (TypeScript — orchestration layer)
 ├── index.ts              (public API barrel)
 ├── ml/                   (embeddings, quality scoring, training pipeline)
+│   ├── sidecar-client.ts (HTTP client for Python sidecar)
+│   ├── embeddings.ts     (Transformers.js fallback + sidecar delegation)
+│   ├── quality-scorer.ts (heuristic + sidecar + LLM scoring chain)
+│   ├── prompt-enhancer.ts(rules + sidecar + LLM enhancement chain)
+│   └── training-pipeline.ts (orchestration → sidecar /train)
 ├── generators/           (react, vue, angular, svelte, html)
 ├── registry/             (502 component + backend + animation snippets)
-│   ├── component-registry/  (atoms, molecules, organisms)
-│   ├── backend-registry/    (API routes, middleware, architecture)
-│   └── micro-interactions/  (85 animation snippets)
 ├── feedback/             (self-learning, pattern promotion)
 ├── quality/              (anti-generic rules, diversity tracking)
 ├── artifacts/            (generated artifact storage, learning loop)
@@ -25,22 +27,36 @@ src/
 ├── types.ts              (shared interfaces)
 ├── config.ts             (configuration)
 └── logger.ts             (pino, stderr output)
+
+python/                       (Python ML sidecar — optional)
+├── siza_ml/
+│   ├── app.py            (FastAPI application)
+│   ├── embeddings.py     (sentence-transformers)
+│   ├── vector_store.py   (FAISS index)
+│   ├── quality_scorer.py (LLM-based scoring via Ollama)
+│   ├── prompt_enhancer.py(LLM-based enhancement)
+│   ├── training.py       (LoRA fine-tuning via PEFT)
+│   ├── data_ingestion.py (HuggingFace + axe-core ingestion)
+│   └── metrics.py        (ML observability)
+├── tests/                (41 pytest tests)
+└── Dockerfile
 ```
 
 ## Stack
 
 - TypeScript, Node 22, Jest ESM, tsup, pino
+- Python 3.12+, FastAPI, sentence-transformers, FAISS, PEFT
 - `NODE_OPTIONS=--experimental-vm-modules` required for Jest
 
 ## Build/Test
 
 ```bash
 npm run build             # tsup bundled build
-npm test                  # Jest ESM (343 tests, 17 suites)
+npm test                  # Jest ESM (424 tests, 21 suites)
 npm run typecheck         # tsc --noEmit
 npm run validate          # lint + format + typecheck + test
-npm run validate:snippets # Batch validate all registry snippets
-npm run registry:stats    # Report snippet counts by category
+npm run sidecar:test      # Python tests (41 tests)
+npm run sidecar:start     # Launch Python ML sidecar on :8100
 ```
 
 ## Conventions

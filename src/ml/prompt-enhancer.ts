@@ -15,6 +15,7 @@ import type { ILLMProvider } from '../llm/types.js';
 import { embed } from './embeddings.js';
 import { semanticSearch, getEmbeddingCount } from './embedding-store.js';
 import { getDatabase } from '../registry/database/store.js';
+import { isSidecarAvailable, sidecarEnhancePrompt } from './sidecar-client.js';
 
 const logger = createLogger('prompt-enhancer');
 
@@ -56,6 +57,21 @@ export interface IEnhancementContext {
  */
 export async function enhancePrompt(prompt: string, context?: IEnhancementContext): Promise<IEnhancedPrompt> {
   const start = Date.now();
+
+  try {
+    if (await isSidecarAvailable()) {
+      const result = await sidecarEnhancePrompt(prompt, context);
+      return {
+        enhanced: result.enhanced,
+        original: prompt,
+        source: result.source === 'ollama' ? 'model' : 'rules',
+        additions: result.additions,
+        latencyMs: Date.now() - start,
+      };
+    }
+  } catch (err) {
+    logger.debug({ error: (err as Error).message }, 'Sidecar enhancement failed');
+  }
 
   if (!llmProvider) {
     return enhanceWithRules(prompt, context, start);

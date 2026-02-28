@@ -12,6 +12,7 @@ import type { ILLMProvider } from '../llm/types.js';
 import { embed } from './embeddings.js';
 import { semanticSearch, getEmbeddingCount } from './embedding-store.js';
 import { getDatabase } from '../registry/database/store.js';
+import { isSidecarAvailable, sidecarScoreQuality } from './sidecar-client.js';
 
 const logger = createLogger('quality-scorer');
 
@@ -66,6 +67,24 @@ export async function scoreQuality(
 ): Promise<IQualityScore> {
   const start = Date.now();
   const heuristic = scoreWithHeuristics(prompt, generatedCode, params, start);
+
+  try {
+    if (await isSidecarAvailable()) {
+      const result = await sidecarScoreQuality(prompt, generatedCode, params?.componentType, params?.framework);
+      return blendScores(
+        heuristic,
+        {
+          score: result.score,
+          confidence: result.confidence,
+          source: 'model',
+          latencyMs: Date.now() - start,
+        },
+        start
+      );
+    }
+  } catch (err) {
+    logger.debug({ error: (err as Error).message }, 'Sidecar scoring failed');
+  }
 
   if (!llmProvider) return heuristic;
 

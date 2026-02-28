@@ -17,6 +17,12 @@ import pino from 'pino';
 import type { AdapterType, ILoRAConfig, ITrainingStatus } from './types.js';
 import { exportForAdapter, hasEnoughData } from './training-data-exporter.js';
 import { ensureDirectories, getAdapterPath, getModelPath, isModelAvailable, type ModelId } from './model-manager.js';
+import {
+  isSidecarAvailable,
+  sidecarStartTraining,
+  sidecarGetTrainingStatus,
+  sidecarCancelTraining,
+} from './sidecar-client.js';
 
 const logger = pino({ name: 'training-pipeline' });
 
@@ -172,17 +178,14 @@ export function checkTrainingReadiness(
  *
  * Returns the job ID for status tracking.
  */
-export function startTrainingJob(
+export async function startTrainingJob(
   adapter: AdapterType,
   modelId: ModelId,
   db: Database.Database,
   config: ILoRAConfig = DEFAULT_LORA_CONFIG,
   trainingCommand?: string
-): { jobId: number; status: ITrainingStatus } {
-  // Ensure directories exist
+): Promise<{ jobId: number; status: ITrainingStatus }> {
   const paths = ensureDirectories();
-
-  // Export training data
   const { path: dataPath, count } = exportForAdapter(adapter, db, paths.trainingData);
 
   if (count === 0) {
@@ -201,14 +204,33 @@ export function startTrainingJob(
 
   const jobId = createTrainingJob(adapter, count, db);
 
-  // Determine training command
+  try {
+    if (await isSidecarAvailable()) {
+      const sidecarJob = await sidecarStartTraining(adapter, dataPath, {
+        rank: config.rank,
+        epochs: config.epochs,
+        learningRate: config.learningRate,
+        batchSize: config.batchSize,
+      });
+      updateJobStatus(jobId, 'training', 10, db);
+      logger.info({ adapter, jobId, sidecarJobId: sidecarJob.job_id }, 'Training via sidecar');
+
+      pollSidecarTraining(jobId, sidecarJob.job_id, adapter, db);
+      return {
+        jobId,
+        status: { adapter, status: 'training', progress: 10, startedAt: Date.now() },
+      };
+    }
+  } catch (err) {
+    logger.debug({ error: (err as Error).message }, 'Sidecar training unavailable, falling back');
+  }
+
   const modelPath = getModelPath(modelId);
   const adapterPath = getAdapterPath(adapter);
   const cmd = trainingCommand ?? buildDefaultTrainingCommand(modelPath, dataPath, adapterPath, config);
 
-  logger.info({ adapter, jobId, count, modelId }, 'Starting LoRA training job');
+  logger.info({ adapter, jobId, count, modelId }, 'Starting LoRA training job via child_process');
 
-  // Spawn training process
   try {
     // Parse command into argv array for safer execution
     const cmdParts = cmd.split(/\s+/);
@@ -328,6 +350,24 @@ export function getTrainingSummary(db: Database.Database): {
     dataReadiness,
     activeCount: activeJobs.size,
   };
+}
+
+function pollSidecarTraining(dbJobId: number, sidecarJobId: string, adapter: AdapterType, db: Database.Database): void {
+  const interval = setInterval(async () => {
+    try {
+      const status = await sidecarGetTrainingStatus(sidecarJobId);
+      updateJobStatus(dbJobId, status.status as ITrainingStatus['status'], status.progress, db, status.error);
+
+      if (status.status === 'complete' || status.status === 'failed' || status.status === 'cancelled') {
+        clearInterval(interval);
+      }
+    } catch {
+      clearInterval(interval);
+      updateJobStatus(dbJobId, 'failed', 0, db, 'Lost connection to sidecar');
+    }
+  }, 5_000);
+
+  interval.unref();
 }
 
 // --- Internal helpers ---

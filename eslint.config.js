@@ -14,6 +14,8 @@ export default tseslint.config(
       'dist/',
       'build/',
       'coverage/',
+      'python/',
+      'scripts/',
       '**/*.min.js',
       'src/scripts/validate-model.ts',
       'src/ml/sidecar-model.ts',

@@ -1,6 +1,6 @@
 {
   "name": "@forgespace/siza-gen",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Siza AI generation engine — multi-framework code generation, component registry, and ML-powered quality scoring",
   "type": "module",
   "main": "dist/index.js",
@@ -28,6 +28,11 @@
     "validate:tokens": "npx tsx src/scripts/check-semantic-tokens.ts",
     "registry:stats": "npx tsx src/scripts/count-registry.ts",
     "export:training": "npx tsx src/scripts/export-training-data.ts",
+    "seed:rules": "npx tsx src/scripts/seed-axe-core-rules.ts",
+    "ingest:hf": "npx tsx src/scripts/ingest-huggingface.ts",
+    "sidecar:start": "bash scripts/start-sidecar.sh",
+    "sidecar:test": "cd python && source .venv/bin/activate && python -m pytest tests/ -v",
+    "metrics:report": "curl -s http://localhost:8100/metrics/report | node -e \"process.stdin.resume();let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.stringify(JSON.parse(d),null,2)))\"",
     "prepare": "husky install || true",
     "prepublishOnly": "npm run build",
     "prepack": "npm run build"
