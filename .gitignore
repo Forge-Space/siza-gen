@@ -14,3 +14,43 @@ npm-debug.log*
 *.sqlite
 *.sqlite-journal
 .serena/
+
+# Task-specific docs
+*_REPORT.md
+*_COMPLETE.md
+*_SUMMARY.md
+*_CHECKLIST.md
+STATUS_*.md
+
+# Claude-related files
+CLAUDE.md
+CLAUDE-*.md
+
+# Security scan reports
+*.sarif
+bandit-report.json
+safety-report.json
+
+# Root demo/test scripts
+demo_*.py
+test_*.py
+demo*.sh
+test*.sh
+
+# Backup files
+*.bak
+*.backup
+*.original
+
+# Ad-hoc local files
+*.temp.js
+*.temp.ts
+stdin
+PLAN.md
+
+# Logs
+*.log
+
+# Timestamped generated files
+*-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-*.md
+*-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-*.json
