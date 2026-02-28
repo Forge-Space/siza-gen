@@ -10,17 +10,23 @@
  * 3. Inject best-practice hints based on component type
  */
 
-import pino from 'pino';
-const isSidecarReady = (): boolean => false;
-const infer = async (
-  _prompt: string,
-  _opts?: { maxTokens?: number; temperature?: number }
-): Promise<{ text: string; source: string }> => ({ text: '', source: 'fallback' });
+import { createLogger } from '../logger.js';
+import type { ILLMProvider } from '../llm/types.js';
 import { embed } from './embeddings.js';
 import { semanticSearch, getEmbeddingCount } from './embedding-store.js';
 import { getDatabase } from '../registry/database/store.js';
 
-const logger = pino({ name: 'prompt-enhancer' });
+const logger = createLogger('prompt-enhancer');
+
+let llmProvider: ILLMProvider | null = null;
+
+export function setPromptEnhancerLLM(provider: ILLMProvider | null): void {
+  llmProvider = provider;
+}
+
+export function getPromptEnhancerLLM(): ILLMProvider | null {
+  return llmProvider;
+}
 
 /** Enhancement result. */
 export interface IEnhancedPrompt {
@@ -48,58 +54,85 @@ export interface IEnhancementContext {
 /**
  * Enhance a user prompt for better generation results.
  */
-export function enhancePrompt(prompt: string, context?: IEnhancementContext): Promise<IEnhancedPrompt> {
+export async function enhancePrompt(prompt: string, context?: IEnhancementContext): Promise<IEnhancedPrompt> {
   const start = Date.now();
 
-  if (isSidecarReady()) {
-    return enhanceWithModel(prompt, context, start);
+  if (!llmProvider) {
+    return enhanceWithRules(prompt, context, start);
   }
 
-  return Promise.resolve(enhanceWithRules(prompt, context, start));
+  try {
+    return await enhanceWithModel(prompt, context, start);
+  } catch (err) {
+    logger.debug({ error: (err as Error).message }, 'LLM enhancement failed, using rules');
+    return enhanceWithRules(prompt, context, start);
+  }
 }
 
-/**
- * Enhance using the sidecar model.
- */
+const LLM_ENHANCE_TIMEOUT_MS = 10_000;
+
 async function enhanceWithModel(
   prompt: string,
   context: IEnhancementContext | undefined,
   start: number
 ): Promise<IEnhancedPrompt> {
-  const inferPrompt = [
-    'Improve the following UI generation prompt to produce better, more specific results.',
-    'Keep the original intent but add specificity about layout, styling, and accessibility.',
-    'Respond with ONLY the improved prompt, nothing else.',
+  const ruleResult = enhanceWithRules(prompt, context, start);
+
+  const llmPrompt = [
+    'Improve this UI generation prompt. Keep the intent but',
+    'add specificity about layout, styling, accessibility.',
+    'Respond with ONLY the improved prompt text.',
     '',
     `Original: ${prompt}`,
-    context?.componentType ? `Component type: ${context.componentType}` : '',
+    context?.componentType ? `Component: ${context.componentType}` : '',
     context?.framework ? `Framework: ${context.framework}` : '',
     context?.style ? `Style: ${context.style}` : '',
-    '',
-    'Improved:',
+    context?.mood ? `Mood: ${context.mood}` : '',
+    context?.industry ? `Industry: ${context.industry}` : '',
   ]
     .filter(Boolean)
     .join('\n');
 
-  try {
-    const result = await infer(inferPrompt, { maxTokens: 256, temperature: 0.5 });
+  const result = await llmProvider!.generate(llmPrompt, {
+    maxTokens: 256,
+    temperature: 0.5,
+    timeoutMs: LLM_ENHANCE_TIMEOUT_MS,
+  });
 
-    if (result.source === 'model' && result.text.trim().length > prompt.length * 0.5) {
-      return {
-        enhanced: result.text.trim(),
-        original: prompt,
-        source: 'model',
-        additions: ['model-enhanced'],
-        latencyMs: Date.now() - start,
-      };
-    }
-
-    // Model returned but result was too short - fallback to rules
-    return enhanceWithRules(prompt, context, start);
-  } catch (err) {
-    logger.warn({ err, prompt }, 'Model enhancement failed, falling back to rules');
-    return enhanceWithRules(prompt, context, start);
+  const enhanced = result.text.trim();
+  if (enhanced.length < prompt.length * 0.5) {
+    return ruleResult;
   }
+
+  const combined = mergeEnhancements(enhanced, ruleResult, prompt);
+
+  return {
+    enhanced: combined,
+    original: prompt,
+    source: 'model',
+    additions: ['llm-enhanced', ...ruleResult.additions.filter((a) => !combined.includes(a))],
+    latencyMs: Date.now() - start,
+  };
+}
+
+function mergeEnhancements(llmResult: string, ruleResult: IEnhancedPrompt, original: string): string {
+  let merged = llmResult;
+  const llmLower = llmResult.toLowerCase();
+
+  for (const addition of ruleResult.additions) {
+    if (addition === 'accessibility') {
+      if (!llmLower.includes('aria') && !llmLower.includes('accessible') && !llmLower.includes('keyboard')) {
+        merged += '. Include ARIA labels and keyboard navigation';
+      }
+    }
+    if (addition === 'responsive') {
+      if (!llmLower.includes('responsive') && !llmLower.includes('mobile')) {
+        merged += '. Make it responsive';
+      }
+    }
+  }
+
+  return merged;
 }
 
 /**

@@ -16,6 +16,7 @@ and ML-powered quality scoring.
   search
 - **Template compositions** — Pre-built page templates with quality gating
 - **Brand integration** — Transform branding-mcp tokens into design context
+- **LLM providers** — Ollama, OpenAI, Anthropic, Gemini with auto-fallback
 
 ## Installation
 

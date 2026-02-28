@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] — 2026-02-28
+
+### Added
+
+- Multi-provider LLM abstraction layer (`src/llm/`)
+  - `ILLMProvider` interface with `generate()` and `isAvailable()` methods
+  - `OllamaProvider`: local inference via Ollama API (default: llama3.2:3b)
+  - `OpenAIProvider`: OpenAI-compatible chat completions (GPT-4o-mini default)
+  - `AnthropicProvider`: Claude Messages API (claude-sonnet-4 default)
+  - Gemini support via OpenAI-compatible adapter
+  - `createProvider()` factory for config-driven instantiation
+  - `createProviderWithFallback()` with automatic Ollama detection
+  - `detectOllama()` utility for checking local availability
+- LLM integration in ML modules
+  - `setPromptEnhancerLLM()` / `getPromptEnhancerLLM()` for model-backed prompt enhancement
+  - `setQualityScorerLLM()` / `getQualityScorerLLM()` for model-backed quality scoring
+  - Automatic fallback to rule-based enhancement when no LLM available
+- 35 unit tests for all providers, factory, and fallback logic
+
 ## [0.3.0] — 2026-02-28
 
 ### Added
