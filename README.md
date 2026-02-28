@@ -19,6 +19,8 @@ provides:
   feedback-boosted search
 - **Template compositions** — Pre-built page templates with
   quality gating
+- **Brand integration** — Transform branding-mcp tokens into
+  design context
 
 ## Installation
 

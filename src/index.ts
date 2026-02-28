@@ -132,6 +132,12 @@ export * from './artifacts/index.js';
 // Design Context
 export { designContextStore, DEFAULT_CONTEXT } from './design-context.js';
 
+// Brand Identity Transform
+export {
+  brandToDesignContext,
+  type BrandIdentityInput,
+} from './brand-identity-transform.js';
+
 // Component Libraries
 export {
   getAvailableComponentLibraries,
