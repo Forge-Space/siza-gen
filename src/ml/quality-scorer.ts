@@ -7,17 +7,23 @@
  * Score range: 0-10 (0 = likely rejected, 10 = likely accepted).
  */
 
-import pino from 'pino';
-const isSidecarReady = (): boolean => false;
-const infer = async (
-  _prompt: string,
-  _opts?: { maxTokens?: number; temperature?: number }
-): Promise<{ text: string; source: string }> => ({ text: '', source: 'fallback' });
+import { createLogger } from '../logger.js';
+import type { ILLMProvider } from '../llm/types.js';
 import { embed } from './embeddings.js';
 import { semanticSearch, getEmbeddingCount } from './embedding-store.js';
 import { getDatabase } from '../registry/database/store.js';
 
-const logger = pino({ name: 'quality-scorer' });
+const logger = createLogger('quality-scorer');
+
+let llmProvider: ILLMProvider | null = null;
+
+export function setQualityScorerLLM(provider: ILLMProvider | null): void {
+  llmProvider = provider;
+}
+
+export function getQualityScorerLLM(): ILLMProvider | null {
+  return llmProvider;
+}
 
 /** Quality score result. */
 export interface IQualityScore {
@@ -49,59 +55,115 @@ export const QUALITY_WEIGHTS = {
   completeness: 1.4,
 };
 
-export function scoreQuality(
+export async function scoreQuality(
   prompt: string,
   generatedCode: string,
-  params?: { componentType?: string; framework?: string; style?: string }
+  params?: {
+    componentType?: string;
+    framework?: string;
+    style?: string;
+  }
 ): Promise<IQualityScore> {
   const start = Date.now();
+  const heuristic = scoreWithHeuristics(prompt, generatedCode, params, start);
 
-  if (isSidecarReady()) {
-    return scoreWithModel(prompt, generatedCode, params, start);
+  if (!llmProvider) return heuristic;
+
+  try {
+    const llmScore = await scoreWithLLM(prompt, generatedCode, params, start);
+    return blendScores(heuristic, llmScore, start);
+  } catch (err) {
+    logger.debug({ error: (err as Error).message }, 'LLM scoring failed, using heuristic');
+    return heuristic;
   }
-
-  return Promise.resolve(scoreWithHeuristics(prompt, generatedCode, params, start));
 }
 
-/**
- * Score using the sidecar model.
- */
-async function scoreWithModel(
+const LLM_SCORE_TIMEOUT_MS = 10_000;
+const LLM_WEIGHT = 0.6;
+const HEURISTIC_WEIGHT = 0.4;
+
+async function scoreWithLLM(
   prompt: string,
   generatedCode: string,
-  params: { componentType?: string; framework?: string; style?: string } | undefined,
+  params:
+    | {
+        componentType?: string;
+        framework?: string;
+        style?: string;
+      }
+    | undefined,
   start: number
 ): Promise<IQualityScore> {
-  const inferPrompt = [
-    'Rate the likelihood that the following UI generation request will be accepted by the user.',
-    'Respond with ONLY a number from 0 to 10.',
+  const codeSnippet = generatedCode.slice(0, 2000);
+  const evalPrompt = [
+    'Rate this generated UI code on a scale of 0-10.',
+    'Evaluate: security, accessibility, semantic HTML,',
+    'responsiveness, code structure, and prompt alignment.',
+    'Respond with ONLY a JSON object:',
+    '{"score":N,"reasoning":"brief"}',
     '',
-    `Prompt: ${prompt}`,
+    `User prompt: ${prompt.slice(0, 200)}`,
     `Component: ${params?.componentType ?? 'unknown'}`,
     `Framework: ${params?.framework ?? 'unknown'}`,
-    `Style: ${params?.style ?? 'default'}`,
-    `Code length: ${generatedCode.length} chars`,
     '',
-    'Score:',
+    '```',
+    codeSnippet,
+    '```',
   ].join('\n');
 
-  const result = await infer(inferPrompt, { maxTokens: 8, temperature: 0.1 });
+  const result = await llmProvider!.generate(evalPrompt, {
+    maxTokens: 64,
+    temperature: 0.1,
+    timeoutMs: LLM_SCORE_TIMEOUT_MS,
+  });
 
-  if (result.source === 'model' && result.text.trim()) {
-    const parsed = parseFloat(result.text.trim());
-    if (!isNaN(parsed) && parsed >= 0 && parsed <= 10) {
-      return {
-        score: Math.round(parsed * 10) / 10,
-        confidence: 0.8,
-        source: 'model',
-        latencyMs: Date.now() - start,
-      };
+  const parsed = parseLLMScore(result.text);
+  if (parsed === null) {
+    throw new Error('LLM score unparseable');
+  }
+
+  return {
+    score: parsed,
+    confidence: 0.8,
+    source: 'model',
+    latencyMs: Date.now() - start,
+  };
+}
+
+function parseLLMScore(text: string): number | null {
+  const jsonMatch = text.match(/\{[^}]*"score"\s*:\s*([\d.]+)/);
+  if (jsonMatch) {
+    const val = parseFloat(jsonMatch[1]);
+    if (!isNaN(val) && val >= 0 && val <= 10) {
+      return Math.round(val * 10) / 10;
     }
   }
 
-  // Fallback to heuristics if model output is unparseable
-  logger.debug('Model output unparseable, falling back to heuristics');
-  return scoreWithHeuristics(prompt, generatedCode, params, start);
+  const numMatch = text.trim().match(/^(\d+\.?\d*)$/);
+  if (numMatch) {
+    const val = parseFloat(numMatch[1]);
+    if (!isNaN(val) && val >= 0 && val <= 10) {
+      return Math.round(val * 10) / 10;
+    }
+  }
+
+  return null;
+}
+
+function blendScores(heuristic: IQualityScore, llm: IQualityScore, start: number): IQualityScore {
+  const blended = LLM_WEIGHT * llm.score + HEURISTIC_WEIGHT * heuristic.score;
+
+  return {
+    score: Math.round(blended * 10) / 10,
+    confidence: Math.min(0.9, LLM_WEIGHT * llm.confidence + HEURISTIC_WEIGHT * heuristic.confidence),
+    source: 'model',
+    factors: {
+      ...heuristic.factors,
+      llmScore: llm.score,
+      heuristicScore: heuristic.score,
+    },
+    latencyMs: Date.now() - start,
+  };
 }
 
 /**
