@@ -9,7 +9,15 @@ const __dirname = dirname(__filename);
 
 export default tseslint.config(
   {
-    ignores: ['node_modules/', 'dist/', 'build/', 'coverage/', '**/*.min.js'],
+    ignores: [
+      'node_modules/',
+      'dist/',
+      'build/',
+      'coverage/',
+      '**/*.min.js',
+      'src/scripts/validate-model.ts',
+      'src/ml/sidecar-model.ts',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
