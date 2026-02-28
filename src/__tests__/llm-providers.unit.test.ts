@@ -1,21 +1,12 @@
 import { OllamaProvider } from '../llm/providers/ollama.js';
 import { OpenAIProvider } from '../llm/providers/openai.js';
 import { AnthropicProvider } from '../llm/providers/anthropic.js';
-import {
-  createProvider,
-  detectOllama,
-  createProviderWithFallback,
-} from '../llm/provider-factory.js';
+import { createProvider, detectOllama, createProviderWithFallback } from '../llm/provider-factory.js';
 import type { ILLMConfig } from '../llm/types.js';
 
 const originalFetch = global.fetch;
 
-function mockFetch(
-  handler: (
-    url: string | URL | Request,
-    init?: RequestInit
-  ) => Promise<Response>
-): void {
+function mockFetch(handler: (url: string | URL | Request, init?: RequestInit) => Promise<Response>): void {
   global.fetch = handler as typeof fetch;
 }
 
@@ -41,14 +32,15 @@ describe('OllamaProvider', () => {
   });
 
   it('generates text successfully', async () => {
-    mockFetch(async () =>
-      new Response(
-        JSON.stringify({
-          response: 'Hello world',
-          eval_count: 5,
-        }),
-        { status: 200 }
-      )
+    mockFetch(
+      async () =>
+        new Response(
+          JSON.stringify({
+            response: 'Hello world',
+            eval_count: 5,
+          }),
+          { status: 200 }
+        )
     );
 
     const p = new OllamaProvider();
@@ -65,10 +57,7 @@ describe('OllamaProvider', () => {
     let capturedBody = '';
     mockFetch(async (_url, init) => {
       capturedBody = init?.body as string;
-      return new Response(
-        JSON.stringify({ response: 'ok' }),
-        { status: 200 }
-      );
+      return new Response(JSON.stringify({ response: 'ok' }), { status: 200 });
     });
 
     const p = new OllamaProvider();
@@ -82,14 +71,10 @@ describe('OllamaProvider', () => {
   });
 
   it('throws on HTTP error', async () => {
-    mockFetch(async () =>
-      new Response('model not found', { status: 404 })
-    );
+    mockFetch(async () => new Response('model not found', { status: 404 }));
 
     const p = new OllamaProvider();
-    await expect(p.generate('test')).rejects.toThrow(
-      'Ollama 404'
-    );
+    await expect(p.generate('test')).rejects.toThrow('Ollama 404');
   });
 
   it('throws on timeout', async () => {
@@ -103,16 +88,15 @@ describe('OllamaProvider', () => {
     );
 
     const p = new OllamaProvider({ timeoutMs: 5 });
-    await expect(p.generate('test')).rejects.toThrow(
-      'timed out'
-    );
+    await expect(p.generate('test')).rejects.toThrow('timed out');
   });
 
   it('isAvailable returns true when Ollama responds', async () => {
-    mockFetch(async () =>
-      new Response(JSON.stringify({ models: [] }), {
-        status: 200,
-      })
+    mockFetch(
+      async () =>
+        new Response(JSON.stringify({ models: [] }), {
+          status: 200,
+        })
     );
 
     const p = new OllamaProvider();
@@ -133,9 +117,7 @@ describe('OllamaProvider', () => {
 
 describe('OpenAIProvider', () => {
   it('requires an API key', () => {
-    expect(
-      () => new OpenAIProvider({ apiKey: '' })
-    ).toThrow('requires an API key');
+    expect(() => new OpenAIProvider({ apiKey: '' })).toThrow('requires an API key');
   });
 
   it('has correct type and default model', () => {
@@ -145,16 +127,15 @@ describe('OpenAIProvider', () => {
   });
 
   it('generates text via chat completions', async () => {
-    mockFetch(async () =>
-      new Response(
-        JSON.stringify({
-          choices: [
-            { message: { content: 'Generated code' } },
-          ],
-          usage: { total_tokens: 42 },
-        }),
-        { status: 200 }
-      )
+    mockFetch(
+      async () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: 'Generated code' } }],
+            usage: { total_tokens: 42 },
+          }),
+          { status: 200 }
+        )
     );
 
     const p = new OpenAIProvider({ apiKey: 'sk-test' });
@@ -192,9 +173,7 @@ describe('OpenAIProvider', () => {
   it('sends auth header', async () => {
     let capturedHeaders: Record<string, string> = {};
     mockFetch(async (_url, init) => {
-      capturedHeaders = Object.fromEntries(
-        new Headers(init?.headers as HeadersInit).entries()
-      );
+      capturedHeaders = Object.fromEntries(new Headers(init?.headers as HeadersInit).entries());
       return new Response(
         JSON.stringify({
           choices: [{ message: { content: '' } }],
@@ -206,29 +185,18 @@ describe('OpenAIProvider', () => {
     const p = new OpenAIProvider({ apiKey: 'sk-secret' });
     await p.generate('test');
 
-    expect(capturedHeaders.authorization).toBe(
-      'Bearer sk-secret'
-    );
+    expect(capturedHeaders.authorization).toBe('Bearer sk-secret');
   });
 
   it('throws on HTTP error', async () => {
-    mockFetch(async () =>
-      new Response('rate limited', { status: 429 })
-    );
+    mockFetch(async () => new Response('rate limited', { status: 429 }));
 
     const p = new OpenAIProvider({ apiKey: 'sk-test' });
-    await expect(p.generate('test')).rejects.toThrow(
-      'OpenAI 429'
-    );
+    await expect(p.generate('test')).rejects.toThrow('OpenAI 429');
   });
 
   it('handles empty choices gracefully', async () => {
-    mockFetch(async () =>
-      new Response(
-        JSON.stringify({ choices: [] }),
-        { status: 200 }
-      )
-    );
+    mockFetch(async () => new Response(JSON.stringify({ choices: [] }), { status: 200 }));
 
     const p = new OpenAIProvider({ apiKey: 'sk-test' });
     const result = await p.generate('test');
@@ -236,10 +204,11 @@ describe('OpenAIProvider', () => {
   });
 
   it('isAvailable returns true on 200', async () => {
-    mockFetch(async () =>
-      new Response(JSON.stringify({ data: [] }), {
-        status: 200,
-      })
+    mockFetch(
+      async () =>
+        new Response(JSON.stringify({ data: [] }), {
+          status: 200,
+        })
     );
 
     const p = new OpenAIProvider({ apiKey: 'sk-test' });
@@ -251,9 +220,7 @@ describe('OpenAIProvider', () => {
 
 describe('AnthropicProvider', () => {
   it('requires an API key', () => {
-    expect(
-      () => new AnthropicProvider({ apiKey: '' })
-    ).toThrow('requires an API key');
+    expect(() => new AnthropicProvider({ apiKey: '' })).toThrow('requires an API key');
   });
 
   it('has correct type and default model', () => {
@@ -265,14 +232,15 @@ describe('AnthropicProvider', () => {
   });
 
   it('generates text via messages API', async () => {
-    mockFetch(async () =>
-      new Response(
-        JSON.stringify({
-          content: [{ type: 'text', text: 'Claude response' }],
-          usage: { input_tokens: 10, output_tokens: 20 },
-        }),
-        { status: 200 }
-      )
+    mockFetch(
+      async () =>
+        new Response(
+          JSON.stringify({
+            content: [{ type: 'text', text: 'Claude response' }],
+            usage: { input_tokens: 10, output_tokens: 20 },
+          }),
+          { status: 200 }
+        )
     );
 
     const p = new AnthropicProvider({
@@ -313,9 +281,7 @@ describe('AnthropicProvider', () => {
   it('sends correct headers', async () => {
     let capturedHeaders: Record<string, string> = {};
     mockFetch(async (_url, init) => {
-      capturedHeaders = Object.fromEntries(
-        new Headers(init?.headers as HeadersInit).entries()
-      );
+      capturedHeaders = Object.fromEntries(new Headers(init?.headers as HeadersInit).entries());
       return new Response(
         JSON.stringify({
           content: [{ type: 'text', text: '' }],
@@ -330,31 +296,20 @@ describe('AnthropicProvider', () => {
     await p.generate('test');
 
     expect(capturedHeaders['x-api-key']).toBe('sk-ant-key');
-    expect(capturedHeaders['anthropic-version']).toBe(
-      '2023-06-01'
-    );
+    expect(capturedHeaders['anthropic-version']).toBe('2023-06-01');
   });
 
   it('throws on HTTP error', async () => {
-    mockFetch(async () =>
-      new Response('invalid key', { status: 401 })
-    );
+    mockFetch(async () => new Response('invalid key', { status: 401 }));
 
     const p = new AnthropicProvider({
       apiKey: 'bad-key',
     });
-    await expect(p.generate('test')).rejects.toThrow(
-      'Anthropic 401'
-    );
+    await expect(p.generate('test')).rejects.toThrow('Anthropic 401');
   });
 
   it('handles missing content gracefully', async () => {
-    mockFetch(async () =>
-      new Response(
-        JSON.stringify({ content: [] }),
-        { status: 200 }
-      )
-    );
+    mockFetch(async () => new Response(JSON.stringify({ content: [] }), { status: 200 }));
 
     const p = new AnthropicProvider({
       apiKey: 'sk-ant-test',
@@ -364,9 +319,7 @@ describe('AnthropicProvider', () => {
   });
 
   it('isAvailable returns true on 200 or 429', async () => {
-    mockFetch(async () =>
-      new Response('rate limited', { status: 429 })
-    );
+    mockFetch(async () => new Response('rate limited', { status: 429 }));
 
     const p = new AnthropicProvider({
       apiKey: 'sk-ant-test',
@@ -427,10 +380,11 @@ describe('createProvider', () => {
 
 describe('detectOllama', () => {
   it('returns true when Ollama is running', async () => {
-    mockFetch(async () =>
-      new Response(JSON.stringify({ models: [] }), {
-        status: 200,
-      })
+    mockFetch(
+      async () =>
+        new Response(JSON.stringify({ models: [] }), {
+          status: 200,
+        })
     );
     expect(await detectOllama()).toBe(true);
   });
@@ -448,10 +402,7 @@ describe('createProviderWithFallback', () => {
     mockFetch(async (url) => {
       const urlStr = url.toString();
       if (urlStr.includes('/models')) {
-        return new Response(
-          JSON.stringify({ data: [] }),
-          { status: 200 }
-        );
+        return new Response(JSON.stringify({ data: [] }), { status: 200 });
       }
       return new Response(
         JSON.stringify({
@@ -479,10 +430,7 @@ describe('createProviderWithFallback', () => {
         throw new Error('ECONNREFUSED');
       }
       if (urlStr.includes('11434/api/tags')) {
-        return new Response(
-          JSON.stringify({ models: [] }),
-          { status: 200 }
-        );
+        return new Response(JSON.stringify({ models: [] }), { status: 200 });
       }
       return new Response('', { status: 500 });
     });
@@ -507,10 +455,11 @@ describe('createProviderWithFallback', () => {
   });
 
   it('tries Ollama when no config provided', async () => {
-    mockFetch(async () =>
-      new Response(JSON.stringify({ models: [] }), {
-        status: 200,
-      })
+    mockFetch(
+      async () =>
+        new Response(JSON.stringify({ models: [] }), {
+          status: 200,
+        })
     );
 
     const p = await createProviderWithFallback();

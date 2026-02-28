@@ -20,8 +20,10 @@ and this project adheres to
   - `createProviderWithFallback()` with automatic Ollama detection
   - `detectOllama()` utility for checking local availability
 - LLM integration in ML modules
-  - `setPromptEnhancerLLM()` / `getPromptEnhancerLLM()` for model-backed prompt enhancement
-  - `setQualityScorerLLM()` / `getQualityScorerLLM()` for model-backed quality scoring
+  - `setPromptEnhancerLLM()` / `getPromptEnhancerLLM()` for model-backed prompt
+    enhancement
+  - `setQualityScorerLLM()` / `getQualityScorerLLM()` for model-backed quality
+    scoring
   - Automatic fallback to rule-based enhancement when no LLM available
 - 35 unit tests for all providers, factory, and fallback logic
 
