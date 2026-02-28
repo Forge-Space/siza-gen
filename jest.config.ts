@@ -2,10 +2,7 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest/presets/default-esm',
-  testMatch: [
-    '<rootDir>/src/__tests__/**/*.unit.test.ts',
-    '<rootDir>/src/__tests__/**/*.integration.test.ts',
-  ],
+  testMatch: ['<rootDir>/src/__tests__/**/*.unit.test.ts', '<rootDir>/src/__tests__/**/*.integration.test.ts'],
   testTimeout: 15_000,
   extensionsToTreatAsEsm: ['.ts'],
   transform: {
@@ -28,12 +25,7 @@ const config: Config = {
   },
   coverageProvider: 'v8',
   coverageReporters: ['text', 'lcov', 'json-summary'],
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/__tests__/**',
-    '!src/scripts/**',
-    '!src/types.ts',
-  ],
+  collectCoverageFrom: ['src/**/*.ts', '!src/__tests__/**', '!src/scripts/**', '!src/types.ts'],
   coverageThreshold: {
     global: {
       branches: 60,

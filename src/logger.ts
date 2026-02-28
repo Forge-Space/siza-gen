@@ -32,7 +32,7 @@ function initLogger(): Logger {
           }
         : undefined,
     },
-    isDevelopment ? undefined : pino.destination(2),
+    isDevelopment ? undefined : pino.destination(2)
   );
 
   return loggerInstance;

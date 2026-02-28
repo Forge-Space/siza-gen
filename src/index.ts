@@ -54,7 +54,11 @@ export { getDatabase, closeDatabase } from './registry/database/store.js';
 
 // Registry Presets, Design References & Component Libraries
 export * from './registry/index.js';
-export { COMPONENT_LIBRARIES, getComponentLibrariesForFramework, getRecommendedLibrary } from './registry/component-libraries.js';
+export {
+  COMPONENT_LIBRARIES,
+  getComponentLibrariesForFramework,
+  getRecommendedLibrary,
+} from './registry/component-libraries.js';
 
 // Template Compositions
 export {
@@ -133,10 +137,7 @@ export * from './artifacts/index.js';
 export { designContextStore, DEFAULT_CONTEXT } from './design-context.js';
 
 // Brand Identity Transform
-export {
-  brandToDesignContext,
-  type BrandIdentityInput,
-} from './brand-identity-transform.js';
+export { brandToDesignContext, type BrandIdentityInput } from './brand-identity-transform.js';
 
 // Component Libraries
 export {

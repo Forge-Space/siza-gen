@@ -14,11 +14,7 @@ import {
   composeSection,
   getBestMatch,
 } from '../registry/component-registry/index.js';
-import {
-  initializeRegistry,
-  isRegistryInitialized,
-  resetInitialization,
-} from '../registry/component-registry/init.js';
+import { initializeRegistry, isRegistryInitialized, resetInitialization } from '../registry/component-registry/init.js';
 import type { IComponentSnippet } from '../registry/component-registry/types.js';
 
 // ── Helper: minimal valid snippet ──────────────────────────

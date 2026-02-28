@@ -31,13 +31,7 @@ export default tseslint.config(
       },
       parserOptions: {
         projectService: {
-          allowDefaultProject: [
-            '*.config.ts',
-            '*.config.js',
-            '*.config.mjs',
-            'tsup.config.ts',
-            'jest.config.ts',
-          ],
+          allowDefaultProject: ['*.config.ts', '*.config.js', '*.config.mjs', 'tsup.config.ts', 'jest.config.ts'],
         },
         tsconfigRootDir: __dirname,
       },
@@ -55,10 +49,7 @@ export default tseslint.config(
       eqeqeq: ['error', 'always'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
-      ],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/prefer-optional-chain': 'warn',

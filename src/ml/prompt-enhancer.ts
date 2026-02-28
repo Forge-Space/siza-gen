@@ -12,7 +12,10 @@
 
 import pino from 'pino';
 const isSidecarReady = (): boolean => false;
-const infer = async (_prompt: string, _opts?: { maxTokens?: number; temperature?: number }): Promise<{ text: string; source: string }> => ({ text: '', source: 'fallback' });
+const infer = async (
+  _prompt: string,
+  _opts?: { maxTokens?: number; temperature?: number }
+): Promise<{ text: string; source: string }> => ({ text: '', source: 'fallback' });
 import { embed } from './embeddings.js';
 import { semanticSearch, getEmbeddingCount } from './embedding-store.js';
 import { getDatabase } from '../registry/database/store.js';

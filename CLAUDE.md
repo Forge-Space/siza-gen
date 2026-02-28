@@ -55,5 +55,6 @@ npm run registry:stats    # Report snippet counts by category
 - `npm run build` required before `npm test` — quality tests load from built JS
 - `.uiforge/rag.sqlite` caches registry data — delete when changing snippets
 - `fail()` unavailable in Jest ESM — use `throw new Error()`
-- Subagents use invalid enum values for MoodTag/IndustryTag — run `tsc --noEmit` after
+- Subagents use invalid enum values for MoodTag/IndustryTag — run `tsc --noEmit`
+  after
 - Pino must output to stderr (fd 2), never stdout
