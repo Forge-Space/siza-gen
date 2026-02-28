@@ -106,3 +106,26 @@ export type { IStyleRecommendation, IStyleContext } from './style-recommender.js
 export { extractDesignPatterns } from './image-design-analyzer.js';
 
 export { storeDesignLearning } from './design-to-training-data.js';
+
+export {
+  setSidecarUrl,
+  getSidecarUrl,
+  isSidecarAvailable,
+  resetAvailabilityCache,
+  sidecarEmbed,
+  sidecarEmbedBatch,
+  sidecarScoreQuality,
+  sidecarEnhancePrompt,
+  sidecarVectorSearch,
+  sidecarVectorIndex,
+  sidecarStartTraining,
+  sidecarGetTrainingStatus,
+  sidecarCancelTraining,
+} from './sidecar-client.js';
+
+export type {
+  ISidecarScoreResult,
+  ISidecarEnhanceResult,
+  ISidecarVectorSearchResult,
+  ISidecarTrainingJob,
+} from './sidecar-client.js';

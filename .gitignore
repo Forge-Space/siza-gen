@@ -15,6 +15,14 @@ npm-debug.log*
 *.sqlite-journal
 .serena/
 
+# Python sidecar
+python/.venv/
+python/__pycache__/
+python/*.egg-info/
+python/.pytest_cache/
+**/__pycache__/
+*.pyc
+
 # Task-specific docs
 *_REPORT.md
 *_COMPLETE.md
@@ -32,10 +40,10 @@ bandit-report.json
 safety-report.json
 
 # Root demo/test scripts
-demo_*.py
-test_*.py
-demo*.sh
-test*.sh
+/demo_*.py
+/test_*.py
+/demo*.sh
+/test*.sh
 
 # Backup files
 *.bak

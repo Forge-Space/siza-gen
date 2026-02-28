@@ -9,6 +9,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import pino from 'pino';
 import type { IEmbedding, ISimilarityResult, IEmbeddingConfig } from './types.js';
+import { isSidecarAvailable, sidecarEmbed, sidecarEmbedBatch } from './sidecar-client.js';
 
 const logger = pino({ name: 'ml-embeddings' });
 
@@ -80,11 +81,19 @@ async function getExtractor(): Promise<any> {
 
 /**
  * Generate an embedding vector for a single text string.
+ * Delegates to Python sidecar when available, falls back to Transformers.js.
  */
 export async function embed(text: string): Promise<Float32Array> {
+  try {
+    if (await isSidecarAvailable()) {
+      return await sidecarEmbed(text);
+    }
+  } catch (err) {
+    logger.debug({ err }, 'Sidecar embed failed, falling back to Transformers.js');
+  }
+
   const ext = await getExtractor();
   const output = await ext(text, { pooling: 'mean', normalize: true });
-  // Ensure output.data is converted to Float32Array
   if (output.data instanceof Float32Array) {
     return output.data;
   }
@@ -93,18 +102,25 @@ export async function embed(text: string): Promise<Float32Array> {
 
 /**
  * Generate embeddings for multiple texts in batch.
- * More efficient than calling embed() in a loop.
+ * Delegates to Python sidecar when available, falls back to Transformers.js.
  */
 export async function embedBatch(texts: string[]): Promise<Float32Array[]> {
   if (texts.length === 0) return [];
+
+  try {
+    if (await isSidecarAvailable()) {
+      return await sidecarEmbedBatch(texts);
+    }
+  } catch (err) {
+    logger.debug({ err }, 'Sidecar embedBatch failed, falling back');
+  }
+
   const ext = await getExtractor();
   const results: Float32Array[] = [];
 
-  // Process in small batches to avoid memory spikes on Celeron N100
   const BATCH_SIZE = 8;
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE);
-    // Parallelize within batch for better performance
     const batchPromises = batch.map((text) =>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ext(text, { pooling: 'mean', normalize: true }).then((output: any) => new Float32Array(output.data))

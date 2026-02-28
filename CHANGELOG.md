@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] — 2026-02-28
+
+### Added
+
+- Python ML sidecar (FastAPI) at `python/siza_ml/`
+  - Sentence-transformers embeddings (all-MiniLM-L6-v2, 384-dim)
+  - FAISS CPU vector index with persist/rebuild
+  - LLM-based quality scoring via Ollama with heuristic fallback
+  - LLM-based prompt enhancement via Ollama with rule fallback
+  - LoRA fine-tuning via PEFT (TinyLlama base, rank-8, CPU-only)
+  - HuggingFace dataset ingestion pipeline
+  - Axe-core accessibility rule ingestion
+  - ML observability metrics (latency, scores, training progress)
+  - Health/readiness probes with memory stats
+- TypeScript sidecar client (`src/ml/sidecar-client.ts`)
+  - HTTP client for all sidecar endpoints with base64 vector wire format
+  - 30-second availability cache, 5s/10s request timeouts
+  - Graceful fallback on sidecar unavailability
+- Sidecar delegation in ML modules
+  - Embeddings: sidecar → Transformers.js fallback
+  - Quality scoring: sidecar → local LLM → heuristic chain
+  - Prompt enhancement: sidecar → local LLM → rules chain
+  - Training: sidecar PEFT → child_process fallback
+- Python CI workflow (`.github/workflows/python-ci.yml`)
+- Docker support for sidecar (`python/Dockerfile`, python:3.12-slim)
+- Ingestion scripts: `seed:rules`, `ingest:hf`
+- 41 Python tests, 12 new TypeScript tests (424 total)
+
 ## [0.4.0] — 2026-02-28
 
 ### Added
