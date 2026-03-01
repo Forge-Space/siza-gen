@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] — 2026-03-01
+
+### Added
+
+- **Context Assembler**: New `assembleContext()` function that builds rich,
+  budget-aware system prompts (~4K tokens) from curated registry data
+- 6 composable section builders: role/persona, anti-generic quality rules,
+  framework conventions, component library patterns, WCAG AA accessibility
+  checklist, and few-shot examples from the 502-snippet registry
+- Token budget management — fixed sections get priority, examples fill remaining
+  budget with automatic truncation
+- 17 new unit tests for context assembly with budget, search, and truncation
+  scenarios
+
 ## [0.6.0] — 2026-03-01
 
 ### Changed
