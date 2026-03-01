@@ -12,17 +12,17 @@ and this project adheres to
 
 - **ESLint 9 → 10**: New recommended rules (`preserve-caught-error`,
   `no-useless-assignment`), config lookup from file directory
-- **Jest 29 → 30**: 40% faster test execution (5s → 2.8s), stricter
-  type inference, glob v10
+- **Jest 29 → 30**: 40% faster test execution (5s → 2.8s), stricter type
+  inference, glob v10
 - **Husky 8 → 9**: Simplified `prepare` script (`husky` instead of
   `husky install`)
 - **globals 16 → 17**, **lint-staged → 16**, **@types/jest → 30**
 
 ### Fixed
 
-- Added `{ cause: err }` to 4 catch-rethrow blocks for error chain
-  preservation (ESLint `preserve-caught-error` rule):
-  `anthropic.ts`, `ollama.ts`, `openai.ts`, `embeddings.ts`
+- Added `{ cause: err }` to 4 catch-rethrow blocks for error chain preservation
+  (ESLint `preserve-caught-error` rule): `anthropic.ts`, `ollama.ts`,
+  `openai.ts`, `embeddings.ts`
 - Fixed useless initial assignment in `template-compositions/index.ts`
 
 ## [0.5.0] — 2026-02-28
