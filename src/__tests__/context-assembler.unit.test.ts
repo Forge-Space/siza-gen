@@ -1,14 +1,9 @@
 import { assembleContext } from '../context/context-assembler.js';
 import { initializeRegistry } from '../registry/component-registry/init.js';
-import {
-  clearRegistry,
-  registerSnippet,
-} from '../registry/component-registry/index.js';
+import { clearRegistry, registerSnippet } from '../registry/component-registry/index.js';
 import type { IComponentSnippet } from '../registry/component-registry/types.js';
 
-function makeSnippet(
-  overrides: Partial<IComponentSnippet> = {}
-): IComponentSnippet {
+function makeSnippet(overrides: Partial<IComponentSnippet> = {}): IComponentSnippet {
   return {
     id: overrides.id ?? 'test-btn-1',
     name: overrides.name ?? 'Test Button',

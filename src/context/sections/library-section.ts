@@ -46,9 +46,7 @@ const LIBRARY_PATTERNS: Record<string, string> = {
   ].join('\n'),
 };
 
-export function buildLibrarySection(
-  componentLibrary?: string
-): string {
+export function buildLibrarySection(componentLibrary?: string): string {
   if (!componentLibrary || componentLibrary === 'none') return '';
   return LIBRARY_PATTERNS[componentLibrary] ?? '';
 }

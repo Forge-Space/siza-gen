@@ -1,8 +1,4 @@
-import type {
-  MoodTag,
-  IndustryTag,
-  VisualStyleId,
-} from '../registry/component-registry/types.js';
+import type { MoodTag, IndustryTag, VisualStyleId } from '../registry/component-registry/types.js';
 import { buildRoleSection } from './sections/role-section.js';
 import { buildQualityRulesSection } from './sections/quality-rules-section.js';
 import { buildFrameworkSection } from './sections/framework-section.js';
@@ -32,9 +28,7 @@ function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-export function assembleContext(
-  params: IContextAssemblerParams
-): IAssembledContext {
+export function assembleContext(params: IContextAssemblerParams): IAssembledContext {
   const budget = params.tokenBudget ?? 4000;
   const maxExamples = params.maxExamples ?? 3;
   const sections: Array<{ name: string; text: string }> = [];
