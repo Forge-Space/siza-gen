@@ -1,6 +1,6 @@
 {
   "name": "@forgespace/siza-gen",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Siza AI generation engine — multi-framework code generation, component registry, and ML-powered quality scoring",
   "type": "module",
   "main": "dist/index.js",

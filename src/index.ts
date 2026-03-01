@@ -182,5 +182,9 @@ export type {
 export { loadConfig, getConfig, safeJSONParse, type Config } from './config.js';
 export { createLogger, logger } from './logger.js';
 
+// Context Assembler
+export { assembleContext } from './context/index.js';
+export type { IContextAssemblerParams, IAssembledContext } from './context/index.js';
+
 // Utils
 export * from './utils/index.js';
