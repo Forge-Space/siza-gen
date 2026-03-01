@@ -80,7 +80,6 @@ export function assembleContext(
     });
     if (examplesText) {
       sections.push({ name: 'examples', text: examplesText });
-      usedTokens += estimateTokens(examplesText);
       const exampleMatches = examplesText.match(/^\/\/ .+ \(.+\)$/gm);
       examplesIncluded = exampleMatches?.length ?? 0;
     }

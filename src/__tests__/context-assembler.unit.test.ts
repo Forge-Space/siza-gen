@@ -230,7 +230,7 @@ describe('assembleContext', () => {
   it('truncates long JSX in examples', () => {
     registerSnippet(
       makeSnippet({
-        jsx: '<div>' + 'a'.repeat(2000) + '</div>',
+        jsx: `<div>${'a'.repeat(2000)}</div>`,
       })
     );
 
