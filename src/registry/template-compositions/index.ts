@@ -85,7 +85,7 @@ export function composePageFromTemplate(compositionId: string, options?: ICompos
     const results = searchComponents(query);
     const snippet = results[0];
 
-    let jsx = '';
+    let jsx: string;
     let snippetId: string | undefined;
 
     if (snippet) {
