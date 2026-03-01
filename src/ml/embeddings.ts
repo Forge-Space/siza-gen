@@ -75,7 +75,7 @@ async function getExtractor(): Promise<any> {
     return extractor;
   } catch (err) {
     logger.error({ err, model: config.modelId }, 'Failed to load embedding model');
-    throw new Error(`Failed to load embedding model: ${err}`);
+    throw new Error(`Failed to load embedding model: ${err}`, { cause: err });
   }
 }
 

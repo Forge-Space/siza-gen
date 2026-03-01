@@ -69,7 +69,7 @@ export class OllamaProvider implements ILLMProvider {
       };
     } catch (err) {
       if ((err as Error).name === 'AbortError') {
-        throw new Error(`Ollama request timed out after ${timeout}ms`);
+        throw new Error(`Ollama request timed out after ${timeout}ms`, { cause: err });
       }
       throw err;
     } finally {

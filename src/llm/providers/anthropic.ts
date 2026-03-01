@@ -92,7 +92,7 @@ export class AnthropicProvider implements ILLMProvider {
       };
     } catch (err) {
       if ((err as Error).name === 'AbortError') {
-        throw new Error(`Anthropic request timed out after ${timeout}ms`);
+        throw new Error(`Anthropic request timed out after ${timeout}ms`, { cause: err });
       }
       throw err;
     } finally {
