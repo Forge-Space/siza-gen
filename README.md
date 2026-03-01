@@ -1,7 +1,10 @@
-# @forgespace/siza-gen
-
-Siza AI generation engine — multi-framework code generation, component registry,
-and ML-powered quality scoring.
+<div align="center">
+  <a href="https://forgespace.co">
+    <img src="https://brand.forgespace.co/logos/wordmark.svg" alt="Forge Space" height="48">
+  </a>
+  <h1>@forgespace/siza-gen</h1>
+  <p>Siza AI generation engine — multi-framework code generation, component registry, and ML-powered quality scoring.</p>
+</div>
 
 ## Overview
 
