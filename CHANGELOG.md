@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-03-06
+
+### Changed
+- **brand-identity-transform**: WCAG relative luminance (sRGB linearization) for foreground contrast instead of BT.601
+- **brand-identity-transform**: Hex normalization — 3-char (#f00) and 8-char (#rrggbbaa) supported; invalid hex throws clear error
+- **brand-identity-transform**: branding-mcp radii mapping — `xl`->lg, `circle`->9999px, `none`->0
+
+### Added
+- **brand-identity-transform**: Validation for missing `colors.primary.hex` with structured error
+- 6 new unit tests: empty neutral fallback, 3-char/8-char hex, invalid hex, missing primary, radii key mapping
+
 ## [0.7.0] — 2026-03-01
 
 ### Added

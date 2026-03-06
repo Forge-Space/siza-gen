@@ -36,23 +36,45 @@ export interface BrandIdentityInput {
   };
 }
 
+function normalizeHex(hex: string): string {
+  const h = hex.replace(/^#/, '');
+  if (/^[0-9a-fA-F]{6}$/.test(h)) return h;
+  if (/^[0-9a-fA-F]{3}$/.test(h))
+    return h[0]! + h[0] + h[1]! + h[1] + h[2]! + h[2];
+  if (/^[0-9a-fA-F]{8}$/.test(h)) return h.slice(0, 6);
+  throw new Error(`Invalid hex color: ${hex}. Expected 3, 6, or 8 hex digits.`);
+}
+
 function hexToRgb(hex: string): [number, number, number] {
-  const h = hex.replace('#', '');
+  const h = normalizeHex(hex);
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 }
 
-function perceivedBrightness(hex: string): number {
-  const [r, g, b] = hexToRgb(hex);
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+function linearize(c: number): number {
+  return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+
+function relativeLuminance(r: number, g: number, b: number): number {
+  return 0.2126 * linearize(r / 255) + 0.7152 * linearize(g / 255) + 0.0722 * linearize(b / 255);
 }
 
 function contrastForeground(hex: string): string {
-  return perceivedBrightness(hex) > 0.5 ? '#000000' : '#ffffff';
+  const [r, g, b] = hexToRgb(hex);
+  return relativeLuminance(r, g, b) > 0.5 ? '#000000' : '#ffffff';
+}
+
+function normalizeHexForOutput(hex: string): string {
+  try {
+    return '#' + normalizeHex(hex);
+  } catch {
+    return hex;
+  }
 }
 
 function pickNeutral(neutrals: Array<{ hex: string }>, index: number): string {
   const clamped = Math.min(index, neutrals.length - 1);
-  return neutrals[clamped]?.hex ?? '#888888';
+  const hex = neutrals[clamped]?.hex ?? '#888888';
+  return normalizeHexForOutput(hex);
 }
 
 const STEP_TO_KEY: Record<string, string> = {
@@ -117,18 +139,18 @@ function mapColors(colors: BrandIdentityInput['colors']): IDesignContext['colorP
   const mid = Math.floor(last / 2);
   const midLight = Math.floor(last * 0.7);
   return {
-    primary: colors.primary.hex,
+    primary: normalizeHexForOutput(colors.primary.hex),
     primaryForeground: contrastForeground(colors.primary.hex),
-    secondary: colors.secondary.hex,
+    secondary: normalizeHexForOutput(colors.secondary.hex),
     secondaryForeground: contrastForeground(colors.secondary.hex),
-    accent: colors.accent.hex,
+    accent: normalizeHexForOutput(colors.accent.hex),
     accentForeground: contrastForeground(colors.accent.hex),
     background: pickNeutral(n, last),
     foreground: pickNeutral(n, 0),
     muted: pickNeutral(n, mid),
     mutedForeground: pickNeutral(n, 0),
     border: pickNeutral(n, midLight),
-    destructive: colors.semantic.error.hex,
+    destructive: normalizeHexForOutput(colors.semantic.error.hex),
     destructiveForeground: contrastForeground(colors.semantic.error.hex),
   };
 }
@@ -146,18 +168,24 @@ function mapShadows(levels: Record<string, { cssValue: string }>): IDesignContex
 }
 
 function mapBorderRadius(radii: Record<string, string>): IDesignContext['borderRadius'] | undefined {
-  if (!radii['sm'] && !radii['md'] && !radii['lg']) {
-    return undefined;
-  }
+  const get = (key: string): string | undefined => radii[key];
+  const sm = get('sm') ?? (get('none') !== undefined ? '0' : undefined);
+  const md = get('md');
+  const lg = get('lg') ?? get('xl');
+  const full = get('full') ?? (get('circle') !== undefined ? '9999px' : undefined);
+  if (!sm && !md && !lg && !full) return undefined;
   return {
-    sm: radii['sm'] ?? '0.125rem',
-    md: radii['md'] ?? '0.375rem',
-    lg: radii['lg'] ?? '0.5rem',
-    full: radii['full'] ?? '9999px',
+    sm: sm ?? '0.125rem',
+    md: md ?? '0.375rem',
+    lg: lg ?? '0.5rem',
+    full: full ?? '9999px',
   };
 }
 
 export function brandToDesignContext(brand: BrandIdentityInput): Partial<IDesignContext> {
+  if (!brand.colors?.primary?.hex) {
+    throw new Error('Invalid brand identity: missing colors.primary.hex');
+  }
   const result: Partial<IDesignContext> = {
     colorPalette: mapColors(brand.colors),
     typography: {

@@ -1,5 +1,13 @@
 # Siza Gen (@forgespace/siza-gen)
 
+## Quick Reference
+
+```bash
+NODE_OPTIONS=--experimental-vm-modules npm run build
+NODE_OPTIONS=--experimental-vm-modules npm test
+npm run sidecar:start   # Python ML sidecar on :8100
+```
+
 ## Project
 
 - AI generation engine for multi-framework code generation

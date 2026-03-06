@@ -223,4 +223,72 @@ describe('brandToDesignContext', () => {
     expect(typeof result.typography?.fontFamily).toBe('string');
     expect(Array.isArray(result.spacing?.scale)).toBe(true);
   });
+
+  it('falls back to #888888 when neutral array is empty', () => {
+    const brand = makeBrand({
+      colors: {
+        ...makeBrand().colors,
+        neutral: [],
+      },
+    });
+    const result = brandToDesignContext(brand);
+    expect(result.colorPalette?.background).toBe('#888888');
+    expect(result.colorPalette?.foreground).toBe('#888888');
+    expect(result.colorPalette?.muted).toBe('#888888');
+    expect(result.colorPalette?.border).toBe('#888888');
+  });
+
+  it('accepts 3-char hex and normalizes to 6-char', () => {
+    const brand = makeBrand({
+      colors: {
+        ...makeBrand().colors,
+        primary: { hex: '#f00' },
+      },
+    });
+    const result = brandToDesignContext(brand);
+    expect(result.colorPalette?.primary).toBe('#ff0000');
+    expect(result.colorPalette?.primaryForeground).toBe('#ffffff');
+  });
+
+  it('accepts 8-char hex and uses first 6 for color', () => {
+    const brand = makeBrand({
+      colors: {
+        ...makeBrand().colors,
+        primary: { hex: '#1a56dbff' },
+      },
+    });
+    const result = brandToDesignContext(brand);
+    expect(result.colorPalette?.primary).toBe('#1a56db');
+  });
+
+  it('throws on invalid hex', () => {
+    const brand = makeBrand({
+      colors: {
+        ...makeBrand().colors,
+        primary: { hex: '#gggggg' },
+      },
+    });
+    expect(() => brandToDesignContext(brand)).toThrow(/Invalid hex color/);
+  });
+
+  it('throws when colors.primary is missing', () => {
+    const brand = makeBrand();
+    delete (brand.colors as Record<string, unknown>).primary;
+    expect(() => brandToDesignContext(brand)).toThrow(/missing colors.primary.hex/);
+  });
+
+  it('maps branding-mcp radii keys xl, circle, none', () => {
+    const brand = makeBrand();
+    (brand as Record<string, unknown>).borders = {
+      radii: {
+        xl: '1rem',
+        circle: '9999px',
+        none: '0',
+      },
+    };
+    const result = brandToDesignContext(brand);
+    expect(result.borderRadius?.lg).toBe('1rem');
+    expect(result.borderRadius?.full).toBe('9999px');
+    expect(result.borderRadius?.sm).toBe('0');
+  });
 });
