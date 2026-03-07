@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Library
+metadata:
+  name: siza-gen
+  description: AI generation context assembler — design tokens, brand context, snippet registry
+  tags:
+    - typescript
+    - npm
+    - ai
+    - generation
+spec:
+  owner: forge-space
+  system: siza
+  lifecycle: production
+  dependsOn:
+    - forge-patterns
