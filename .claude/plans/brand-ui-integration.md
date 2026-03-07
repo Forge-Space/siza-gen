@@ -1,5 +1,55 @@
 # Cross-Repo: Brand Identity → UI Generation Integration
 
+## Enhancement Summary
+
+**Deepened on:** 2026-03-03 **Status:** Implementation complete (siza-gen
+v0.7.0, siza-mcp + ui-mcp have `brand_identity`) **Sections enhanced:**
+Architecture, Field Mapping, Cross-Repo, Risk Matrix, Post-Implementation
+
+### Key Improvements
+
+1. WCAG luminance formula (sRGB linearization) for foreground contrast
+2. Hex normalization for 3-char (`#f00`) and 8-char hex; document supported
+   format
+3. Extract `deepMergeContext` to shared module in siza-mcp
+4. Add tests: empty neutral, malformed hex, invalid brand structure
+5. Forge-cross-repo: siza-gen first, then siza-mcp; use
+   `feat/brand-ui-integration` branch
+
+### Post-Implementation Enhancements (Phase 4)
+
+- [ ] Switch `brand-identity-transform.ts` to WCAG luminance
+- [ ] Add `normalizeHex()` or document 6-char hex only
+- [ ] Extract `design-context-merge.ts` in siza-mcp
+- [ ] Add `borders.radii` mapping for `xl`, `circle`, `none`
+
+---
+
+## Forge-Cross-Repo Coordination
+
+| Step | Repo     | Branch                      | Order                |
+| ---- | -------- | --------------------------- | -------------------- |
+| 1    | siza-gen | `feat/brand-ui-integration` | First (leaf)         |
+| 2    | siza-mcp | `feat/brand-ui-integration` | After siza-gen ships |
+| 3    | ui-mcp   | (optional)                  | Parity with siza-mcp |
+
+**Change order:** siza-gen → siza-mcp (bottom-up). branding-mcp is already
+v0.4.0.
+
+**Quick commands:**
+
+```bash
+# Create matching branches
+git -C siza-gen checkout -b feat/brand-ui-integration
+git -C siza-mcp checkout -b feat/brand-ui-integration
+
+# Build all
+(cd siza-gen && npm run build && npm test)
+(cd siza-mcp && npm install && npm run build && npm test)
+```
+
+---
+
 ## Context
 
 branding-mcp v0.4.0 generates complete `BrandIdentity` objects (colors,
@@ -128,8 +178,10 @@ export function brandToDesignContext(
 Key helpers (all <15 lines):
 
 - `contrastForeground(hex: string): string` — returns `#ffffff` or `#000000`
-  based on relative luminance (W3C formula:
-  `(0.299*R + 0.587*G + 0.114*B) / 255`)
+  based on relative luminance. Prefer WCAG formula (sRGB linearization +
+  `0.2126*R + 0.7152*G + 0.0722*B`) for consistency with branding-mcp; plan
+  originally used BT.601 (`0.299/0.587/0.114`) which does not guarantee WCAG
+  4.5:1 contrast
 - `hexToRgb(hex: string): [number, number, number]` — parse hex to RGB tuple
 - `mapTypographySteps(steps)` — maps step names to fontSize keys (`xs` through
   `3xl`)
@@ -166,7 +218,9 @@ export {
 - Optional borders mapped when present
 - Missing optional fields result in undefined (not included in partial)
 - Neutral array with different lengths (edge case: <5 neutrals)
+- Empty neutral array (fallback to `#888888` or validate)
 - Primary/secondary/accent hex values pass through unchanged
+- Invalid/malformed hex (3-char, 8-char, non-hex) — document supported format
 
 ### Verification
 
@@ -288,7 +342,8 @@ existing `design_context` merge runs as before.
 - `withBrandContext` updates design context during execution
 - `withBrandContext` restores previous context after execution
 - `withBrandContext` restores context on error
-- Invalid JSON string returns error (not crash)
+- Invalid JSON string returns structured error (wrap JSON.parse in try/catch;
+  `finally` still restores)
 - `generate_ui_component` accepts brand_identity param (schema validation)
 - `generate_page_template` accepts brand_identity param
 - `scaffold_full_application` accepts brand_identity param
@@ -308,6 +363,8 @@ existing `design_context` merge runs as before.
 - Don't modify global designContextStore without restore — always use
   `withBrandContext` wrapper
 - Don't parse brand_identity inside individual tools — use the shared helper
+- Don't duplicate restore in catch blocks — `finally` already restores; if you
+  catch JSON.parse for structured errors, let `finally` handle restore
 - `npm run build` required before `npm test` in siza-mcp
 
 ---
@@ -376,6 +433,93 @@ existing `design_context` merge runs as before.
   previous state
 - Concurrent requests in MCP server share the singleton — acceptable for v1
   (single-user MCP), but note for future session-scoped stores
+- **Concurrent requests**: If two tools run with different `brand_identity` at
+  once, the store ends up with whichever request finishes last. Document as
+  known limitation for v1; plan session-scoped stores for multi-session.
+
+## Research Insights: Architecture
+
+**Flow**: branding-mcp → siza-gen brandToDesignContext → siza-mcp
+withBrandContext is sound. JSON string decouples repos; no circular deps.
+
+**Restore correctness**: `designContextStore.get()` returns a deep clone;
+`set(previous)` in `finally` runs even when `fn()`, `JSON.parse()`, or
+`brandToDesignContext()` throws. Restore is correct.
+
+**Concurrency**: Last-finishing request wins; acceptable for v1 single-user.
+
+## Research Insights: Cross-Repo Dependency Graph
+
+**Clarification**: The phrase "siza-gen → siza-mcp → branding-mcp" describes
+**release order** (bottom-up), not package dependency direction.
+
+| Repo         | Package Deps           | Role in Flow                                               |
+| ------------ | ---------------------- | ---------------------------------------------------------- |
+| siza-gen     | None (leaf)            | Provides `brandToDesignContext()`, `designContextStore`    |
+| siza-mcp     | `@forgespace/siza-gen` | Consumes transform; applies brand via `withBrandContext()` |
+| branding-mcp | None (leaf)            | Produces BrandIdentity JSON; user passes to siza-mcp       |
+
+**Data flow**: branding-mcp output → user → siza-mcp `brand_identity` param →
+siza-gen `brandToDesignContext()` → `designContextStore.update()`.
+
+**Verdict**: Flow is correct. siza-gen and branding-mcp are independent leaves;
+siza-mcp is the integration point. JSON boundary ensures no circular deps.
+
+## Research Insights: Pattern Compliance Assessment
+
+| Convention              | Status | Notes                                                                                                                                          |
+| ----------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bottom-up release order | ✓      | siza-gen v0.3.0 ships first; siza-mcp v0.10.0 consumes                                                                                         |
+| JSON boundary           | ✓      | `brand_identity` is string; no shared types across repos                                                                                       |
+| No circular deps        | ✓      | siza-gen has no dep on branding-mcp; branding-mcp has no dep on siza-gen                                                                       |
+| Forge Space chain       | ⚠      | chain-release uses siza-gen → core → siza-mcp → siza → mcp-gateway → branding-mcp; this plan only touches siza-gen and siza-mcp                |
+| ui-mcp parity           | ⚠      | Plan targets siza-mcp; ui-mcp also uses `designContextStore` and has `brand-context.ts` — consider same `brand_identity` param for consistency |
+
+## Research Insights: Risk Matrix
+
+| Risk                         | Likelihood | Impact | Mitigation                                                                                            |
+| ---------------------------- | ---------- | ------ | ----------------------------------------------------------------------------------------------------- |
+| Singleton designContextStore | —          | Medium | Documented; `withBrandContext` restore is correct                                                     |
+| Concurrent requests          | Low (v1)   | Medium | Last-finisher wins; acceptable for single-user MCP; plan session-scoped stores for multi-session      |
+| Version coupling             | Medium     | Low    | branding-mcp BrandIdentity schema changes require manual sync of `BrandIdentityInput`; no runtime dep |
+| JSON.parse throws            | Low        | Low    | `finally` restores; wrap in try/catch for structured error if needed                                  |
+| Empty neutral array          | Low        | Medium | Document fallback `#888888` or validate input                                                         |
+
+## Research Insights: Recommendations for the Plan
+
+1. **ui-mcp alignment**: If ui-mcp is in scope, add `brand_identity` to its
+   generation tools for parity with siza-mcp.
+2. **Concurrency doc**: Add to README/CHANGELOG: "Concurrent tool calls with
+   different `brand_identity` may interleave; last-finishing request's restore
+   wins. Single-user MCP assumed for v1."
+3. **Schema drift**: Document in siza-gen README that `BrandIdentityInput`
+   mirrors branding-mcp's `BrandIdentity`; schema changes require coordinated
+   release.
+4. **Version bounds**: Use `^0.3.0` for siza-gen in siza-mcp to allow
+   patch/minor updates without breaking.
+
+## Research Insights: Field Mapping
+
+| Gap                   | Severity | Action                                                                                        |
+| --------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| typography.fontWeight | Medium   | Plan says "Extract unique weights"; impl hardcodes. Consider extracting from steps.           |
+| hexToRgb              | Medium   | Does not handle 3-char hex (`#f00`), 8-char, or malformed. Add validation or document format. |
+| empty neutral array   | High     | `pickNeutral([], 0)` falls back to `#888888`; validate or document.                           |
+| borders.radii         | Low      | branding-mcp has `xl`, `circle`, `none`; add mapping for `xl`→`lg`, `circle`→`9999px`.        |
+
+**WCAG**: Current luminance formula (BT.601) does not guarantee 4.5:1 contrast.
+Use WCAG relative luminance (sRGB linearization + 0.2126/0.7152/0.0722) to align
+with branding-mcp and accessibility tooling. Document: "Foreground selection
+uses luminance heuristic; does not guarantee WCAG 4.5:1."
+
+## Research Insights: Implementation Risks
+
+- **fn() throws**: `finally` runs before error propagates; restore is correct.
+- **JSON.parse throws**: Same; restore happens. If structured error response
+  needed, wrap in try/catch and return controlled error; `finally` still
+  restores.
+- **Anti-pattern**: If catching JSON.parse, do not duplicate restore in catch;
+  `finally` already handles it.
 
 ## What's Out of Scope
 
@@ -388,3 +532,54 @@ existing `design_context` merge runs as before.
   for v1)
 - branding-mcp as direct dependency of siza-gen (keep decoupled via JSON string
   interface)
+
+---
+
+## Phase 4: Post-Implementation Improvements — 1h
+
+**Goal:** Apply code-architect and architecture-strategist recommendations.
+
+### 4.1 WCAG Luminance (siza-gen)
+
+In `src/brand-identity-transform.ts`, replace BT.601 with WCAG relative
+luminance:
+
+```typescript
+function linearize(c: number): number {
+  return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+function relativeLuminance(r: number, g: number, b: number): number {
+  return (
+    0.2126 * linearize(r / 255) +
+    0.7152 * linearize(g / 255) +
+    0.0722 * linearize(b / 255)
+  );
+}
+function contrastForeground(hex: string): string {
+  const [r, g, b] = hexToRgb(hex);
+  return relativeLuminance(r, g, b) > 0.5 ? '#000000' : '#ffffff';
+}
+```
+
+Document: "Foreground selection uses luminance heuristic; does not guarantee
+WCAG 4.5:1."
+
+### 4.2 Hex Normalization (siza-gen)
+
+Add `normalizeHex(hex: string): string` to handle `#rgb` → `#rrggbb`. Use before
+`hexToRgb`, or document supported format (6-char only).
+
+### 4.3 Extract deepMergeContext (siza-mcp)
+
+Create `src/lib/design-context-merge.ts` and use from `generate-design-image.ts`
+and `generate-prototype.ts`.
+
+### 4.4 borders.radii Mapping (siza-gen)
+
+Add mapping for branding-mcp keys: `xl`→`lg`, `circle`→`9999px`, `none`→`0`.
+
+### 4.5 Additional Tests
+
+- Empty neutral array fallback
+- Malformed hex (3-char, 8-char, non-hex)
+- Invalid brand structure (missing `colors.primary`)

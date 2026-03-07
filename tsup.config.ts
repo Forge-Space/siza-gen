@@ -6,7 +6,7 @@ export default defineConfig([
     format: ['esm'],
     target: 'node22',
     outDir: 'dist',
-    clean: true,
+    clean: false,
     sourcemap: true,
     dts: true,
     splitting: false,
@@ -17,7 +17,6 @@ export default defineConfig([
     esbuildOptions(options, _context) {
       options.platform = 'node';
     },
-    onSuccess: 'echo "✓ Build completed successfully"',
   },
   {
     entry: ['src/lite.ts'],
@@ -35,5 +34,6 @@ export default defineConfig([
     esbuildOptions(options, _context) {
       options.platform = 'neutral';
     },
+    onSuccess: 'echo "✓ Build completed successfully"',
   },
 ] satisfies Options[]);
