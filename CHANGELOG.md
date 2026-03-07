@@ -12,8 +12,8 @@ and this project adheres to
 
 - **lite entry type declarations** — `dist/lite.d.ts` was missing from npm
   package due to tsup parallel build race condition. The first entry's
-  `clean: true` deleted lite's DTS output mid-build. Fix: pre-build clean
-  via `rm -rf dist` with `clean: false` on all entries
+  `clean: true` deleted lite's DTS output mid-build. Fix: pre-build clean via
+  `rm -rf dist` with `clean: false` on all entries
 
 ---
 
