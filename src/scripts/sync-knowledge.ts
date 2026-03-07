@@ -147,31 +147,25 @@ function showSummary(items: KnowledgeItem[], dryRun: boolean): void {
     }
   }
 
-   
   console.log(`\n${dryRun ? '🔍 Dry run' : '✅ Export'}: ${items.length} knowledge items\n`);
 
-   
   console.log('By type:');
   for (const [type, count] of [...byType.entries()].sort((a, b) => b[1] - a[1])) {
-     
     console.log(`  ${type.padEnd(25)} ${String(count).padStart(6)}`);
   }
 
-   
   console.log('\nBy agent:');
   for (const [agent, count] of [...byAgent.entries()].sort((a, b) => b[1] - a[1])) {
-     
     console.log(`  ${agent.padEnd(25)} ${String(count).padStart(6)}`);
   }
 
   const meta = loadSyncMeta();
   if (meta) {
-     
     console.log(`\nLast sync: ${new Date(meta.lastSyncTimestamp).toISOString()}`);
-     
+
     console.log(`Last export: ${meta.lastExportCount} items → ${meta.exportPath}`);
   }
-   
+
   console.log();
 }
 
@@ -198,11 +192,10 @@ function main(): void {
   showSummary(items, dryRun);
 
   if (!dryRun && items.length > 0) {
-     
     console.log(`Export written to: ${EXPORT_FILE}`);
-     
+
     console.log('To import into mcp-gateway:');
-     
+
     console.log(`  python tool_router/training/import_knowledge.py ${EXPORT_FILE}`);
   }
 }
