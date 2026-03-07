@@ -251,6 +251,48 @@ describe('assembleContext', () => {
     expect(result.examplesIncluded).toBe(0);
   });
 
+  describe('metadata', () => {
+    it('includes metadata with section breakdown', () => {
+      const result = assembleContext({
+        framework: 'react',
+        tokenBudget: 4000,
+      });
+
+      expect(result.metadata).toBeDefined();
+      expect(result.metadata.totalSections).toBe(result.sectionsIncluded.length);
+      expect(result.metadata.totalTokens).toBe(result.tokenEstimate);
+      expect(result.metadata.exampleCount).toBe(result.examplesIncluded);
+      for (const section of result.sectionsIncluded) {
+        expect(result.metadata.sectionBreakdown[section]).toBeGreaterThan(0);
+      }
+    });
+
+    it('breakdown token sum approximates total', () => {
+      const result = assembleContext({
+        framework: 'react',
+        tokenBudget: 4000,
+      });
+
+      const breakdownSum = Object.values(result.metadata.sectionBreakdown).reduce((a, b) => a + b, 0);
+      expect(breakdownSum).toBeGreaterThanOrEqual(result.metadata.totalTokens * 0.9);
+    });
+
+    it('includes example count when snippets are registered', () => {
+      registerSnippet(makeSnippet());
+      const result = assembleContext({
+        framework: 'react',
+        componentType: 'button',
+        mood: 'professional',
+        tokenBudget: 4000,
+      });
+
+      expect(result.metadata.exampleCount).toBe(result.examplesIncluded);
+      if (result.examplesIncluded > 0) {
+        expect(result.metadata.sectionBreakdown['examples']).toBeGreaterThan(0);
+      }
+    });
+  });
+
   it('defaults tokenBudget to 4000 and maxExamples to 3', () => {
     const result = assembleContext({ framework: 'react' });
 

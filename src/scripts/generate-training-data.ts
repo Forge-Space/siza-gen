@@ -412,9 +412,8 @@ function generateStyleRecommenderData(): number {
 // --- Stats ---
 
 function showStats(): void {
-   
   console.log('\n📊 Training Data Statistics:');
-   
+
   console.log('─'.repeat(50));
 
   const files = ['quality-scorer.jsonl', 'prompt-enhancer.jsonl', 'style-recommender.jsonl'];
@@ -427,22 +426,21 @@ function showStats(): void {
       const count = content.split('\n').filter((l) => l.trim().length > 0).length;
       totalRows += count;
       const adapter = file.replace('.jsonl', '');
-       
+
       console.log(`  ${adapter.padEnd(25)} ${String(count).padStart(6)} examples`);
     } else {
       const adapter = file.replace('.jsonl', '');
-       
+
       console.log(`  ${adapter.padEnd(25)}    N/A (not generated)`);
     }
   }
 
-   
   console.log('─'.repeat(50));
-   
+
   console.log(`  ${'TOTAL'.padEnd(25)} ${String(totalRows).padStart(6)} examples`);
-   
+
   console.log(`  Output dir: ${OUTPUT_DIR}`);
-   
+
   console.log();
 }
 
@@ -480,13 +478,12 @@ function main(): void {
       }
     }
   } else {
-     
     console.error(`Unknown adapter: ${adapterArg}. Use: ${Object.keys(adapters).join(', ')}`);
     process.exit(1);
   }
 
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-   
+
   console.log(`\n✅ Training data generation complete: ${totalGenerated} examples in ${elapsed}s`);
   showStats();
 }

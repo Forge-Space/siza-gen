@@ -1,6 +1,8 @@
 # Contributing to Siza Gen
 
-Thank you for contributing to Siza Gen, the context assembly engine for AI-driven UI generation. This guide covers everything you need to know to submit high-quality contributions.
+Thank you for contributing to Siza Gen, the context assembly engine for
+AI-driven UI generation. This guide covers everything you need to know to submit
+high-quality contributions.
 
 ## Table of Contents
 
@@ -14,7 +16,8 @@ Thank you for contributing to Siza Gen, the context assembly engine for AI-drive
 
 ## Code of Conduct
 
-All contributors are expected to be respectful, constructive, and professional. Harassment or exclusionary behavior will not be tolerated.
+All contributors are expected to be respectful, constructive, and professional.
+Harassment or exclusionary behavior will not be tolerated.
 
 ---
 
@@ -37,6 +40,7 @@ git checkout -b fix/issue-description
 ```
 
 Branch naming conventions:
+
 - `feat/*` - New features
 - `fix/*` - Bug fixes
 - `chore/*` - Maintenance tasks
@@ -61,7 +65,8 @@ npm test
 - **Function size** - Keep functions under 50 lines
 - **Cyclomatic complexity** - Maximum complexity of 10 per function
 - **Line width** - Maximum 100 characters per line
-- **No comments** - Write self-documenting code unless clarification is absolutely necessary
+- **No comments** - Write self-documenting code unless clarification is
+  absolutely necessary
 
 ### Testing
 
@@ -145,4 +150,5 @@ Typical review turnaround: 2–5 business days.
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/Forge-Space/siza-gen/discussions) or file an [issue](https://github.com/Forge-Space/siza-gen/issues).
+Open a [GitHub Discussion](https://github.com/Forge-Space/siza-gen/discussions)
+or file an [issue](https://github.com/Forge-Space/siza-gen/issues).
