@@ -1,6 +1,6 @@
 {
   "name": "@forgespace/siza-gen",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Siza AI generation engine — multi-framework code generation, component registry, and ML-powered quality scoring",
   "type": "module",
   "main": "dist/index.js",
@@ -16,7 +16,7 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "rm -rf dist && tsup",
     "dev": "tsc --watch",
     "clean": "rm -rf dist coverage .tsbuildinfo node_modules/.cache",
     "lint": "eslint . --fix",

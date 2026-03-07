@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2026-03-07
+
+### Fixed
+
+- **lite entry type declarations** — `dist/lite.d.ts` was missing from npm
+  package due to tsup parallel build race condition. The first entry's
+  `clean: true` deleted lite's DTS output mid-build. Fix: pre-build clean
+  via `rm -rf dist` with `clean: false` on all entries
+
+---
+
 ## [0.8.0] - 2026-03-06
 
 ### Added
