@@ -16,11 +16,19 @@ export interface IContextAssemblerParams {
   maxExamples?: number;
 }
 
+export interface IContextMetadata {
+  totalSections: number;
+  totalTokens: number;
+  exampleCount: number;
+  sectionBreakdown: Record<string, number>;
+}
+
 export interface IAssembledContext {
   systemPrompt: string;
   tokenEstimate: number;
   examplesIncluded: number;
   sectionsIncluded: string[];
+  metadata: IContextMetadata;
 }
 
 function estimateTokens(text: string): number {
@@ -56,12 +64,23 @@ export function assembleContext(params: IContextAssemblerParams): IAssembledCont
   }
 
   const systemPrompt = sections.map((s) => s.text).join('\n\n');
+  const tokenEstimate = estimateTokens(systemPrompt);
+  const sectionBreakdown: Record<string, number> = {};
+  for (const s of sections) {
+    sectionBreakdown[s.name] = estimateTokens(s.text);
+  }
 
   return {
     systemPrompt,
-    tokenEstimate: estimateTokens(systemPrompt),
+    tokenEstimate,
     examplesIncluded: 0,
     sectionsIncluded: sections.map((s) => s.name),
+    metadata: {
+      totalSections: sections.length,
+      totalTokens: tokenEstimate,
+      exampleCount: 0,
+      sectionBreakdown,
+    },
   };
 }
 
