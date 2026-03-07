@@ -86,5 +86,32 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       'no-undef': 'off',
     },
+  },
+  {
+    files: ['*.config.cjs', '**/*.cjs'],
+    languageOptions: {
+      globals: {
+        ...globals.commonjs,
+        ...globals.node,
+      },
+    },
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-undef': 'off',
+    },
+  },
+  {
+    files: ['src/scripts/**/*.ts'],
+    rules: {
+      'no-console': 'off',
+      'require-await': 'off',
+    },
+  },
+  {
+    files: ['src/ml/sidecar-client.ts', 'src/llm/provider-factory.ts'],
+    rules: {
+      'require-await': 'off',
+    },
   }
 );

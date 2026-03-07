@@ -412,9 +412,9 @@ function generateStyleRecommenderData(): number {
 // --- Stats ---
 
 function showStats(): void {
-  // eslint-disable-next-line no-console
+   
   console.log('\n📊 Training Data Statistics:');
-  // eslint-disable-next-line no-console
+   
   console.log('─'.repeat(50));
 
   const files = ['quality-scorer.jsonl', 'prompt-enhancer.jsonl', 'style-recommender.jsonl'];
@@ -427,22 +427,22 @@ function showStats(): void {
       const count = content.split('\n').filter((l) => l.trim().length > 0).length;
       totalRows += count;
       const adapter = file.replace('.jsonl', '');
-      // eslint-disable-next-line no-console
+       
       console.log(`  ${adapter.padEnd(25)} ${String(count).padStart(6)} examples`);
     } else {
       const adapter = file.replace('.jsonl', '');
-      // eslint-disable-next-line no-console
+       
       console.log(`  ${adapter.padEnd(25)}    N/A (not generated)`);
     }
   }
 
-  // eslint-disable-next-line no-console
+   
   console.log('─'.repeat(50));
-  // eslint-disable-next-line no-console
+   
   console.log(`  ${'TOTAL'.padEnd(25)} ${String(totalRows).padStart(6)} examples`);
-  // eslint-disable-next-line no-console
+   
   console.log(`  Output dir: ${OUTPUT_DIR}`);
-  // eslint-disable-next-line no-console
+   
   console.log();
 }
 
@@ -480,13 +480,13 @@ function main(): void {
       }
     }
   } else {
-    // eslint-disable-next-line no-console
+     
     console.error(`Unknown adapter: ${adapterArg}. Use: ${Object.keys(adapters).join(', ')}`);
     process.exit(1);
   }
 
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-  // eslint-disable-next-line no-console
+   
   console.log(`\n✅ Training data generation complete: ${totalGenerated} examples in ${elapsed}s`);
   showStats();
 }

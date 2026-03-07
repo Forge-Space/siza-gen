@@ -64,7 +64,7 @@ function contrastForeground(hex: string): string {
 
 function normalizeHexForOutput(hex: string): string {
   try {
-    return '#' + normalizeHex(hex);
+    return `#${  normalizeHex(hex)}`;
   } catch {
     return hex;
   }

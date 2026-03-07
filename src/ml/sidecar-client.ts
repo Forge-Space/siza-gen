@@ -1,6 +1,6 @@
 import { createLogger } from '../logger.js';
 
-const logger = createLogger('sidecar-client');
+const _logger = createLogger('sidecar-client');
 
 let sidecarUrl = 'http://localhost:8100';
 let lastAvailabilityCheck = 0;
