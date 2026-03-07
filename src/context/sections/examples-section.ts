@@ -32,7 +32,7 @@ function formatSnippet(snippet: IComponentSnippet): string {
   }
   const header = `// ${snippet.name} (${snippet.type}/${snippet.variant})`;
   const annotations = meta.length ? `// ${meta.join(' | ')}` : '';
-  const code = snippet.jsx.length > 1200 ? snippet.jsx.slice(0, 1200) + '\n// ... (truncated)' : snippet.jsx;
+  const code = snippet.jsx.length > 1200 ? `${snippet.jsx.slice(0, 1200)  }\n// ... (truncated)` : snippet.jsx;
   return [header, annotations, code].filter(Boolean).join('\n');
 }
 
@@ -61,5 +61,5 @@ export function buildExamplesSection(params: IExamplesSectionParams): string {
 
   if (examples.length === 0) return '';
 
-  return 'Reference examples (match this quality level):\n' + examples.join('\n\n');
+  return `Reference examples (match this quality level):\n${  examples.join('\n\n')}`;
 }

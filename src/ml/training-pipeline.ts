@@ -21,7 +21,7 @@ import {
   isSidecarAvailable,
   sidecarStartTraining,
   sidecarGetTrainingStatus,
-  sidecarCancelTraining,
+  sidecarCancelTraining as _sidecarCancelTraining,
 } from './sidecar-client.js';
 
 const logger = pino({ name: 'training-pipeline' });

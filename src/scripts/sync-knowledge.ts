@@ -147,31 +147,31 @@ function showSummary(items: KnowledgeItem[], dryRun: boolean): void {
     }
   }
 
-  // eslint-disable-next-line no-console
+   
   console.log(`\n${dryRun ? '🔍 Dry run' : '✅ Export'}: ${items.length} knowledge items\n`);
 
-  // eslint-disable-next-line no-console
+   
   console.log('By type:');
   for (const [type, count] of [...byType.entries()].sort((a, b) => b[1] - a[1])) {
-    // eslint-disable-next-line no-console
+     
     console.log(`  ${type.padEnd(25)} ${String(count).padStart(6)}`);
   }
 
-  // eslint-disable-next-line no-console
+   
   console.log('\nBy agent:');
   for (const [agent, count] of [...byAgent.entries()].sort((a, b) => b[1] - a[1])) {
-    // eslint-disable-next-line no-console
+     
     console.log(`  ${agent.padEnd(25)} ${String(count).padStart(6)}`);
   }
 
   const meta = loadSyncMeta();
   if (meta) {
-    // eslint-disable-next-line no-console
+     
     console.log(`\nLast sync: ${new Date(meta.lastSyncTimestamp).toISOString()}`);
-    // eslint-disable-next-line no-console
+     
     console.log(`Last export: ${meta.lastExportCount} items → ${meta.exportPath}`);
   }
-  // eslint-disable-next-line no-console
+   
   console.log();
 }
 
@@ -198,11 +198,11 @@ function main(): void {
   showSummary(items, dryRun);
 
   if (!dryRun && items.length > 0) {
-    // eslint-disable-next-line no-console
+     
     console.log(`Export written to: ${EXPORT_FILE}`);
-    // eslint-disable-next-line no-console
+     
     console.log('To import into mcp-gateway:');
-    // eslint-disable-next-line no-console
+     
     console.log(`  python tool_router/training/import_knowledge.py ${EXPORT_FILE}`);
   }
 }

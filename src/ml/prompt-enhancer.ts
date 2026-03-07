@@ -131,7 +131,7 @@ async function enhanceWithModel(
   };
 }
 
-function mergeEnhancements(llmResult: string, ruleResult: IEnhancedPrompt, original: string): string {
+function mergeEnhancements(llmResult: string, ruleResult: IEnhancedPrompt, _original: string): string {
   let merged = llmResult;
   const llmLower = llmResult.toLowerCase();
 
