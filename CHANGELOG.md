@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-03-06
+
+### Added
+- **Lightweight entry point** (`@forgespace/siza-gen/lite`): Cloudflare Workers-compatible export with zero native dependencies (43 KB vs 1.87 MB full bundle)
+- `assembleContext()` in lite entry — 5 composable sections (role, quality-rules, framework, library, a11y) without registry/database dependencies
+- Re-exports: `brandToDesignContext`, `designContextStore`, `DEFAULT_CONTEXT`, and key types
+- Dual tsup build: `src/index.ts` (node22) + `src/lite.ts` (es2022, platform neutral)
+- 11 unit tests for lite entry point
+
 ## [0.7.1] - 2026-03-06
 
 ### Changed
