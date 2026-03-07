@@ -39,8 +39,7 @@ export interface BrandIdentityInput {
 function normalizeHex(hex: string): string {
   const h = hex.replace(/^#/, '');
   if (/^[0-9a-fA-F]{6}$/.test(h)) return h;
-  if (/^[0-9a-fA-F]{3}$/.test(h))
-    return h[0]! + h[0] + h[1]! + h[1] + h[2]! + h[2];
+  if (/^[0-9a-fA-F]{3}$/.test(h)) return h[0]! + h[0] + h[1]! + h[1] + h[2]! + h[2];
   if (/^[0-9a-fA-F]{8}$/.test(h)) return h.slice(0, 6);
   throw new Error(`Invalid hex color: ${hex}. Expected 3, 6, or 8 hex digits.`);
 }

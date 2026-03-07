@@ -27,6 +27,25 @@
 npm install @forgespace/siza-gen
 ```
 
+## Lightweight Entry (`/lite`)
+
+A zero-native-dependency entry point for edge runtimes (Cloudflare Workers,
+Deno, Bun). Provides context assembly without the registry/database/ML stack.
+
+```typescript
+import { assembleContext } from '@forgespace/siza-gen/lite';
+
+const ctx = assembleContext({
+  framework: 'react',
+  componentLibrary: 'shadcn',
+  tokenBudget: 4000,
+});
+// ctx.systemPrompt — ready to use as LLM system prompt
+```
+
+**43 KB** vs 1.87 MB full bundle. Includes `brandToDesignContext`,
+`designContextStore`, and all core types.
+
 ## Usage
 
 ```typescript
