@@ -27,9 +27,7 @@ function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-export function assembleContext(
-  params: IContextAssemblerParams
-): IAssembledContext {
+export function assembleContext(params: IContextAssemblerParams): IAssembledContext {
   const budget = params.tokenBudget ?? 4000;
   const sections: Array<{ name: string; text: string }> = [];
   let usedTokens = 0;
@@ -71,16 +69,6 @@ export { brandToDesignContext, type BrandIdentityInput } from './brand-identity-
 
 export { designContextStore, DEFAULT_CONTEXT } from './design-context.js';
 
-export type {
-  Framework,
-  IDesignContext,
-  Architecture,
-  StateManagement,
-  ComponentLibraryId,
-} from './types.js';
+export type { Framework, IDesignContext, Architecture, StateManagement, ComponentLibraryId } from './types.js';
 
-export type {
-  MoodTag,
-  IndustryTag,
-  VisualStyleId,
-} from './registry/component-registry/types.js';
+export type { MoodTag, IndustryTag, VisualStyleId } from './registry/component-registry/types.js';

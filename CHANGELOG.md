@@ -9,22 +9,36 @@ and this project adheres to
 ## [0.8.0] - 2026-03-06
 
 ### Added
-- **Lightweight entry point** (`@forgespace/siza-gen/lite`): Cloudflare Workers-compatible export with zero native dependencies (43 KB vs 1.87 MB full bundle)
-- `assembleContext()` in lite entry — 5 composable sections (role, quality-rules, framework, library, a11y) without registry/database dependencies
-- Re-exports: `brandToDesignContext`, `designContextStore`, `DEFAULT_CONTEXT`, and key types
-- Dual tsup build: `src/index.ts` (node22) + `src/lite.ts` (es2022, platform neutral)
+
+- **Lightweight entry point** (`@forgespace/siza-gen/lite`): Cloudflare
+  Workers-compatible export with zero native dependencies (43 KB vs 1.87 MB full
+  bundle)
+- `assembleContext()` in lite entry — 5 composable sections (role,
+  quality-rules, framework, library, a11y) without registry/database
+  dependencies
+- Re-exports: `brandToDesignContext`, `designContextStore`, `DEFAULT_CONTEXT`,
+  and key types
+- Dual tsup build: `src/index.ts` (node22) + `src/lite.ts` (es2022, platform
+  neutral)
 - 11 unit tests for lite entry point
 
 ## [0.7.1] - 2026-03-06
 
 ### Changed
-- **brand-identity-transform**: WCAG relative luminance (sRGB linearization) for foreground contrast instead of BT.601
-- **brand-identity-transform**: Hex normalization — 3-char (#f00) and 8-char (#rrggbbaa) supported; invalid hex throws clear error
-- **brand-identity-transform**: branding-mcp radii mapping — `xl`->lg, `circle`->9999px, `none`->0
+
+- **brand-identity-transform**: WCAG relative luminance (sRGB linearization) for
+  foreground contrast instead of BT.601
+- **brand-identity-transform**: Hex normalization — 3-char (#f00) and 8-char
+  (#rrggbbaa) supported; invalid hex throws clear error
+- **brand-identity-transform**: branding-mcp radii mapping — `xl`->lg,
+  `circle`->9999px, `none`->0
 
 ### Added
-- **brand-identity-transform**: Validation for missing `colors.primary.hex` with structured error
-- 6 new unit tests: empty neutral fallback, 3-char/8-char hex, invalid hex, missing primary, radii key mapping
+
+- **brand-identity-transform**: Validation for missing `colors.primary.hex` with
+  structured error
+- 6 new unit tests: empty neutral fallback, 3-char/8-char hex, invalid hex,
+  missing primary, radii key mapping
 
 ## [0.7.0] — 2026-03-01
 

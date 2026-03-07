@@ -1,13 +1,5 @@
-import {
-  assembleContext,
-  brandToDesignContext,
-  designContextStore,
-  DEFAULT_CONTEXT,
-} from '../lite.js';
-import type {
-  IContextAssemblerParams,
-  IAssembledContext,
-} from '../lite.js';
+import { assembleContext, brandToDesignContext, designContextStore, DEFAULT_CONTEXT } from '../lite.js';
+import type { IContextAssemblerParams, IAssembledContext } from '../lite.js';
 
 describe('lite entry point', () => {
   describe('assembleContext', () => {
