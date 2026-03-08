@@ -26,6 +26,8 @@ import { toastSnippets } from './toast.js';
 import { ratingSnippets } from './rating.js';
 import { colorPickerSnippets } from './color-picker.js';
 import { commandMenuSnippets } from './command-menu.js';
+import { aiChatSnippets } from './ai-chat.js';
+import { dataDisplaySnippets } from './data-display.js';
 
 export function registerMolecules(): void {
   registerSnippets(cardSnippets);
@@ -55,6 +57,8 @@ export function registerMolecules(): void {
   registerSnippets(ratingSnippets);
   registerSnippets(colorPickerSnippets);
   registerSnippets(commandMenuSnippets);
+  registerSnippets(aiChatSnippets);
+  registerSnippets(dataDisplaySnippets);
 }
 
 export {
@@ -85,4 +89,6 @@ export {
   ratingSnippets,
   colorPickerSnippets,
   commandMenuSnippets,
+  aiChatSnippets,
+  dataDisplaySnippets,
 };
