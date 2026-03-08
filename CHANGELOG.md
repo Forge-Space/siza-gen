@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.10.0] - 2026-03-08
 
 ### Added
 
@@ -16,8 +16,11 @@ and this project adheres to
 - **Benchmark evaluator** — Trait matching (ARIA, responsive, dark mode,
   semantic HTML, error handling, keyboard nav), per-provider cost calculation,
   Pearson correlation for scoring accuracy, enhancement effectiveness analysis
-- **34 benchmark tests** — Evaluator (17), harness (8), golden prompts (4),
-  scoring accuracy (2), enhancement effectiveness (3)
+- **10 LangUI-inspired AI component patterns** — ai-token-usage, ai-prompt-input,
+  ai-error-retry, ai-model-comparison, ai-conversation-sidebar, ai-response-rating,
+  ai-loading-skeleton, ai-prompt-templates, ai-settings-panel, ai-token-counter
+  (528 total snippets)
+- 34 benchmark tests (503 total across 25 suites)
 
 ## [0.9.0] - 2026-03-08
 
