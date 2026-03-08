@@ -28,6 +28,7 @@ import { colorPickerSnippets } from './color-picker.js';
 import { commandMenuSnippets } from './command-menu.js';
 import { aiChatSnippets } from './ai-chat.js';
 import { dataDisplaySnippets } from './data-display.js';
+import { aiPatternSnippets } from './ai-patterns.js';
 
 export function registerMolecules(): void {
   registerSnippets(cardSnippets);
@@ -59,6 +60,7 @@ export function registerMolecules(): void {
   registerSnippets(commandMenuSnippets);
   registerSnippets(aiChatSnippets);
   registerSnippets(dataDisplaySnippets);
+  registerSnippets(aiPatternSnippets);
 }
 
 export {
@@ -91,4 +93,5 @@ export {
   commandMenuSnippets,
   aiChatSnippets,
   dataDisplaySnippets,
+  aiPatternSnippets,
 };
