@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **AI benchmark suite** — Golden prompt dataset (20 prompts × 5 complexity
+  tiers), benchmark harness for all 4 LLM providers, trait evaluator, cost
+  calculator, console + JSON reporter, and `npm run bench` / `bench:dry` scripts
+- **Benchmark evaluator** — Trait matching (ARIA, responsive, dark mode,
+  semantic HTML, error handling, keyboard nav), per-provider cost calculation,
+  Pearson correlation for scoring accuracy, enhancement effectiveness analysis
+- **34 benchmark tests** — Evaluator (17), harness (8), golden prompts (4),
+  scoring accuracy (2), enhancement effectiveness (3)
+
 ## [0.9.0] - 2026-03-08
 
 ### Added

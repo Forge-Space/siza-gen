@@ -136,6 +136,26 @@ npm run validate          # lint + format + typecheck + test
 npm run registry:stats    # Report snippet counts
 ```
 
+## AI Benchmarks
+
+Run the benchmark suite to compare LLM providers on generation quality, scoring
+accuracy, prompt enhancement effectiveness, and cost:
+
+```bash
+npm run bench:dry    # Preview plan without API calls
+npm run bench        # Run full benchmark (requires API keys or Ollama)
+```
+
+Set provider API keys as environment variables:
+
+```bash
+export ANTHROPIC_API_KEY=sk-...
+export OPENAI_API_KEY=sk-...
+export GEMINI_API_KEY=...
+```
+
+Results are saved to `benchmarks/report-{date}.json` with a console summary.
+
 ## License
 
 MIT

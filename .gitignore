@@ -56,6 +56,9 @@ safety-report.json
 stdin
 PLAN.md
 
+# Benchmark results
+benchmarks/
+
 # Logs
 *.log
 
