@@ -8,6 +8,8 @@ import {
   semanticSearch,
   getEmbeddingCount,
   deleteEmbeddings,
+  keywordScore,
+  tokenizeQuery,
 } from '../ml/embedding-store.js';
 import type { IEmbedding } from '../ml/types.js';
 import type Database from 'better-sqlite3';
@@ -213,5 +215,75 @@ describe('semanticSearch', () => {
     const queryVec = makeVector(384, 1);
     const results = semanticSearch(queryVec, 'prompt', db);
     expect(results).toEqual([]);
+  });
+
+  it('hybrid search boosts keyword-matching results', () => {
+    db.close();
+    db = getMemoryDatabase();
+    const heroEmb: IEmbedding = {
+      sourceId: 'hero-banner',
+      sourceType: 'component',
+      text: 'Hero banner with centered heading and call to action button',
+      vector: makeVector(384, 10),
+      dimensions: 384,
+      createdAt: Date.now(),
+    };
+    const cardEmb: IEmbedding = {
+      sourceId: 'card-pricing',
+      sourceType: 'component',
+      text: 'Pricing card with plan tiers and monthly toggle',
+      vector: makeVector(384, 11),
+      dimensions: 384,
+      createdAt: Date.now(),
+    };
+    storeEmbeddings([heroEmb, cardEmb], db);
+
+    const queryVec = makeVector(384, 10);
+    const hybrid = semanticSearch(
+      queryVec, 'component', db, 2, 0, 'hero banner heading', 0.5
+    );
+    expect(hybrid[0]!.id).toBe('hero-banner');
+  });
+});
+
+describe('keywordScore', () => {
+  it('returns 1.0 for exact match', () => {
+    const tokens = tokenizeQuery('hero banner button');
+    const score = keywordScore(tokens, 'Hero banner with button');
+    expect(score).toBe(1.0);
+  });
+
+  it('returns 0 for no match', () => {
+    const tokens = tokenizeQuery('pricing table');
+    const score = keywordScore(tokens, 'Hero banner with button');
+    expect(score).toBe(0);
+  });
+
+  it('returns partial score for partial match', () => {
+    const tokens = tokenizeQuery('hero pricing card');
+    const score = keywordScore(tokens, 'Pricing card with tiers');
+    expect(score).toBeCloseTo(0.67, 1);
+  });
+
+  it('returns 0 for empty query', () => {
+    const score = keywordScore([], 'any text');
+    expect(score).toBe(0);
+  });
+});
+
+describe('tokenizeQuery', () => {
+  it('splits on whitespace and punctuation', () => {
+    const tokens = tokenizeQuery('hero-banner, button.primary');
+    expect(tokens).toEqual(['hero', 'banner', 'button', 'primary']);
+  });
+
+  it('filters short tokens', () => {
+    const tokens = tokenizeQuery('a is the hero');
+    expect(tokens).toEqual(['the', 'hero']);
+  });
+
+  it('lowercases all tokens', () => {
+    const tokens = tokenizeQuery('Hero BANNER');
+    expect(tokens).toEqual(['hero', 'banner']);
   });
 });

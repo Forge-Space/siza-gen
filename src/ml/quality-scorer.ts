@@ -301,7 +301,7 @@ export async function scoreQualityWithRAG(
 
     const codeSnippet = generatedCode.slice(0, 500);
     const queryVector = await embed(codeSnippet);
-    const relevantRules = semanticSearch(queryVector, 'rule', db, 10, 0.3);
+    const relevantRules = semanticSearch(queryVector, 'rule', db, 10, 0.3, codeSnippet);
 
     if (relevantRules.length === 0) return baseScore;
 

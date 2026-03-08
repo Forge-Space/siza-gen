@@ -261,7 +261,7 @@ export async function enhancePromptWithRAG(prompt: string, context?: IEnhancemen
     const queryVector = await embed(enhanced);
 
     if (patternCount > 0) {
-      const patterns = semanticSearch(queryVector, 'pattern', db, 2, 0.4);
+      const patterns = semanticSearch(queryVector, 'pattern', db, 2, 0.4, enhanced);
       if (patterns.length > 0) {
         const patternHints = patterns
           .map((p) => {
@@ -284,7 +284,7 @@ export async function enhancePromptWithRAG(prompt: string, context?: IEnhancemen
     }
 
     if (ruleCount > 0) {
-      const rules = semanticSearch(queryVector, 'rule', db, 3, 0.4);
+      const rules = semanticSearch(queryVector, 'rule', db, 3, 0.4, enhanced);
       if (rules.length > 0) {
         const ruleHints = rules
           .map((r) => {

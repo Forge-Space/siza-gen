@@ -158,7 +158,7 @@ async function recommendWithRAG(
     .join(' ');
 
   const queryVector = await embed(searchText);
-  const tokenResults = semanticSearch(queryVector, 'token', db, 10, 0.3);
+  const tokenResults = semanticSearch(queryVector, 'token', db, 10, 0.3, searchText);
 
   if (tokenResults.length === 0) {
     return recommendWithHeuristic(prompt, context);

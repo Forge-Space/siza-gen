@@ -128,21 +128,82 @@ export function getEmbedding(
 }
 
 /**
+ * Compute BM25-like keyword overlap score between query and document.
+ * Lightweight alternative to SQLite FTS5 — runs in-memory.
+ */
+export function keywordScore(
+  queryTokens: string[],
+  docText: string
+): number {
+  if (queryTokens.length === 0) return 0;
+  const docLower = docText.toLowerCase();
+  const docTokens = new Set(
+    docLower.split(/[\s\-_/.,;:!?()[\]{}'"<>]+/).filter(Boolean)
+  );
+  let matches = 0;
+  for (const qt of queryTokens) {
+    if (docTokens.has(qt) || docLower.includes(qt)) {
+      matches++;
+    }
+  }
+  return matches / queryTokens.length;
+}
+
+/**
+ * Tokenize a query string for keyword matching.
+ */
+export function tokenizeQuery(text: string): string[] {
+  return text
+    .toLowerCase()
+    .split(/[\s\-_/.,;:!?()[\]{}'"<>]+/)
+    .filter((t) => t.length > 2);
+}
+
+/**
  * Semantic search: find the most similar embeddings to a query vector.
  * Uses sqlite-vss HNSW index when available (O(log n)), falls back to
  * in-memory brute-force cosine similarity otherwise.
+ *
+ * When queryText is provided, uses hybrid scoring:
+ * final = alpha * vectorSimilarity + (1 - alpha) * keywordScore
  */
 export function semanticSearch(
   queryVector: Float32Array,
   sourceType: IEmbedding['sourceType'],
   db: Database.Database,
   topK: number = 5,
-  threshold: number = 0.3
+  threshold: number = 0.3,
+  queryText?: string,
+  alpha: number = 0.7
 ): ISimilarityResult[] {
-  if (isVssAvailable()) {
-    return vssSearch(queryVector, sourceType, db, topK, threshold);
+  const candidates = isVssAvailable()
+    ? vssSearch(queryVector, sourceType, db, topK * 2, threshold * 0.5)
+    : bruteForcSearch(queryVector, sourceType, db, topK * 2, threshold * 0.5);
+
+  if (!queryText || candidates.length === 0) {
+    return candidates
+      .filter((r) => r.similarity >= threshold)
+      .slice(0, topK);
   }
-  return bruteForcSearch(queryVector, sourceType, db, topK, threshold);
+
+  const queryTokens = tokenizeQuery(queryText);
+  if (queryTokens.length === 0) {
+    return candidates
+      .filter((r) => r.similarity >= threshold)
+      .slice(0, topK);
+  }
+
+  return candidates
+    .map((c) => {
+      const kw = keywordScore(queryTokens, c.text);
+      return {
+        ...c,
+        similarity: alpha * c.similarity + (1 - alpha) * kw,
+      };
+    })
+    .filter((r) => r.similarity >= threshold)
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, topK);
 }
 
 function vssSearch(
