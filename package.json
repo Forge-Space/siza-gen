@@ -38,6 +38,8 @@
     "sidecar:test": "cd python && source .venv/bin/activate && python -m pytest tests/ -v",
     "metrics:report": "curl -s http://localhost:8100/metrics/report | node -e \"process.stdin.resume();let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.stringify(JSON.parse(d),null,2)))\"",
     "knip": "knip",
+    "bench": "NODE_OPTIONS=--experimental-vm-modules npx tsx src/benchmark/run.ts",
+    "bench:dry": "NODE_OPTIONS=--experimental-vm-modules npx tsx src/benchmark/run.ts --dry-run",
     "check:cycles": "madge --circular --extensions ts src/",
     "prepare": "husky || true",
     "prepublishOnly": "npm run build",
