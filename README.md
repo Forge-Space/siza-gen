@@ -12,9 +12,10 @@
 [siza-mcp](https://github.com/Forge-Space/ui-mcp). It provides:
 
 - **Framework generators** — React, Vue, Angular, Svelte, HTML
-- **Component registry** — 502 curated snippets (357 component + 85 animation +
-  60 backend)
-- **ML quality scoring** — Embeddings, quality validation, anti-generic rules
+- **Component registry** — 518 curated snippets (400 component + 85 animation +
+  60 backend) with AI chat and data display molecules
+- **ML quality scoring** — Hybrid semantic+keyword search, embeddings, quality
+  validation, anti-generic rules
 - **Feedback system** — Self-learning, pattern promotion, feedback-boosted
   search
 - **Template compositions** — Pre-built page templates with quality gating

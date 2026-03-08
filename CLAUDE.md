@@ -60,7 +60,7 @@ python/                       (Python ML sidecar — optional)
 
 ```bash
 npm run build             # tsup bundled build
-npm test                  # Jest ESM (424 tests, 21 suites)
+npm test                  # Jest ESM (469 tests, 23 suites)
 npm run typecheck         # tsc --noEmit
 npm run validate          # lint + format + typecheck + test
 npm run sidecar:test      # Python tests (41 tests)

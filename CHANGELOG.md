@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-03-08
+
+### Added
+
+- **Hybrid semantic+keyword search** — `semanticSearch()` now accepts optional
+  `queryText` and `alpha` parameters for BM25-like keyword fusion. Final score =
+  `alpha * vectorSim + (1-alpha) * keywordScore`. Reduces false positives on
+  short queries
+- **`keywordScore()` and `tokenizeQuery()`** — Exported utilities for BM25-like
+  keyword overlap scoring in the embedding store
+- **16 component snippets** — 8 AI chat molecules (streaming message, code
+  block, message actions, context pill, model selector, welcome screen, markdown
+  message, conversation branch) + 8 data display molecules (metric card,
+  comparison table, activity feed, progress tracker, key-value list, badge grid,
+  changelog entry, tree view)
+- **AI security review CI** — `anthropics/claude-code-security-review` GitHub
+  Action via org reusable workflow (Sonnet 4.6, non-blocking)
+- 8 unit tests for hybrid search, keywordScore, and tokenizeQuery
+
+### Changed
+
+- All 4 `semanticSearch()` callers (prompt-enhancer, quality-scorer,
+  style-recommender, embedding-store) updated to pass `queryText` for hybrid
+  scoring
+- Candidate pool widened to `topK * 2` with relaxed threshold before hybrid
+  re-ranking
+
+---
+
 ## [0.8.1] - 2026-03-07
 
 ### Fixed
