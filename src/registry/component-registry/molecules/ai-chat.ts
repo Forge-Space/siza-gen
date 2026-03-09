@@ -256,11 +256,7 @@ export const aiChatSnippets: IComponentSnippet[] = [
         'inline remove button for quick dismissal',
       ],
       inspirationSource: 'VSCode file tabs',
-      craftDetails: [
-        'shadow-sm for subtle elevation',
-        'gap-1.5 balanced spacing',
-        'h-4 w-4 compact remove button',
-      ],
+      craftDetails: ['shadow-sm for subtle elevation', 'gap-1.5 balanced spacing', 'h-4 w-4 compact remove button'],
     },
   },
   {

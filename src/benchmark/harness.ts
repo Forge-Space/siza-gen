@@ -1,23 +1,9 @@
 import { createLogger } from '../logger.js';
 import type { ILLMProvider, ILLMResponse } from '../llm/types.js';
-import type {
-  IGoldenPrompt,
-  IBenchmarkResult,
-  IEnhancementResult,
-  IScoringBreakdown,
-} from './types.js';
-import {
-  evaluateTraits,
-  calculateCost,
-} from './evaluator.js';
-import {
-  scoreQuality,
-  scoreQualityWithRAG,
-} from '../ml/quality-scorer.js';
-import {
-  enhancePrompt,
-  enhancePromptWithRAG,
-} from '../ml/prompt-enhancer.js';
+import type { IGoldenPrompt, IBenchmarkResult, IEnhancementResult, IScoringBreakdown } from './types.js';
+import { evaluateTraits, calculateCost } from './evaluator.js';
+import { scoreQuality, scoreQualityWithRAG } from '../ml/quality-scorer.js';
+import { enhancePrompt, enhancePromptWithRAG } from '../ml/prompt-enhancer.js';
 
 const logger = createLogger('benchmark');
 
@@ -41,17 +27,12 @@ export class BenchmarkHarness {
   private providers: ILLMProvider[];
   private options: Required<IBenchmarkOptions>;
 
-  constructor(
-    providers: ILLMProvider[],
-    options?: IBenchmarkOptions,
-  ) {
+  constructor(providers: ILLMProvider[], options?: IBenchmarkOptions) {
     this.providers = providers;
     this.options = { ...DEFAULT_OPTIONS, ...options };
   }
 
-  async runGenerationBenchmark(
-    prompts: IGoldenPrompt[],
-  ): Promise<IBenchmarkResult[]> {
+  async runGenerationBenchmark(prompts: IGoldenPrompt[]): Promise<IBenchmarkResult[]> {
     const results: IBenchmarkResult[] = [];
 
     for (const provider of this.providers) {
@@ -74,9 +55,7 @@ export class BenchmarkHarness {
     return results;
   }
 
-  async runScoringBenchmark(
-    results: IBenchmarkResult[],
-  ): Promise<IBenchmarkResult[]> {
+  async runScoringBenchmark(results: IBenchmarkResult[]): Promise<IBenchmarkResult[]> {
     const scored: IBenchmarkResult[] = [];
 
     for (const result of results) {
@@ -94,7 +73,7 @@ export class BenchmarkHarness {
 
   async runEnhancementBenchmark(
     prompts: IGoldenPrompt[],
-    generationProvider: ILLMProvider,
+    generationProvider: ILLMProvider
   ): Promise<IEnhancementResult[]> {
     const results: IEnhancementResult[] = [];
     const available = await generationProvider.isAvailable();
@@ -102,11 +81,7 @@ export class BenchmarkHarness {
 
     for (const prompt of prompts) {
       for (const mode of ['rules', 'llm', 'rules+llm'] as const) {
-        const result = await this.enhanceSingle(
-          prompt,
-          generationProvider,
-          mode,
-        );
+        const result = await this.enhanceSingle(prompt, generationProvider, mode);
         if (result) results.push(result);
       }
     }
@@ -114,9 +89,7 @@ export class BenchmarkHarness {
     return results;
   }
 
-  async runAll(
-    prompts: IGoldenPrompt[],
-  ): Promise<{
+  async runAll(prompts: IGoldenPrompt[]): Promise<{
     results: IBenchmarkResult[];
     enhancementResults: IEnhancementResult[];
   }> {
@@ -125,7 +98,7 @@ export class BenchmarkHarness {
         providers: this.providers.map((p) => p.type),
         prompts: prompts.length,
       },
-      'Starting benchmark suite',
+      'Starting benchmark suite'
     );
 
     let results = await this.runGenerationBenchmark(prompts);
@@ -135,14 +108,8 @@ export class BenchmarkHarness {
     }
 
     let enhancementResults: IEnhancementResult[] = [];
-    if (
-      !this.options.skipEnhancement &&
-      this.providers.length > 0
-    ) {
-      enhancementResults = await this.runEnhancementBenchmark(
-        prompts,
-        this.providers[0],
-      );
+    if (!this.options.skipEnhancement && this.providers.length > 0) {
+      enhancementResults = await this.runEnhancementBenchmark(prompts, this.providers[0]);
     }
 
     logger.info(
@@ -150,16 +117,13 @@ export class BenchmarkHarness {
         totalResults: results.length,
         enhancements: enhancementResults.length,
       },
-      'Benchmark suite complete',
+      'Benchmark suite complete'
     );
 
     return { results, enhancementResults };
   }
 
-  private async generateSingle(
-    provider: ILLMProvider,
-    prompt: IGoldenPrompt,
-  ): Promise<IBenchmarkResult> {
+  private async generateSingle(provider: ILLMProvider, prompt: IGoldenPrompt): Promise<IBenchmarkResult> {
     const systemPrompt =
       'You are a React/TypeScript UI component generator. ' +
       'Generate a single complete functional component using ' +
@@ -167,20 +131,14 @@ export class BenchmarkHarness {
 
     for (let attempt = 0; attempt <= this.options.maxRetries; attempt++) {
       try {
-        const response: ILLMResponse = await provider.generate(
-          prompt.prompt,
-          {
-            systemPrompt,
-            maxTokens: 2048,
-            temperature: 0.3,
-            timeoutMs: this.options.timeoutMs,
-          },
-        );
+        const response: ILLMResponse = await provider.generate(prompt.prompt, {
+          systemPrompt,
+          maxTokens: 2048,
+          temperature: 0.3,
+          timeoutMs: this.options.timeoutMs,
+        });
 
-        const traitMatch = evaluateTraits(
-          response.text,
-          prompt.expectedTraits,
-        );
+        const traitMatch = evaluateTraits(response.text, prompt.expectedTraits);
 
         const tokensUsed = response.tokensUsed ?? 0;
 
@@ -197,16 +155,9 @@ export class BenchmarkHarness {
         };
       } catch (err) {
         if (attempt === this.options.maxRetries) {
-          return errorResult(
-            prompt.id,
-            provider,
-            err instanceof Error ? err.message : String(err),
-          );
+          return errorResult(prompt.id, provider, err instanceof Error ? err.message : String(err));
         }
-        logger.warn(
-          { attempt, provider: provider.type, promptId: prompt.id },
-          'Generation failed, retrying',
-        );
+        logger.warn({ attempt, provider: provider.type, promptId: prompt.id }, 'Generation failed, retrying');
         await delay(1000);
       }
     }
@@ -214,25 +165,15 @@ export class BenchmarkHarness {
     return errorResult(prompt.id, provider, 'Max retries exceeded');
   }
 
-  private async scoreResult(
-    result: IBenchmarkResult,
-  ): Promise<IScoringBreakdown> {
+  private async scoreResult(result: IBenchmarkResult): Promise<IScoringBreakdown> {
     const params = { componentType: 'component', framework: 'react' };
 
     try {
-      const heuristic = await scoreQuality(
-        result.promptId,
-        result.generatedCode,
-        params,
-      );
+      const heuristic = await scoreQuality(result.promptId, result.generatedCode, params);
 
       let ragScore: number | null = null;
       try {
-        const rag = await scoreQualityWithRAG(
-          result.promptId,
-          result.generatedCode,
-          params,
-        );
+        const rag = await scoreQualityWithRAG(result.promptId, result.generatedCode, params);
         ragScore = rag.score;
       } catch {
         // RAG scoring requires embeddings — skip if unavailable
@@ -240,8 +181,7 @@ export class BenchmarkHarness {
 
       return {
         heuristic: heuristic.score,
-        llm:
-          heuristic.source === 'model' ? heuristic.score : null,
+        llm: heuristic.source === 'model' ? heuristic.score : null,
         blended: heuristic.score,
         rag: ragScore,
       };
@@ -253,7 +193,7 @@ export class BenchmarkHarness {
   private async enhanceSingle(
     prompt: IGoldenPrompt,
     provider: ILLMProvider,
-    mode: 'rules' | 'llm' | 'rules+llm',
+    mode: 'rules' | 'llm' | 'rules+llm'
   ): Promise<IEnhancementResult | null> {
     try {
       const start = Date.now();
@@ -266,51 +206,34 @@ export class BenchmarkHarness {
         });
         enhanced = result.enhanced;
       } else if (mode === 'llm') {
-        const result = await enhancePromptWithRAG(
-          prompt.prompt,
-          {
-            componentType: prompt.componentType,
-            framework: 'react',
-          },
-        );
+        const result = await enhancePromptWithRAG(prompt.prompt, {
+          componentType: prompt.componentType,
+          framework: 'react',
+        });
         enhanced = result.enhanced;
       } else {
         const rulesResult = await enhancePrompt(prompt.prompt, {
           componentType: prompt.componentType,
           framework: 'react',
         });
-        const ragResult = await enhancePromptWithRAG(
-          rulesResult.enhanced,
-          {
-            componentType: prompt.componentType,
-            framework: 'react',
-          },
-        );
+        const ragResult = await enhancePromptWithRAG(rulesResult.enhanced, {
+          componentType: prompt.componentType,
+          framework: 'react',
+        });
         enhanced = ragResult.enhanced;
       }
 
-      const beforeResponse = await provider.generate(
-        prompt.prompt,
-        {
-          systemPrompt:
-            'Generate a React/TypeScript component with Tailwind CSS.',
-          maxTokens: 2048,
-        },
-      );
-      const beforeScore = await scoreQuality(
-        prompt.prompt,
-        beforeResponse.text,
-      );
-
-      const afterResponse = await provider.generate(enhanced, {
-        systemPrompt:
-          'Generate a React/TypeScript component with Tailwind CSS.',
+      const beforeResponse = await provider.generate(prompt.prompt, {
+        systemPrompt: 'Generate a React/TypeScript component with Tailwind CSS.',
         maxTokens: 2048,
       });
-      const afterScore = await scoreQuality(
-        enhanced,
-        afterResponse.text,
-      );
+      const beforeScore = await scoreQuality(prompt.prompt, beforeResponse.text);
+
+      const afterResponse = await provider.generate(enhanced, {
+        systemPrompt: 'Generate a React/TypeScript component with Tailwind CSS.',
+        maxTokens: 2048,
+      });
+      const afterScore = await scoreQuality(enhanced, afterResponse.text);
 
       return {
         promptId: prompt.id,
@@ -324,10 +247,7 @@ export class BenchmarkHarness {
         latencyMs: Date.now() - start,
       };
     } catch (err) {
-      logger.warn(
-        { promptId: prompt.id, mode, error: String(err) },
-        'Enhancement benchmark failed',
-      );
+      logger.warn({ promptId: prompt.id, mode, error: String(err) }, 'Enhancement benchmark failed');
       return null;
     }
   }
@@ -337,11 +257,7 @@ function emptyScores(): IScoringBreakdown {
   return { heuristic: 0, llm: null, blended: null, rag: null };
 }
 
-function errorResult(
-  promptId: string,
-  provider: ILLMProvider,
-  error: string,
-): IBenchmarkResult {
+function errorResult(promptId: string, provider: ILLMProvider, error: string): IBenchmarkResult {
   return {
     promptId,
     provider: provider.type,

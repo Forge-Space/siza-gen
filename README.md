@@ -131,8 +131,9 @@ npm run sidecar:test      # Run Python tests (41 tests)
 
 ```bash
 npm install && npm run build
-npm test                  # 424 tests, 21 suites
+npm test                  # 503 tests, 25 suites
 npm run validate          # lint + format + typecheck + test
+npm run format            # apply repo-wide Prettier formatting
 npm run registry:stats    # Report snippet counts
 ```
 
