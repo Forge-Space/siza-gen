@@ -8,11 +8,7 @@ export {
   analyzeScoringAccuracy,
   analyzeEnhancementEffectiveness,
 } from './evaluator.js';
-export {
-  generateReport,
-  formatConsole,
-  formatJSON,
-} from './reporter.js';
+export { generateReport, formatConsole, formatJSON } from './reporter.js';
 export type {
   IGoldenPrompt,
   IBenchmarkResult,

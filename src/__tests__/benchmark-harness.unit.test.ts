@@ -4,7 +4,7 @@ import type { IGoldenPrompt } from '../benchmark/types.js';
 
 function createMockProvider(
   type: 'anthropic' | 'openai' | 'ollama' | 'gemini',
-  opts?: { available?: boolean; failOnGenerate?: boolean },
+  opts?: { available?: boolean; failOnGenerate?: boolean }
 ): ILLMProvider {
   const available = opts?.available ?? true;
   const failOnGenerate = opts?.failOnGenerate ?? false;
@@ -56,17 +56,12 @@ const testPrompt: IGoldenPrompt = {
 describe('BenchmarkHarness', () => {
   describe('runGenerationBenchmark', () => {
     it('generates results for each provider × prompt', async () => {
-      const harness = new BenchmarkHarness(
-        [
-          createMockProvider('anthropic'),
-          createMockProvider('openai'),
-        ],
-        { delayBetweenMs: 0, skipScoring: true },
-      );
+      const harness = new BenchmarkHarness([createMockProvider('anthropic'), createMockProvider('openai')], {
+        delayBetweenMs: 0,
+        skipScoring: true,
+      });
 
-      const results = await harness.runGenerationBenchmark([
-        testPrompt,
-      ]);
+      const results = await harness.runGenerationBenchmark([testPrompt]);
 
       expect(results).toHaveLength(2);
       expect(results[0].provider).toBe('anthropic');
@@ -75,16 +70,11 @@ describe('BenchmarkHarness', () => {
 
     it('skips unavailable providers', async () => {
       const harness = new BenchmarkHarness(
-        [
-          createMockProvider('anthropic', { available: false }),
-          createMockProvider('openai'),
-        ],
-        { delayBetweenMs: 0 },
+        [createMockProvider('anthropic', { available: false }), createMockProvider('openai')],
+        { delayBetweenMs: 0 }
       );
 
-      const results = await harness.runGenerationBenchmark([
-        testPrompt,
-      ]);
+      const results = await harness.runGenerationBenchmark([testPrompt]);
 
       expect(results).toHaveLength(1);
       expect(results[0].provider).toBe('openai');
@@ -97,12 +87,10 @@ describe('BenchmarkHarness', () => {
             failOnGenerate: true,
           }),
         ],
-        { delayBetweenMs: 0, maxRetries: 0 },
+        { delayBetweenMs: 0, maxRetries: 0 }
       );
 
-      const results = await harness.runGenerationBenchmark([
-        testPrompt,
-      ]);
+      const results = await harness.runGenerationBenchmark([testPrompt]);
 
       expect(results).toHaveLength(1);
       expect(results[0].error).toContain('generation failed');
@@ -110,47 +98,28 @@ describe('BenchmarkHarness', () => {
     });
 
     it('evaluates trait matches on generated code', async () => {
-      const harness = new BenchmarkHarness(
-        [createMockProvider('anthropic')],
-        { delayBetweenMs: 0 },
-      );
+      const harness = new BenchmarkHarness([createMockProvider('anthropic')], { delayBetweenMs: 0 });
 
-      const results = await harness.runGenerationBenchmark([
-        testPrompt,
-      ]);
+      const results = await harness.runGenerationBenchmark([testPrompt]);
 
       expect(results[0].traitMatch.details.hasAria).toBe(true);
-      expect(results[0].traitMatch.details.hasResponsive).toBe(
-        true,
-      );
-      expect(results[0].traitMatch.details.hasSemanticHtml).toBe(
-        true,
-      );
+      expect(results[0].traitMatch.details.hasResponsive).toBe(true);
+      expect(results[0].traitMatch.details.hasSemanticHtml).toBe(true);
     });
 
     it('calculates cost based on tokens', async () => {
-      const harness = new BenchmarkHarness(
-        [createMockProvider('anthropic')],
-        { delayBetweenMs: 0 },
-      );
+      const harness = new BenchmarkHarness([createMockProvider('anthropic')], { delayBetweenMs: 0 });
 
-      const results = await harness.runGenerationBenchmark([
-        testPrompt,
-      ]);
+      const results = await harness.runGenerationBenchmark([testPrompt]);
 
       expect(results[0].tokensUsed).toBe(500);
       expect(results[0].costUsd).toBeGreaterThan(0);
     });
 
     it('captures latency from provider response', async () => {
-      const harness = new BenchmarkHarness(
-        [createMockProvider('openai')],
-        { delayBetweenMs: 0 },
-      );
+      const harness = new BenchmarkHarness([createMockProvider('openai')], { delayBetweenMs: 0 });
 
-      const results = await harness.runGenerationBenchmark([
-        testPrompt,
-      ]);
+      const results = await harness.runGenerationBenchmark([testPrompt]);
 
       expect(results[0].latencyMs).toBe(1000);
     });
@@ -158,17 +127,13 @@ describe('BenchmarkHarness', () => {
 
   describe('runAll', () => {
     it('returns both generation and enhancement results', async () => {
-      const harness = new BenchmarkHarness(
-        [createMockProvider('anthropic')],
-        {
-          delayBetweenMs: 0,
-          skipScoring: true,
-          skipEnhancement: true,
-        },
-      );
+      const harness = new BenchmarkHarness([createMockProvider('anthropic')], {
+        delayBetweenMs: 0,
+        skipScoring: true,
+        skipEnhancement: true,
+      });
 
-      const { results, enhancementResults } =
-        await harness.runAll([testPrompt]);
+      const { results, enhancementResults } = await harness.runAll([testPrompt]);
 
       expect(results.length).toBeGreaterThan(0);
       expect(enhancementResults).toEqual([]);
@@ -189,42 +154,27 @@ describe('BenchmarkHarness', () => {
 
 describe('goldenPrompts', () => {
   it('exports 20 prompts', async () => {
-    const { goldenPrompts } = await import(
-      '../benchmark/golden-prompts.js'
-    );
+    const { goldenPrompts } = await import('../benchmark/golden-prompts.js');
     expect(goldenPrompts).toHaveLength(20);
   });
 
   it('has unique IDs', async () => {
-    const { goldenPrompts } = await import(
-      '../benchmark/golden-prompts.js'
-    );
-    const ids = goldenPrompts.map(
-      (p: IGoldenPrompt) => p.id,
-    );
+    const { goldenPrompts } = await import('../benchmark/golden-prompts.js');
+    const ids = goldenPrompts.map((p: IGoldenPrompt) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('covers all 5 complexity tiers', async () => {
-    const { goldenPrompts } = await import(
-      '../benchmark/golden-prompts.js'
-    );
-    const tiers = new Set(
-      goldenPrompts.map((p: IGoldenPrompt) => p.complexity),
-    );
+    const { goldenPrompts } = await import('../benchmark/golden-prompts.js');
+    const tiers = new Set(goldenPrompts.map((p: IGoldenPrompt) => p.complexity));
     expect(tiers.size).toBe(5);
   });
 
   it('has 4 prompts per tier', async () => {
-    const { goldenPrompts } = await import(
-      '../benchmark/golden-prompts.js'
-    );
+    const { goldenPrompts } = await import('../benchmark/golden-prompts.js');
     const counts = new Map<string, number>();
     for (const p of goldenPrompts) {
-      counts.set(
-        p.complexity,
-        (counts.get(p.complexity) ?? 0) + 1,
-      );
+      counts.set(p.complexity, (counts.get(p.complexity) ?? 0) + 1);
     }
     for (const [, count] of counts) {
       expect(count).toBe(4);

@@ -1,11 +1,6 @@
 import type { LLMProviderType } from '../llm/types.js';
 
-export type ComplexityTier =
-  | 'simple'
-  | 'medium'
-  | 'complex'
-  | 'a11y-focused'
-  | 'ai-specific';
+export type ComplexityTier = 'simple' | 'medium' | 'complex' | 'a11y-focused' | 'ai-specific';
 
 export interface IExpectedTraits {
   hasAria: boolean;

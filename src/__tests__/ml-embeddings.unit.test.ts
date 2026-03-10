@@ -239,9 +239,7 @@ describe('semanticSearch', () => {
     storeEmbeddings([heroEmb, cardEmb], db);
 
     const queryVec = makeVector(384, 10);
-    const hybrid = semanticSearch(
-      queryVec, 'component', db, 2, 0, 'hero banner heading', 0.5
-    );
+    const hybrid = semanticSearch(queryVec, 'component', db, 2, 0, 'hero banner heading', 0.5);
     expect(hybrid[0]!.id).toBe('hero-banner');
   });
 });
