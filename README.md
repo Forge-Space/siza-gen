@@ -137,6 +137,14 @@ npm run format            # apply repo-wide Prettier formatting
 npm run registry:stats    # Report snippet counts
 ```
 
+### SonarCloud duplication configuration
+
+`sonar-project.properties` includes targeted CPD exclusions for
+`src/registry/component-registry/molecules/ai-patterns.ts` and
+`src/registry/component-registry/molecules/data-display.ts`. These files contain
+intentional registry template repetition and are excluded from duplication
+quality-gate calculations only.
+
 ## AI Benchmarks
 
 Run the benchmark suite to compare LLM providers on generation quality, scoring
