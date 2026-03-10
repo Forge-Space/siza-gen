@@ -12,6 +12,9 @@ and this project adheres to
 
 - Apply repository-wide Prettier normalization for benchmark and registry files
   to restore `npm run format:check` pass in CI/local validation.
+- Add `sonar-project.properties` with targeted CPD exclusions for
+  `ai-patterns.ts` and `data-display.ts`, which are registry-heavy files with
+  intentional repeated template blocks.
 
 ## [0.10.0] - 2026-03-08
 
