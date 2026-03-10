@@ -131,15 +131,10 @@ export function getEmbedding(
  * Compute BM25-like keyword overlap score between query and document.
  * Lightweight alternative to SQLite FTS5 — runs in-memory.
  */
-export function keywordScore(
-  queryTokens: string[],
-  docText: string
-): number {
+export function keywordScore(queryTokens: string[], docText: string): number {
   if (queryTokens.length === 0) return 0;
   const docLower = docText.toLowerCase();
-  const docTokens = new Set(
-    docLower.split(/[\s\-_/.,;:!?()[\]{}'"<>]+/).filter(Boolean)
-  );
+  const docTokens = new Set(docLower.split(/[\s\-_/.,;:!?()[\]{}'"<>]+/).filter(Boolean));
   let matches = 0;
   for (const qt of queryTokens) {
     if (docTokens.has(qt) || docLower.includes(qt)) {
@@ -181,16 +176,12 @@ export function semanticSearch(
     : bruteForcSearch(queryVector, sourceType, db, topK * 2, threshold * 0.5);
 
   if (!queryText || candidates.length === 0) {
-    return candidates
-      .filter((r) => r.similarity >= threshold)
-      .slice(0, topK);
+    return candidates.filter((r) => r.similarity >= threshold).slice(0, topK);
   }
 
   const queryTokens = tokenizeQuery(queryText);
   if (queryTokens.length === 0) {
-    return candidates
-      .filter((r) => r.similarity >= threshold)
-      .slice(0, topK);
+    return candidates.filter((r) => r.similarity >= threshold).slice(0, topK);
   }
 
   return candidates

@@ -5,11 +5,7 @@ import {
   analyzeScoringAccuracy,
   analyzeEnhancementEffectiveness,
 } from '../benchmark/evaluator.js';
-import type {
-  IExpectedTraits,
-  IBenchmarkResult,
-  IEnhancementResult,
-} from '../benchmark/types.js';
+import type { IExpectedTraits, IBenchmarkResult, IEnhancementResult } from '../benchmark/types.js';
 
 describe('evaluateTraits', () => {
   const allFalse: IExpectedTraits = {
@@ -98,8 +94,7 @@ describe('evaluateTraits', () => {
   });
 
   it('calculates partial match rate', () => {
-    const code =
-      '<nav aria-label="main"><div className="sm:flex">Hello</div></nav>';
+    const code = '<nav aria-label="main"><div className="sm:flex">Hello</div></nav>';
     const result = evaluateTraits(code, {
       hasAria: true,
       hasResponsive: true,
@@ -121,22 +116,19 @@ describe('calculateCost', () => {
 
   it('calculates Anthropic costs correctly', () => {
     const cost = calculateCost('anthropic', 1000, 0.7);
-    const expected =
-      (300 / 1_000_000) * 3.0 + (700 / 1_000_000) * 15.0;
+    const expected = (300 / 1_000_000) * 3.0 + (700 / 1_000_000) * 15.0;
     expect(cost).toBeCloseTo(expected, 6);
   });
 
   it('calculates OpenAI costs correctly', () => {
     const cost = calculateCost('openai', 1000, 0.7);
-    const expected =
-      (300 / 1_000_000) * 0.15 + (700 / 1_000_000) * 0.6;
+    const expected = (300 / 1_000_000) * 0.15 + (700 / 1_000_000) * 0.6;
     expect(cost).toBeCloseTo(expected, 6);
   });
 
   it('calculates Gemini costs correctly', () => {
     const cost = calculateCost('gemini', 1000, 0.7);
-    const expected =
-      (300 / 1_000_000) * 0.075 + (700 / 1_000_000) * 0.3;
+    const expected = (300 / 1_000_000) * 0.075 + (700 / 1_000_000) * 0.3;
     expect(cost).toBeCloseTo(expected, 6);
   });
 
@@ -146,11 +138,7 @@ describe('calculateCost', () => {
 });
 
 describe('compareProviders', () => {
-  const makeResult = (
-    provider: 'anthropic' | 'openai',
-    score: number,
-    latency: number,
-  ): IBenchmarkResult => ({
+  const makeResult = (provider: 'anthropic' | 'openai', score: number, latency: number): IBenchmarkResult => ({
     promptId: 'test-01',
     provider,
     model: provider === 'anthropic' ? 'claude-sonnet' : 'gpt-4o-mini',
@@ -161,24 +149,26 @@ describe('compareProviders', () => {
       blended: score,
       rag: null,
     },
-    traitMatch: { matched: 3, total: 4, rate: 0.75, details: {
-      hasAria: true,
-      hasResponsive: true,
-      hasDarkMode: false,
-      hasSemanticHtml: true,
-      hasErrorHandling: false,
-      hasKeyboardNav: false,
-    }},
+    traitMatch: {
+      matched: 3,
+      total: 4,
+      rate: 0.75,
+      details: {
+        hasAria: true,
+        hasResponsive: true,
+        hasDarkMode: false,
+        hasSemanticHtml: true,
+        hasErrorHandling: false,
+        hasKeyboardNav: false,
+      },
+    },
     latencyMs: latency,
     tokensUsed: 500,
     costUsd: 0.01,
   });
 
   it('sorts providers by avgScore descending', () => {
-    const results = [
-      makeResult('openai', 6.5, 1000),
-      makeResult('anthropic', 7.8, 2000),
-    ];
+    const results = [makeResult('openai', 6.5, 1000), makeResult('anthropic', 7.8, 2000)];
     const metrics = compareProviders(results);
     expect(metrics[0].provider).toBe('anthropic');
     expect(metrics[1].provider).toBe('openai');
@@ -208,10 +198,19 @@ describe('analyzeScoringAccuracy', () => {
       model: 'claude',
       generatedCode: '',
       scores: { heuristic: i * 2, llm: i * 2, blended: i * 2, rag: null },
-      traitMatch: { matched: 0, total: 0, rate: 1, details: {
-        hasAria: false, hasResponsive: false, hasDarkMode: false,
-        hasSemanticHtml: false, hasErrorHandling: false, hasKeyboardNav: false,
-      }},
+      traitMatch: {
+        matched: 0,
+        total: 0,
+        rate: 1,
+        details: {
+          hasAria: false,
+          hasResponsive: false,
+          hasDarkMode: false,
+          hasSemanticHtml: false,
+          hasErrorHandling: false,
+          hasKeyboardNav: false,
+        },
+      },
       latencyMs: 100,
       tokensUsed: 100,
       costUsd: 0,
@@ -221,30 +220,38 @@ describe('analyzeScoringAccuracy', () => {
   });
 
   it('returns 0 correlation when no LLM scores', () => {
-    const results: IBenchmarkResult[] = [{
-      promptId: 'test',
-      provider: 'ollama',
-      model: 'llama',
-      generatedCode: '',
-      scores: { heuristic: 5, llm: null, blended: null, rag: null },
-      traitMatch: { matched: 0, total: 0, rate: 1, details: {
-        hasAria: false, hasResponsive: false, hasDarkMode: false,
-        hasSemanticHtml: false, hasErrorHandling: false, hasKeyboardNav: false,
-      }},
-      latencyMs: 100,
-      tokensUsed: 100,
-      costUsd: 0,
-    }];
+    const results: IBenchmarkResult[] = [
+      {
+        promptId: 'test',
+        provider: 'ollama',
+        model: 'llama',
+        generatedCode: '',
+        scores: { heuristic: 5, llm: null, blended: null, rag: null },
+        traitMatch: {
+          matched: 0,
+          total: 0,
+          rate: 1,
+          details: {
+            hasAria: false,
+            hasResponsive: false,
+            hasDarkMode: false,
+            hasSemanticHtml: false,
+            hasErrorHandling: false,
+            hasKeyboardNav: false,
+          },
+        },
+        latencyMs: 100,
+        tokensUsed: 100,
+        costUsd: 0,
+      },
+    ];
     const accuracy = analyzeScoringAccuracy(results);
     expect(accuracy.heuristicVsLlmCorrelation).toBe(0);
   });
 });
 
 describe('analyzeEnhancementEffectiveness', () => {
-  const makeEnhResult = (
-    source: 'rules' | 'llm' | 'rules+llm',
-    delta: number,
-  ): IEnhancementResult => ({
+  const makeEnhResult = (source: 'rules' | 'llm' | 'rules+llm', delta: number): IEnhancementResult => ({
     promptId: 'test',
     provider: 'anthropic',
     original: 'make a button',
@@ -270,11 +277,7 @@ describe('analyzeEnhancementEffectiveness', () => {
   });
 
   it('calculates positive enhancement rate', () => {
-    const results = [
-      makeEnhResult('rules', 0.5),
-      makeEnhResult('rules', -0.5),
-      makeEnhResult('llm', 1.0),
-    ];
+    const results = [makeEnhResult('rules', 0.5), makeEnhResult('rules', -0.5), makeEnhResult('llm', 1.0)];
     const eff = analyzeEnhancementEffectiveness(results);
     expect(eff.enhancementRate).toBeCloseTo(2 / 3, 2);
   });

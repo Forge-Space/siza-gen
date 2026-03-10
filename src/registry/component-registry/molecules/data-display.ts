@@ -144,11 +144,7 @@ export const dataDisplaySnippets: IComponentSnippet[] = [
         'bg-muted/50 header for subtle distinction',
       ],
       inspirationSource: 'Vercel pricing comparison',
-      craftDetails: [
-        'divide-y for row separation',
-        'text-center on value columns',
-        'font-medium for emphasis',
-      ],
+      craftDetails: ['divide-y for row separation', 'text-center on value columns', 'font-medium for emphasis'],
     },
   },
   {
@@ -226,11 +222,7 @@ export const dataDisplaySnippets: IComponentSnippet[] = [
         'font-medium for emphasis on actor and object',
       ],
       inspirationSource: 'Linear activity feed',
-      craftDetails: [
-        'space-y-4 for item separation',
-        'gap-3 for icon-text spacing',
-        'shrink-0 prevents icon collapse',
-      ],
+      craftDetails: ['space-y-4 for item separation', 'gap-3 for icon-text spacing', 'shrink-0 prevents icon collapse'],
     },
   },
   {
@@ -331,11 +323,7 @@ export const dataDisplaySnippets: IComponentSnippet[] = [
         'text-muted-foreground on incomplete labels',
       ],
       inspirationSource: 'Stripe onboarding flow',
-      craftDetails: [
-        'space-y-4 for step separation',
-        'h-6 w-6 consistent badge size',
-        'border-2 for pending state',
-      ],
+      craftDetails: ['space-y-4 for step separation', 'h-6 w-6 consistent badge size', 'border-2 for pending state'],
     },
   },
   {
@@ -494,11 +482,7 @@ export const dataDisplaySnippets: IComponentSnippet[] = [
         'cursor-pointer for affordance',
       ],
       inspirationSource: 'GitHub issue dashboard',
-      craftDetails: [
-        'grid-cols-2 for compact layout',
-        'gap-3 for visual breathing room',
-        'tracking-tight on counts',
-      ],
+      craftDetails: ['grid-cols-2 for compact layout', 'gap-3 for visual breathing room', 'tracking-tight on counts'],
     },
   },
   {

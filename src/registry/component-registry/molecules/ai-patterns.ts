@@ -89,7 +89,8 @@ export const aiPatternSnippets: IComponentSnippet[] = [
       suggestions: 'flex flex-wrap gap-2',
       chip: 'rounded-full border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary',
       textarea: 'min-h-[44px] w-full resize-none rounded-xl border border-border bg-card px-4 py-3 pr-12 text-sm',
-      sendButton: 'absolute bottom-2.5 right-2.5 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground',
+      sendButton:
+        'absolute bottom-2.5 right-2.5 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground',
     },
     a11y: {
       roles: ['textbox'],
@@ -140,8 +141,10 @@ export const aiPatternSnippets: IComponentSnippet[] = [
       icon: 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/10',
       title: 'text-sm font-medium text-foreground',
       message: 'mt-0.5 text-sm text-muted-foreground',
-      retryButton: 'inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground',
-      editButton: 'inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground',
+      retryButton:
+        'inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground',
+      editButton:
+        'inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground',
     },
     a11y: {
       roles: ['alert'],
@@ -329,7 +332,8 @@ export const aiPatternSnippets: IComponentSnippet[] = [
     tailwindClasses: {
       container: 'flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2',
       label: 'text-xs text-muted-foreground',
-      button: 'flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
+      button:
+        'flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
       report: 'ml-auto text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline',
     },
     a11y: {

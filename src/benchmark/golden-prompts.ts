@@ -14,9 +14,7 @@ export const goldenPrompts: IGoldenPrompt[] = [
   // ── Simple (4) ──────────────────────────────
   {
     id: 'simple-01',
-    prompt:
-      'A button component with loading spinner state, ' +
-      'disabled styling, and 3 size variants (sm, md, lg)',
+    prompt: 'A button component with loading spinner state, ' + 'disabled styling, and 3 size variants (sm, md, lg)',
     componentType: 'button',
     complexity: 'simple',
     expectedTraits: t({
@@ -27,9 +25,7 @@ export const goldenPrompts: IGoldenPrompt[] = [
   },
   {
     id: 'simple-02',
-    prompt:
-      'An avatar component with image, fallback initials, ' +
-      'online/offline status indicator, and 4 sizes',
+    prompt: 'An avatar component with image, fallback initials, ' + 'online/offline status indicator, and 4 sizes',
     componentType: 'avatar',
     complexity: 'simple',
     expectedTraits: t({
@@ -52,9 +48,7 @@ export const goldenPrompts: IGoldenPrompt[] = [
   },
   {
     id: 'simple-04',
-    prompt:
-      'A toggle switch with on/off states, label text, ' +
-      'and disabled state using Tailwind CSS',
+    prompt: 'A toggle switch with on/off states, label text, ' + 'and disabled state using Tailwind CSS',
     componentType: 'toggle',
     complexity: 'simple',
     expectedTraits: t({
