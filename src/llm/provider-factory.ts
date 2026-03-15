@@ -3,6 +3,7 @@ import type { ILLMConfig, ILLMProvider } from './types.js';
 import { OllamaProvider } from './providers/ollama.js';
 import { OpenAIProvider } from './providers/openai.js';
 import { AnthropicProvider } from './providers/anthropic.js';
+import { GeminiProvider } from './providers/gemini.js';
 
 const logger = createLogger('llm:factory');
 
@@ -29,10 +30,10 @@ export function createProvider(config: ILLMConfig): ILLMProvider {
         timeoutMs: config.timeoutMs,
       });
     case 'gemini':
-      return new OpenAIProvider({
+      return new GeminiProvider({
         apiKey: config.apiKey ?? '',
         model: config.model || 'gemini-2.0-flash',
-        baseUrl: config.baseUrl ?? 'https://generativelanguage.googleapis.com/v1beta/openai',
+        baseUrl: config.baseUrl,
         timeoutMs: config.timeoutMs,
       });
     default:
