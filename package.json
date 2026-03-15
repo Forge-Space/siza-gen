@@ -49,7 +49,6 @@
     "@huggingface/transformers": "^3.8.1",
     "better-sqlite3": "^12.6.2",
     "pino": "^10.3.1",
-    "tailwindcss-animate": "^1.0.7",
     "zod": "^4.0.0"
   },
   "devDependencies": {
@@ -67,6 +66,7 @@
     "knip": "^5.85.0",
     "madge": "^8.0.0",
     "prettier": "^3.0.0",
+    "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.6",
     "tsup": "^8.5.1",
     "typescript": "^5.1.6",
