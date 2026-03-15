@@ -318,7 +318,7 @@ const props = withDefaults(defineProps<Props>(), {
     </Dialog.Trigger>
     <Dialog.Portal>
       <Dialog.Overlay class="fixed inset-0 bg-black/50" />
-      <Dialog.Content class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg">
+      <Dialog.Content class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card p-6 rounded-lg shadow-lg border">
         <Dialog.Title>${componentName}</Dialog.Title>
         <Dialog.Description>
           A ${componentType.toLowerCase()} component using Radix UI primitives
@@ -352,7 +352,7 @@ import * as DropdownMenu from "@radix-ui/vue-dropdown-menu"
   <div class="p-4">
     <Button @click="handleClick">${componentName}</Button>
     <Dialog :open="open" @close="handleClose">
-      <Dialog.Panel class="fixed inset-0 bg-white p-6 rounded-lg shadow-lg">
+      <Dialog.Panel class="fixed inset-0 bg-card p-6 rounded-lg shadow-lg border">
         <Dialog.Title>${componentName}</Dialog.Title>
         <Dialog.Description>
           A ${componentType.toLowerCase()} component using Headless UI
@@ -451,11 +451,11 @@ const handleClose = () => {
     return `<template>
   <div class="p-4 bg-white rounded-lg shadow-md">
     <h2 class="text-xl font-bold mb-4">${componentName}</h2>
-    <p class="text-gray-600 mb-4">
+    <p class="text-muted-foreground mb-4">
       A ${componentType.toLowerCase()} component using Tailwind CSS
     </p>
     <button
-      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+      class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded"
       @click="handleClick"
     >
       Click me

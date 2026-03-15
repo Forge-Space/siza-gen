@@ -298,8 +298,8 @@ export class HomeComponent {}
   template: \`
     <div class="p-4 bg-white rounded-lg shadow-md max-w-md">
       <h2 class="text-xl font-bold mb-2">${componentName}</h2>
-      <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using shadcn/ui styles</p>
-      <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Click me</button>
+      <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using shadcn/ui styles</p>
+      <button class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">Click me</button>
     </div>
   \`,
   styles: [\`
@@ -309,7 +309,12 @@ export class HomeComponent {}
   \`]
 })
 export class ${componentName}Component {
-  // TODO: Implement component logic
+  label = '${componentName}';
+  isVisible = true;
+
+  toggle(): void {
+    this.isVisible = !this.isVisible;
+  }
 }`;
   }
 
@@ -322,12 +327,12 @@ export class ${componentName}Component {
   selector: 'app-${componentType}',
   template: \`
     <div class="p-4">
-      <button (click)="openDialog()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">${componentName}</button>
-      <div *ngIf="isDialogOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+      <button (click)="openDialog()" class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">${componentName}</button>
+      <div *ngIf="isDialogOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <div class="bg-card p-6 rounded-lg shadow-lg border max-w-md">
           <h3 class="text-lg font-bold mb-2">${componentName}</h3>
-          <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using Radix UI patterns</p>
-          <button (click)="closeDialog()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
+          <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using Radix UI patterns</p>
+          <button (click)="closeDialog()" class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded">Close</button>
         </div>
       </div>
     </div>
@@ -360,12 +365,12 @@ export class ${componentName}Component {
   selector: 'app-${componentType}',
   template: \`
     <div class="p-4">
-      <button (click)="toggleDialog()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">${componentName}</button>
-      <div *ngIf="isDialogOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+      <button (click)="toggleDialog()" class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">${componentName}</button>
+      <div *ngIf="isDialogOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <div class="bg-card p-6 rounded-lg shadow-lg border max-w-md">
           <h3 class="text-lg font-bold mb-2">${componentName}</h3>
-          <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using Headless UI patterns</p>
-          <button (click)="toggleDialog()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
+          <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using Headless UI patterns</p>
+          <button (click)="toggleDialog()" class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded">Close</button>
         </div>
       </div>
     </div>
@@ -394,14 +399,14 @@ export class ${componentName}Component {
   selector: 'app-${componentType}',
   template: \`
     <div class="p-4">
-      <button (click)="openDialog()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+      <button (click)="openDialog()" class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">
         <i class="fas fa-plus mr-2"></i>${componentName}
       </button>
-      <div *ngIf="isDialogOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+      <div *ngIf="isDialogOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <div class="bg-card p-6 rounded-lg shadow-lg border max-w-md">
           <h3 class="text-lg font-bold mb-2">${componentName}</h3>
-          <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using PrimeVue styles</p>
-          <button (click)="closeDialog()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+          <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using PrimeVue styles</p>
+          <button (click)="closeDialog()" class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded">
             <i class="fas fa-times mr-2"></i>Close
           </button>
         </div>
@@ -484,9 +489,9 @@ export class DialogContentComponent {
   template: \`
     <div class="p-4 bg-white rounded-lg shadow-md">
       <h2 class="text-xl font-bold mb-4">${componentName}</h2>
-      <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using Tailwind CSS</p>
+      <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using Tailwind CSS</p>
       <button
-        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded"
         (click)="handleClick()"
       >
         Click me

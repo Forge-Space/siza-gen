@@ -180,8 +180,8 @@ body {
 <body>
   <div class="w-full max-w-md p-4 bg-white rounded-lg shadow-md">
     <h2 class="text-xl font-bold mb-2">${componentName}</h2>
-    <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component built with shadcn/ui styles</p>
-    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Click me</button>
+    <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component built with shadcn/ui styles</p>
+    <button class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">Click me</button>
   </div>
 </body>
 </html>`;
@@ -200,12 +200,12 @@ body {
 </head>
 <body>
   <div class="p-4">
-    <button onclick="openDialog()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">${componentName}</button>
-    <div id="dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+    <button onclick="openDialog()" class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">${componentName}</button>
+    <div id="dialog" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+      <div class="bg-card p-6 rounded-lg shadow-lg border max-w-md">
         <h3 class="text-lg font-bold mb-2">${componentName}</h3>
-        <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using Radix UI patterns</p>
-        <button onclick="closeDialog()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
+        <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using Radix UI patterns</p>
+        <button onclick="closeDialog()" class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded">Close</button>
       </div>
     </div>
   </div>
@@ -234,12 +234,12 @@ body {
 </head>
 <body>
   <div class="p-4">
-    <button onclick="toggleDialog()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">${componentName}</button>
-    <div id="dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+    <button onclick="toggleDialog()" class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">${componentName}</button>
+    <div id="dialog" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+      <div class="bg-card p-6 rounded-lg shadow-lg border max-w-md">
         <h3 class="text-lg font-bold mb-2">${componentName}</h3>
-        <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using Headless UI patterns</p>
-        <button onclick="toggleDialog()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Close</button>
+        <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using Headless UI patterns</p>
+        <button onclick="toggleDialog()" class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded">Close</button>
       </div>
     </div>
   </div>
@@ -267,14 +267,14 @@ body {
 </head>
 <body>
   <div class="p-4">
-    <button onclick="openDialog()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+    <button onclick="openDialog()" class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded">
       <i class="fas fa-plus mr-2"></i>${componentName}
     </button>
-    <div id="dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+    <div id="dialog" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+      <div class="bg-card p-6 rounded-lg shadow-lg border max-w-md">
         <h3 class="text-lg font-bold mb-2">${componentName}</h3>
-        <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using PrimeVue styles</p>
-        <button onclick="closeDialog()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+        <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using PrimeVue styles</p>
+        <button onclick="closeDialog()" class="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded">
           <i class="fas fa-times mr-2"></i>Close
         </button>
       </div>
@@ -310,10 +310,10 @@ body {
 <body>
   <div class="p-4">
     <button onclick="openDialog()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow-md">${componentName}</button>
-    <div id="dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="dialog" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
       <div class="bg-white p-6 rounded-lg shadow-xl max-w-md">
         <h3 class="text-xl font-medium mb-2">${componentName}</h3>
-        <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using Material Design</p>
+        <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using Material Design</p>
         <button onclick="closeDialog()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Close</button>
       </div>
     </div>
@@ -344,9 +344,9 @@ body {
 <body>
   <div class="p-4 bg-white rounded-lg shadow-md">
     <h2 class="text-xl font-bold mb-4">${componentName}</h2>
-    <p class="text-gray-600 mb-4">A ${componentType.toLowerCase()} component using Tailwind CSS</p>
+    <p class="text-muted-foreground mb-4">A ${componentType.toLowerCase()} component using Tailwind CSS</p>
     <button
-      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+      class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded"
       onclick="console.log('Button clicked')"
     >
       Click me
