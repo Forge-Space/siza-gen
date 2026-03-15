@@ -96,20 +96,21 @@ export class OpenAIProvider implements ILLMProvider {
   }
 
   async isAvailable(): Promise<boolean> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
     try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(`${this.baseUrl}/models`, {
         headers: {
           Authorization: `Bearer ${this.apiKey}`,
         },
         signal: controller.signal,
       });
-      clearTimeout(timer);
       return res.ok;
     } catch {
       logger.debug('OpenAI API not reachable');
       return false;
+    } finally {
+      clearTimeout(timer);
     }
   }
 }

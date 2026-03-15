@@ -101,9 +101,9 @@ export class AnthropicProvider implements ILLMProvider {
   }
 
   async isAvailable(): Promise<boolean> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
     try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(`${this.baseUrl}/v1/messages`, {
         method: 'POST',
         headers: {
@@ -118,11 +118,12 @@ export class AnthropicProvider implements ILLMProvider {
         }),
         signal: controller.signal,
       });
-      clearTimeout(timer);
       return res.ok || res.status === 429;
     } catch {
       logger.debug('Anthropic API not reachable');
       return false;
+    } finally {
+      clearTimeout(timer);
     }
   }
 }
