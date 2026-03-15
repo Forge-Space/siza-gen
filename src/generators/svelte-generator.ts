@@ -51,7 +51,7 @@ export class SvelteGenerator extends BaseGenerator {
     files.push(this.createAppCssFile());
 
     // Main page
-    files.push(this.createMainPage(designContext));
+    files.push(this.createMainPage(projectName, designContext));
 
     // README
     files.push(this.createReadmeFile(projectName));
@@ -270,19 +270,19 @@ export default {
     return files;
   }
 
-  private createMainPage(designContext: IDesignContext): IGeneratedFile {
+  private createMainPage(projectName: string, designContext: IDesignContext): IGeneratedFile {
     return {
       path: 'src/routes/+page.svelte',
       content: `<script lang="ts">
 </script>
 
 <svelte:head>
-  <title>Welcome to ${designContext.typography.fontFamily}</title>
+  <title>Welcome to ${projectName}</title>
 </svelte:head>
 
 <header class="p-6 bg-primary text-primary-foreground">
   <h1 class="text-3xl font-bold">
-    Welcome to ${designContext.typography.fontFamily}
+    Welcome to ${projectName}
   </h1>
 </header>
 
@@ -710,33 +710,47 @@ This project is ready for deployment to:
 </Slider.Root>`;
   }
 
-  protected generateHeadlessUIComponent(_componentType: string, _props: Record<string, unknown>): string {
+  protected generateHeadlessUIComponent(componentType: string, _props: Record<string, unknown>): string {
+    // Headless UI is React/Vue-specific. For Svelte, melt-ui or bits-ui are equivalent.
     return `<script lang="ts">
-  // Headless UI not directly supported in Svelte, use Radix UI instead
+  // Headless UI is not available for Svelte.
+  // Consider using melt-ui (https://melt-ui.com) or bits-ui (https://bits-ui.com)
+  // as accessible unstyled component primitives for SvelteKit.
+  export let className = ''
 </script>
 
-<div class="headless-component">
-  Component placeholder
+<!-- ${componentType} — Tailwind fallback (replace with melt-ui or bits-ui for full accessibility) -->
+<div class="rounded-md border border-border bg-card p-4 {className}">
+  <slot />
 </div>`;
   }
 
-  protected generatePrimeVueComponent(_componentType: string, _props: Record<string, unknown>): string {
+  protected generatePrimeVueComponent(componentType: string, _props: Record<string, unknown>): string {
+    // PrimeVue is Vue-specific. Svelte has no official PrimeVue support.
     return `<script lang="ts">
-  // PrimeVue is Vue-specific, not available for Svelte
+  // PrimeVue is Vue-specific and is not available for Svelte.
+  // Consider shadcn-svelte (https://www.shadcn-svelte.com) for a similar
+  // component collection built for SvelteKit.
+  export let className = ''
 </script>
 
-<div class="primevue-component">
-  Component placeholder
+<!-- ${componentType} — Tailwind fallback (replace with shadcn-svelte for production use) -->
+<div class="rounded-md border border-border bg-card p-4 {className}">
+  <slot />
 </div>`;
   }
 
-  protected generateMaterialComponent(_componentType: string, _props: Record<string, unknown>): string {
+  protected generateMaterialComponent(componentType: string, _props: Record<string, unknown>): string {
+    // Material-UI is React-specific. Svelte has no official MUI support.
     return `<script lang="ts">
-  // Material-UI is React-specific, not available for Svelte
+  // Material-UI is React-specific and is not available for Svelte.
+  // Consider SMUI (Svelte Material UI: https://sveltematerialui.com) as an alternative.
+  export let className = ''
 </script>
 
-<div class="material-component">
-  Component placeholder
+<!-- ${componentType} — Tailwind fallback (replace with SMUI for Material Design in Svelte) -->
+<div class="rounded-md shadow-md bg-card p-4 {className}">
+  <slot />
 </div>`;
   }
 

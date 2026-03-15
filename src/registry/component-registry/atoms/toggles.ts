@@ -142,4 +142,113 @@ export const toggleSnippets: IComponentSnippet[] = [
       craftDetails: ['fieldset semantics', 'consistent with checkbox sizing'],
     },
   },
+  {
+    id: 'toggle-button-group',
+    name: 'Toggle Button Group',
+    category: 'atom',
+    type: 'toggle',
+    variant: 'button-group',
+    tags: ['toggle', 'group', 'segmented', 'single-select'],
+    mood: ['professional', 'minimal'],
+    industry: ['general', 'saas', 'devtools'],
+    visualStyles: ['linear-modern', 'soft-depth', 'minimal-editorial'],
+    jsx: `<div className="inline-flex rounded-lg border border-border bg-muted p-1 gap-1" role="group" aria-label="View mode">
+  <button type="button" aria-pressed="true" className="rounded-md px-3 py-1.5 text-sm font-medium transition-colors bg-background text-foreground shadow-sm aria-pressed:bg-background aria-[pressed=false]:text-muted-foreground aria-[pressed=false]:bg-transparent hover:text-foreground">
+    List
+  </button>
+  <button type="button" aria-pressed="false" className="rounded-md px-3 py-1.5 text-sm font-medium transition-colors text-muted-foreground hover:text-foreground hover:bg-background/50">
+    Grid
+  </button>
+  <button type="button" aria-pressed="false" className="rounded-md px-3 py-1.5 text-sm font-medium transition-colors text-muted-foreground hover:text-foreground hover:bg-background/50">
+    Kanban
+  </button>
+</div>`,
+    tailwindClasses: {
+      group: 'inline-flex rounded-lg border border-border bg-muted p-1 gap-1',
+      activeButton:
+        'rounded-md px-3 py-1.5 text-sm font-medium transition-colors bg-background text-foreground shadow-sm',
+      inactiveButton:
+        'rounded-md px-3 py-1.5 text-sm font-medium transition-colors text-muted-foreground hover:text-foreground hover:bg-background/50',
+    },
+    a11y: {
+      roles: ['group', 'button'],
+      ariaAttributes: ['aria-pressed', 'aria-label'],
+      keyboardNav: 'Tab between buttons, Space/Enter to toggle',
+      contrastRatio: '4.5:1',
+      focusVisible: true,
+      reducedMotion: true,
+    },
+    seo: { semanticElement: 'div' },
+    responsive: { strategy: 'mobile-first', breakpoints: [] },
+    quality: {
+      antiGeneric: [
+        'aria-pressed for individual toggle state',
+        'role=group + aria-label for screen readers',
+        'shadow-sm on active button for depth vs muted background',
+      ],
+      inspirationSource: 'GitHub Issues list/grid view toggles',
+      craftDetails: [
+        'p-1 + gap-1 inset padding with tight inner gap',
+        'bg-background on active vs bg-muted on container for contrast',
+      ],
+    },
+  },
+  {
+    id: 'switch-with-description',
+    name: 'Switch with Description',
+    category: 'atom',
+    type: 'switch',
+    variant: 'with-description',
+    tags: ['toggle', 'settings', 'boolean', 'description'],
+    mood: ['professional', 'minimal'],
+    industry: ['general', 'saas', 'fintech'],
+    visualStyles: ['soft-depth', 'corporate-trust', 'linear-modern'],
+    jsx: `<label className="flex cursor-pointer items-start justify-between gap-4 rounded-lg border border-border p-4 hover:bg-muted/50 transition-colors">
+  <div className="space-y-1">
+    <p className="text-sm font-medium text-foreground">Email notifications</p>
+    <p className="text-xs text-muted-foreground">Receive updates about activity in your account.</p>
+  </div>
+  <button
+    type="button"
+    role="switch"
+    aria-checked="true"
+    className="mt-0.5 relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+  >
+    <span className="pointer-events-none block h-4 w-4 translate-x-4 rounded-full bg-background shadow-sm ring-0 transition-transform duration-200" />
+  </button>
+</label>`,
+    tailwindClasses: {
+      label:
+        'flex cursor-pointer items-start justify-between gap-4 rounded-lg border border-border p-4 hover:bg-muted/50 transition-colors',
+      textWrapper: 'space-y-1',
+      title: 'text-sm font-medium text-foreground',
+      description: 'text-xs text-muted-foreground',
+      switch:
+        'mt-0.5 relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-primary transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+      thumb:
+        'pointer-events-none block h-4 w-4 translate-x-4 rounded-full bg-background shadow-sm ring-0 transition-transform duration-200',
+    },
+    a11y: {
+      roles: ['switch'],
+      ariaAttributes: ['aria-checked', 'role="switch"'],
+      keyboardNav: 'Space to toggle, Tab to focus',
+      contrastRatio: '3:1',
+      focusVisible: true,
+      reducedMotion: true,
+    },
+    seo: { semanticElement: 'label' },
+    responsive: { strategy: 'mobile-first', breakpoints: [] },
+    quality: {
+      antiGeneric: [
+        'entire row is the label — larger click target',
+        'hover:bg-muted/50 for subtle row hover feedback',
+        'description text explains the toggle purpose',
+      ],
+      inspirationSource: 'Vercel project settings toggles',
+      craftDetails: [
+        'items-start aligns switch with first line of text, not center',
+        'mt-0.5 optically aligns switch top with text baseline',
+      ],
+    },
+  },
 ];

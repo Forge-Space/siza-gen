@@ -548,7 +548,7 @@ describe('${componentName}Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [${componentName}Component]
+      imports: [${componentName}Component]
     }).compileComponents();
 
     fixture = TestBed.createComponent(${componentName}Component);

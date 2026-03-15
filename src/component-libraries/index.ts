@@ -6,17 +6,32 @@
  * - Radix UI
  * - Headless UI
  * - Material-UI
+ * - PrimeVue
  */
 
 import type { IGeneratedFile, IDesignContext, Framework, ComponentLibraryId } from '../types.js';
 import { setupShadcnProject, getAvailableShadcnComponents, getAvailableShadcnPatterns } from './shadcn/index.js';
 import { generateShadcnComponent } from './shadcn/templates.js';
-import { setupRadixProject, getAvailableRadixComponents } from './radix/index.js';
+import { setupRadixProject, getAvailableRadixComponents, getAvailableRadixPatterns } from './radix/index.js';
 import { generateRadixComponent } from './radix/templates.js';
-import { setupHeadlessProject, getAvailableHeadlessComponents } from './headlessui/index.js';
+import {
+  setupHeadlessProject,
+  getAvailableHeadlessComponents,
+  getAvailableHeadlessPatterns,
+} from './headlessui/index.js';
 import { generateHeadlessComponent } from './headlessui/templates.js';
-import { setupMaterialProject, getAvailableMaterialComponents } from './material/index.js';
+import {
+  setupMaterialProject,
+  getAvailableMaterialComponents,
+  getAvailableMaterialPatterns,
+} from './material/index.js';
 import { generateMaterialComponent } from './material/templates.js';
+import {
+  setupPrimeVueProject,
+  getAvailablePrimeVueComponents,
+  getAvailablePrimeVuePatterns,
+} from './primevue/index.js';
+import { generatePrimeVueComponent } from './primevue/templates.js';
 
 // Re-export types for convenience
 export type { IGeneratedFile, IDesignContext, Framework, ComponentLibraryId } from '../types.js';
@@ -77,7 +92,7 @@ export function getComponentLibrary(libraryId: ComponentLibraryId): ComponentLib
         generateComponent: (name, designContext, customizations) =>
           generateRadixComponent(name, designContext, customizations),
         getAvailableComponents: () => getAvailableRadixComponents(),
-        getAvailablePatterns: () => [],
+        getAvailablePatterns: () => getAvailableRadixPatterns(),
       };
     case 'headlessui':
       return {
@@ -88,7 +103,7 @@ export function getComponentLibrary(libraryId: ComponentLibraryId): ComponentLib
         generateComponent: (name, designContext, customizations) =>
           generateHeadlessComponent(name, designContext, customizations),
         getAvailableComponents: () => getAvailableHeadlessComponents(),
-        getAvailablePatterns: () => [],
+        getAvailablePatterns: () => getAvailableHeadlessPatterns(),
       };
     case 'material':
       return {
@@ -99,29 +114,18 @@ export function getComponentLibrary(libraryId: ComponentLibraryId): ComponentLib
         generateComponent: (name, designContext, customizations) =>
           generateMaterialComponent(name, designContext, customizations),
         getAvailableComponents: () => getAvailableMaterialComponents(),
-        getAvailablePatterns: () => [],
+        getAvailablePatterns: () => getAvailableMaterialPatterns(),
       };
     case 'primevue':
       return {
         name: 'PrimeVue',
         id: 'primevue',
         description: 'Rich set of open source native Vue UI components',
-        setupProject: () => {
-          // TODO: Implement PrimeVue setup
-          throw new Error('PrimeVue integration not yet implemented');
-        },
-        generateComponent: () => {
-          // TODO: Implement PrimeVue component generation
-          throw new Error('PrimeVue component generation not yet implemented');
-        },
-        getAvailableComponents: () => {
-          // TODO: Return available PrimeVue components
-          return [];
-        },
-        getAvailablePatterns: () => {
-          // TODO: Return available PrimeVue patterns
-          return [];
-        },
+        setupProject: (options) => setupPrimeVueProject(options),
+        generateComponent: (name, designContext, customizations) =>
+          generatePrimeVueComponent(name, designContext, customizations),
+        getAvailableComponents: () => getAvailablePrimeVueComponents(),
+        getAvailablePatterns: () => getAvailablePrimeVuePatterns(),
       };
     case 'none':
       return {
