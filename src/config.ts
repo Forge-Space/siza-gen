@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { ConfigNotInitializedError } from './errors/config.error.js';
 import { logger } from './logger.js';
 
 export const configSchema = z.object({
@@ -28,7 +27,7 @@ export function loadConfig(): Config {
 
 export function getConfig(): Config {
   if (!config) {
-    throw new ConfigNotInitializedError();
+    throw new Error('Config not initialized. Call loadConfig() first.');
   }
   return config;
 }
