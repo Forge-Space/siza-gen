@@ -29,6 +29,8 @@ import { commandMenuSnippets } from './command-menu.js';
 import { aiChatSnippets } from './ai-chat.js';
 import { dataDisplaySnippets } from './data-display.js';
 import { aiPatternSnippets } from './ai-patterns.js';
+import { dashboardSnippets } from './dashboards.js';
+import { settingsSnippets } from './settings.js';
 
 export function registerMolecules(): void {
   registerSnippets(cardSnippets);
@@ -61,6 +63,8 @@ export function registerMolecules(): void {
   registerSnippets(aiChatSnippets);
   registerSnippets(dataDisplaySnippets);
   registerSnippets(aiPatternSnippets);
+  registerSnippets(dashboardSnippets);
+  registerSnippets(settingsSnippets);
 }
 
 export {
@@ -94,4 +98,6 @@ export {
   aiChatSnippets,
   dataDisplaySnippets,
   aiPatternSnippets,
+  dashboardSnippets,
+  settingsSnippets,
 };
