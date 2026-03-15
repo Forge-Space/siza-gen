@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-03-15
+
 ### Added
 
 - 5 dashboard molecule snippets: KPI row, activity feed, chart card, quick
@@ -24,28 +26,29 @@ and this project adheres to
 - Export generators (`GeneratorFactory`, `createGenerator`, `generateProject`,
   `generateComponent`) from the `lite` entry point for consumers who want code
   generation without the heavy ML/SQLite dependencies.
+- Knip dead-code check job in CI (`dead-code` step); `knip.json` config.
+- Framework-specific scaffolding tests for all 5 generators (508 total).
 
 ### Fixed
 
 - Resolve high-severity `flatted` DoS vulnerability via `npm audit fix`.
-
 - Replace raw color literals (`text-emerald-400`, `text-red-400`,
   `text-purple-400`) with semantic tokens in `data-table-sortable`,
   `list-checkbox`, and `list-timeline` snippets.
 - Fix Jest worker force-exit leak by moving `clearTimeout` into `finally` blocks
   in all LLM provider `isAvailable()` methods.
+- Add `@jest/globals` and `tailwindcss-animate` to package.json (were unlisted).
 
 ### Changed
 
 - Bump React generator scaffolding dependencies to modern versions: React 19,
   Vite 6, Tailwind 4, Zustand 5, Testing Library 16, Vitest 2.
-- Add npm/distribution metadata keywords and README install surfaces for
-  `@forgespace/siza-gen`, including docs/community links and `ui-mcp` naming.
-- Apply repository-wide Prettier normalization for benchmark and registry files
-  to restore `npm run format:check` pass in CI/local validation.
-- Add `sonar-project.properties` with targeted CPD exclusions for
-  `ai-patterns.ts` and `data-display.ts`, which are registry-heavy files with
-  intentional repeated template blocks.
+- Remove 4,060 lines of dead code: `errors/`, `icon-systems/`, `scripts/`,
+  `utils/jsx.utils.ts`, `utils/string.utils.ts`, unused barrels.
+- Remove 5 unused npm deps: `pino-pretty`, `sqlite-vss`,
+  `eslint-config-prettier`, `lint-staged`, `ts-node`.
+- Add npm/distribution metadata keywords and README install surfaces.
+- Add `sonar-project.properties` with targeted CPD exclusions.
 
 ## [0.10.0] - 2026-03-08
 
