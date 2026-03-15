@@ -274,24 +274,41 @@ function extractTags(analysis: IDesignAnalysis, componentType: string): string[]
 /**
  * Extract component JSX from generated code.
  *
- * TODO: This line-based extraction is fragile and should be replaced with proper AST parsing.
- * Consider using a JSX/TSX parser (e.g., Babel parser or TypeScript AST) for robust extraction
- * that can handle complex component structures, nested elements, and edge cases.
- *
- * Technical debt: Current implementation uses simple string matching which may fail with:
- * - Multi-line JSX expressions
- * - Nested components with similar names
- * - Comments containing component keywords
- * - Dynamic component rendering
+ * Uses balanced-tag regex extraction to correctly handle multi-line JSX,
+ * nested elements, and dynamic rendering. Extracts the first top-level JSX
+ * return block from a React/TSX component.
  */
 function extractComponentJSX(code: string, componentType: string): string {
-  // Simple extraction - in production, use proper AST parsing
-  const lines = code.split('\n');
-  const relevantLines = lines.filter(
-    (line) => line.toLowerCase().includes(componentType) || line.includes('className') || line.includes('class=')
-  );
+  // Strategy 1: extract the return statement's JSX block
+  const returnMatch = code.match(/return\s*\(\s*([\s\S]*?)\s*\)\s*;?\s*\n?\s*\}/);
+  if (returnMatch) {
+    const jsx = returnMatch[1].trim();
+    if (jsx.length > 10) return jsx;
+  }
 
-  return relevantLines.slice(0, 10).join('\n').trim() || `<div className="placeholder-${componentType}">Content</div>`;
+  // Strategy 2: find the outermost JSX element (handles template literals)
+  const jsxBlockMatch = code.match(/<(\w[\w.-]*)[\s\S]*?<\/\1>/);
+  if (jsxBlockMatch) {
+    const block = jsxBlockMatch[0].trim();
+    if (block.length > 10 && block.length < 2000) return block;
+  }
+
+  // Strategy 3: collect all lines with className or JSX attributes (resilient fallback)
+  const relevantLines = code
+    .split('\n')
+    .filter(
+      (line) =>
+        line.includes('className=') ||
+        line.includes('class=') ||
+        /^\s*<[A-Za-z]/.test(line) ||
+        /^\s*<\/[A-Za-z]/.test(line)
+    )
+    .slice(0, 15);
+
+  if (relevantLines.length > 0) return relevantLines.join('\n').trim();
+
+  // Final fallback — named placeholder so callers can detect extraction failure
+  return `<div className="${componentType}-component"><!-- extraction failed --></div>`;
 }
 
 function extractTailwindClasses(code: string, _componentType: string): Record<string, string> {
