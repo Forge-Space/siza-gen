@@ -42,6 +42,13 @@ jobs:
       - run: npm run build
       - run: npm test
 
+  dead-code:
+    name: Dead Code Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Forge-Space/.github/.github/actions/setup-node@main
+      - run: npx knip --no-exit-code --reporter compact 2>&1 | head -60
+
   security:
     name: Security
     runs-on: ubuntu-latest
