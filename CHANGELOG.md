@@ -8,6 +8,64 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-03-15
+
+### Added
+
+- **PrimeVue component library** — Full integration with Button, InputText,
+  Dialog, DataTable, Toast (with `useNotify` composable), and Menu templates.
+  `setupPrimeVueProject()` generates `package.json` (primevue ^4.0.0,
+  @primevue/themes, primeicons), `src/main.ts` with PrimeVue plugin + Aura
+  theme + ToastService, and `src/App.vue`. 60+ available components, 12
+  patterns.
+- **Radix, Headless UI, and Material pattern wiring** — `getAvailablePatterns()`
+  for these three libraries now returns real pattern lists (CommandPalette,
+  ComboBox, DatePicker, etc.) instead of empty arrays.
+- **9 new registry snippets** — dividers (+3: dashed, gradient-fade,
+  section-header), progress (+2: step-indicator, gradient-bar), kbd (+2:
+  shortcut-hint-badge, dark-keycap), toggles (+2: button-group,
+  switch-with-description).
+- **3 security component snippets** — CSRF token form, JWT decode display,
+  OAuth2 callback handler with PKCE state validation.
+- **Sync RAG enrichment** — `enrichWithRAG()` in `prompt-enhancer.ts` now
+  performs BM25-like keyword matching against the embeddings database instead of
+  always returning `null`. Every synchronous generation now benefits from RAG
+  context when embeddings are available.
+- **Implicit feedback loop** — `GeneratorFactory.generateProject()` and
+  `generateComponent()` now call `trackGeneration()` after each generation,
+  feeding the self-learning ring buffer. Accepts optional `sessionId` parameter
+  for session-scoped feedback tracking.
+- **Pattern promotion pipeline wired** — `upsertPattern()` in
+  `feedback-tracker.ts` now calls `recordPattern()` from `pattern-promotion.ts`,
+  connecting the intake valve to the promotion subsystem. Patterns accumulate
+  candidates and promote to the registry on each generation cycle.
+- **50 new tests** — artifact store, backend registry, scaffold templates, and
+  PrimeVue adapter (29 suites total, 623 tests).
+
+### Fixed
+
+- **Angular standalone test scaffold** — Generated `.spec.ts` files now use
+  `imports: [Component]` instead of `declarations: [Component]` for Angular 15+
+  standalone components. Previously generated tests failed to compile on
+  `ng test`.
+- **Svelte project title bug** — `createMainPage()` now uses `projectName` for
+  `<title>` and `<h1>` tags instead of `designContext.typography.fontFamily`
+  (e.g. "Inter").
+- **Svelte fallback stubs** — HeadlessUI, PrimeVue, and Material
+  `generateXxxComponent()` methods now emit Tailwind fallbacks with migration
+  comments (melt-ui, shadcn-svelte, SMUI) instead of silent
+  `"Component placeholder"` divs.
+
+### Changed
+
+- **Coverage thresholds** — Functions threshold raised to 68% (now at 69.35%).
+  Statements at 87.95%, Branches at 78.42%.
+- **Knip config** — Added `"exclude": ["exports", "types"]` to suppress
+  advisory-only dead-export noise for the 24 legitimate public API exports.
+- **SonarCloud CPD exclusions** — Extended to all registry data files to
+  suppress false-positive duplication warnings on intentionally similar snippet
+  structures.
+
 ## [0.11.0] - 2026-03-15
 
 ### Added
