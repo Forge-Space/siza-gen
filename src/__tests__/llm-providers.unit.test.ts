@@ -358,13 +358,13 @@ describe('createProvider', () => {
     expect(p.type).toBe('anthropic');
   });
 
-  it('creates Gemini provider via OpenAI adapter', () => {
+  it('creates native Gemini provider', () => {
     const p = createProvider({
       provider: 'gemini',
       model: 'gemini-2.0-flash',
       apiKey: 'gm-test',
     });
-    expect(p.type).toBe('openai');
+    expect(p.type).toBe('gemini');
     expect(p.model).toBe('gemini-2.0-flash');
   });
 

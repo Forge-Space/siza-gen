@@ -78,17 +78,18 @@ export class OllamaProvider implements ILLMProvider {
   }
 
   async isAvailable(): Promise<boolean> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
     try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 3000);
       const res = await fetch(`${this.baseUrl}/api/tags`, {
         signal: controller.signal,
       });
-      clearTimeout(timer);
       return res.ok;
     } catch {
       logger.debug('Ollama not available');
       return false;
+    } finally {
+      clearTimeout(timer);
     }
   }
 }

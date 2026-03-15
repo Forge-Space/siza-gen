@@ -6,10 +6,12 @@
   <p>Siza AI generation engine — multi-framework code generation, component registry, and ML-powered quality scoring.</p>
 </div>
 
+[![npm version](https://img.shields.io/npm/v/@forgespace/siza-gen)](https://www.npmjs.com/package/@forgespace/siza-gen)
+
 ## Overview
 
 `@forgespace/siza-gen` is the AI brain extracted from
-[siza-mcp](https://github.com/Forge-Space/ui-mcp). It provides:
+[ui-mcp](https://github.com/Forge-Space/ui-mcp). It provides:
 
 - **Framework generators** — React, Vue, Angular, Svelte, HTML
 - **Component registry** — 518 curated snippets (400 component + 85 animation +
@@ -137,6 +139,15 @@ npm run format            # apply repo-wide Prettier formatting
 npm run registry:stats    # Report snippet counts
 ```
 
+## Distribution
+
+- **npm** — published as
+  [`@forgespace/siza-gen`](https://www.npmjs.com/package/@forgespace/siza-gen)
+- **GitHub** — source, issues, and releases live at
+  [Forge-Space/siza-gen](https://github.com/Forge-Space/siza-gen)
+- **Docs and ecosystem context** — start from
+  [docs.forgespace.co/docs](https://docs.forgespace.co/docs)
+
 ### SonarCloud duplication configuration
 
 `sonar-project.properties` includes targeted CPD exclusions for
@@ -164,6 +175,11 @@ export GEMINI_API_KEY=...
 ```
 
 Results are saved to `benchmarks/report-{date}.json` with a console summary.
+
+## Community
+
+- [GitHub Discussions](https://github.com/orgs/Forge-Space/discussions)
+- [Issue tracker](https://github.com/Forge-Space/siza-gen/issues)
 
 ## License
 

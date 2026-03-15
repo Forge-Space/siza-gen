@@ -8,8 +8,27 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- 5 dashboard molecule snippets: KPI row, activity feed, chart card, quick
+  actions grid, overview header (Vercel/Stripe/Raycast inspired).
+- 5 settings molecule snippets: notification toggles, profile form, danger zone,
+  API key manager, billing plan card (GitHub/Stripe/iOS inspired).
+- Native Gemini LLM provider using the `generateContent` REST API, replacing the
+  previous OpenAI-compatible adapter. Reports `provider: 'gemini'` in responses.
+
+### Fixed
+
+- Replace raw color literals (`text-emerald-400`, `text-red-400`,
+  `text-purple-400`) with semantic tokens in `data-table-sortable`,
+  `list-checkbox`, and `list-timeline` snippets.
+- Fix Jest worker force-exit leak by moving `clearTimeout` into `finally` blocks
+  in all LLM provider `isAvailable()` methods.
+
 ### Changed
 
+- Add npm/distribution metadata keywords and README install surfaces for
+  `@forgespace/siza-gen`, including docs/community links and `ui-mcp` naming.
 - Apply repository-wide Prettier normalization for benchmark and registry files
   to restore `npm run format:check` pass in CI/local validation.
 - Add `sonar-project.properties` with targeted CPD exclusions for

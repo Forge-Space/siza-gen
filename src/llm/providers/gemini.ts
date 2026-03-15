@@ -8,13 +8,13 @@ import {
   DEFAULT_TEMPERATURE,
 } from '../types.js';
 
-const logger = createLogger('llm:openai');
+const logger = createLogger('llm:gemini');
 
-const DEFAULT_BASE_URL = 'https://api.openai.com/v1';
-const DEFAULT_MODEL = 'gpt-4o-mini';
+const DEFAULT_BASE_URL = 'https://generativelanguage.googleapis.com';
+const DEFAULT_MODEL = 'gemini-2.0-flash';
 
-export class OpenAIProvider implements ILLMProvider {
-  readonly type = 'openai' as const;
+export class GeminiProvider implements ILLMProvider {
+  readonly type = 'gemini' as const;
   readonly model: string;
   private readonly baseUrl: string;
   private readonly apiKey: string;
@@ -22,7 +22,7 @@ export class OpenAIProvider implements ILLMProvider {
 
   constructor(opts: { apiKey: string; model?: string; baseUrl?: string; timeoutMs?: number }) {
     if (!opts.apiKey) {
-      throw new Error('OpenAI provider requires an API key');
+      throw new Error('Gemini provider requires an API key');
     }
     this.apiKey = opts.apiKey;
     this.model = opts.model ?? DEFAULT_MODEL;
@@ -34,60 +34,69 @@ export class OpenAIProvider implements ILLMProvider {
     const start = Date.now();
     const timeout = options?.timeoutMs ?? this.defaultTimeout;
 
-    const messages: Array<{ role: string; content: string }> = [];
+    const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
     if (options?.systemPrompt) {
-      messages.push({
-        role: 'system',
-        content: options.systemPrompt,
+      contents.push({
+        role: 'user',
+        parts: [{ text: options.systemPrompt }],
+      });
+      contents.push({
+        role: 'model',
+        parts: [{ text: 'Understood.' }],
       });
     }
-    messages.push({ role: 'user', content: prompt });
+    contents.push({ role: 'user', parts: [{ text: prompt }] });
 
     const body = {
-      model: this.model,
-      messages,
-      max_tokens: options?.maxTokens ?? DEFAULT_MAX_TOKENS,
-      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
+      contents,
+      generationConfig: {
+        maxOutputTokens: options?.maxTokens ?? DEFAULT_MAX_TOKENS,
+        temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
+      },
     };
+
+    const url = `${this.baseUrl}/v1beta/models/${this.model}` + `:generateContent?key=${this.apiKey}`;
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
 
     try {
-      const res = await fetch(`${this.baseUrl}/chat/completions`, {
+      const res = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.apiKey}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
         signal: controller.signal,
       });
 
       if (!res.ok) {
         const errText = await res.text().catch(() => '');
-        throw new Error(`OpenAI ${res.status}: ${errText.slice(0, 200)}`);
+        throw new Error(`Gemini ${res.status}: ${errText.slice(0, 200)}`);
       }
 
       const data = (await res.json()) as {
-        choices?: Array<{
-          message?: { content?: string };
+        candidates?: Array<{
+          content?: { parts?: Array<{ text?: string }> };
         }>;
-        usage?: { total_tokens?: number };
+        usageMetadata?: {
+          promptTokenCount?: number;
+          candidatesTokenCount?: number;
+          totalTokenCount?: number;
+        };
       };
 
-      const text = data.choices?.[0]?.message?.content?.trim() ?? '';
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? '';
+      const tokensUsed = data.usageMetadata?.totalTokenCount;
 
       return {
         text,
         model: this.model,
-        provider: 'openai',
-        tokensUsed: data.usage?.total_tokens,
+        provider: 'gemini',
+        tokensUsed,
         latencyMs: Date.now() - start,
       };
     } catch (err) {
       if ((err as Error).name === 'AbortError') {
-        throw new Error(`OpenAI request timed out after ${timeout}ms`, { cause: err });
+        throw new Error(`Gemini request timed out after ${timeout}ms`, { cause: err });
       }
       throw err;
     } finally {
@@ -98,16 +107,12 @@ export class OpenAIProvider implements ILLMProvider {
   async isAvailable(): Promise<boolean> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 5000);
+    const url = `${this.baseUrl}/v1beta/models/${this.model}` + `?key=${this.apiKey}`;
     try {
-      const res = await fetch(`${this.baseUrl}/models`, {
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        signal: controller.signal,
-      });
+      const res = await fetch(url, { signal: controller.signal });
       return res.ok;
     } catch {
-      logger.debug('OpenAI API not reachable');
+      logger.debug('Gemini API not reachable');
       return false;
     } finally {
       clearTimeout(timer);
