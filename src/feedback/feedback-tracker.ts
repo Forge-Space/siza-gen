@@ -9,6 +9,7 @@ import type Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
 import { classifyPromptPair } from './prompt-classifier.js';
 import { fingerprint } from './pattern-detector.js';
+import { recordPattern, ensurePatternsTable } from './pattern-promotion.js';
 import type { IFeedback, IGeneration } from './types.js';
 import pino from 'pino';
 
@@ -215,15 +216,15 @@ function storeFeedback(feedback: IFeedback, db: Database.Database): void {
 }
 
 function upsertPattern(hash: string, skeleton: string, code: string, db: Database.Database): void {
-  // Check if pattern exists
-  const existing = db
-    .prepare('SELECT source_id FROM embeddings WHERE source_id = ? AND source_type = ?')
-    .get(hash, 'description') as { source_id: string } | undefined;
-
-  // We store patterns as a simple meta entry — the full pattern table will
-  // be expanded when we implement feedback-boosted search (Step 14)
-  if (!existing) {
-    logger.debug({ hash, skeleton }, 'New code pattern detected');
+  try {
+    // Ensure the code_patterns table exists (idempotent)
+    ensurePatternsTable(db);
+    // Write the pattern with an initial score of 0 — feedback will raise/lower it
+    recordPattern(hash, skeleton, code, undefined, undefined, 0, db);
+    logger.debug({ hash }, 'Code pattern recorded for promotion pipeline');
+  } catch (err) {
+    // Pattern recording is non-critical — log and continue
+    logger.debug({ hash, error: (err as Error).message }, 'Pattern upsert skipped');
   }
 }
 
