@@ -6,6 +6,8 @@ import { VueGenerator } from './vue-generator.js';
 import { SvelteGenerator } from './svelte-generator.js';
 import { AngularGenerator } from './angular-generator.js';
 import { HtmlGenerator } from './html-generator.js';
+import { recordGeneration as trackGeneration } from '../feedback/feedback-tracker.js';
+import { getDatabase } from '../registry/database/store.js';
 
 const logger = createLogger('generator-factory');
 
@@ -85,15 +87,18 @@ export class GeneratorFactory {
     projectName: string,
     architecture: Architecture,
     stateManagement: StateManagement,
-    designContext?: IDesignContext
+    designContext?: IDesignContext,
+    sessionId?: string
   ): IGeneratedFile[] {
     const generator = this.createGenerator(framework);
-    return generator.generateProject(
+    const files = generator.generateProject(
       projectName,
       architecture,
       stateManagement,
       designContext || this.getDefaultContext()
     );
+    this.recordGenerationEvent('generate_page_template', projectName, framework, files, sessionId);
+    return files;
   }
 
   /**
@@ -110,15 +115,52 @@ export class GeneratorFactory {
     componentType: string,
     props: Record<string, unknown>,
     designContext?: IDesignContext,
-    componentLibrary?: ComponentLibrary
+    componentLibrary?: ComponentLibrary,
+    sessionId?: string
   ): IGeneratedFile[] {
     const generator = this.createGenerator(framework);
-    return generator.generateComponent(
+    const files = generator.generateComponent(
       componentType,
       props,
       designContext || this.getDefaultContext(),
       componentLibrary
     );
+    this.recordGenerationEvent('generate_ui_component', componentType, framework, files, sessionId);
+    return files;
+  }
+
+  /**
+   * Record a generation event for the self-learning feedback loop.
+   * Non-blocking: errors are swallowed so generation never fails due to tracking.
+   */
+  private recordGenerationEvent(
+    tool: 'generate_ui_component' | 'generate_page_template',
+    componentType: string,
+    framework: string,
+    files: IGeneratedFile[],
+    sessionId?: string
+  ): void {
+    try {
+      const db = getDatabase();
+      const code = files.map((f) => f.content).join('\n');
+      const genId = `gen-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      trackGeneration(
+        {
+          id: genId,
+          tool,
+          params: { framework, componentType },
+          componentType,
+          framework,
+          outputHash: '',
+          timestamp: Date.now(),
+          sessionId: sessionId ?? 'default',
+        },
+        code,
+        db
+      );
+    } catch {
+      // Non-blocking — feedback tracking must never fail generation
+    }
   }
 
   /**

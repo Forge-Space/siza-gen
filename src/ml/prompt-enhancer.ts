@@ -13,7 +13,7 @@
 import { createLogger } from '../logger.js';
 import type { ILLMProvider } from '../llm/types.js';
 import { embed } from './embeddings.js';
-import { semanticSearch, getEmbeddingCount } from './embedding-store.js';
+import { semanticSearch, getEmbeddingCount, tokenizeQuery, keywordScore } from './embedding-store.js';
 import { getDatabase } from '../registry/database/store.js';
 import { isSidecarAvailable, sidecarEnhancePrompt } from './sidecar-client.js';
 
@@ -223,17 +223,90 @@ export function enhanceWithRules(
   };
 }
 
-function enrichWithRAG(_prompt: string, _context?: IEnhancementContext): { text: string; additions: string[] } | null {
+/**
+ * Sync RAG enrichment using keyword-based matching against stored embeddings.
+ * embed() is async so we cannot call it here — instead we use BM25-like keyword
+ * overlap (tokenizeQuery + keywordScore) to find relevant patterns and rules.
+ * Returns null when the DB has no embeddings or no matches meet the threshold.
+ */
+function enrichWithRAG(prompt: string, _context?: IEnhancementContext): { text: string; additions: string[] } | null {
   const db = getDatabase();
   const patternCount = getEmbeddingCount('pattern', db);
   const ruleCount = getEmbeddingCount('rule', db);
 
   if (patternCount === 0 && ruleCount === 0) return null;
 
-  // We need a sync-compatible approach: use pre-computed embeddings
-  // Since embed() is async, we check if we can find keyword-based matches instead
-  // For full async RAG, use enhancePromptWithRAG() directly
-  return null;
+  const queryTokens = tokenizeQuery(prompt);
+  if (queryTokens.length === 0) return null;
+
+  const KEYWORD_THRESHOLD = 0.25;
+  const TOP_K = 3;
+  const additions: string[] = [];
+  let text = '';
+
+  // Keyword-match patterns (aria roles, component hints stored during embedding)
+  if (patternCount > 0) {
+    interface EmbeddingRow {
+      source_id: string;
+      text: string;
+    }
+    const rows = db
+      .prepare('SELECT source_id, text FROM embeddings WHERE source_type = ? ORDER BY created_at DESC LIMIT 200')
+      .all('pattern') as EmbeddingRow[];
+
+    const scored = rows
+      .map((r) => ({ ...r, score: keywordScore(queryTokens, r.text) }))
+      .filter((r) => r.score >= KEYWORD_THRESHOLD)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, TOP_K);
+
+    if (scored.length > 0) {
+      const rolesHints = scored
+        .map((r) => {
+          const m = r.text.match(/Roles:\s*([^.\n]+)/);
+          return m ? m[1].trim() : null;
+        })
+        .filter(Boolean);
+
+      if (rolesHints.length > 0) {
+        text += `. Use ARIA roles: ${rolesHints.join(', ')}`;
+        additions.push('rag-patterns');
+      }
+    }
+  }
+
+  // Keyword-match accessibility rules
+  if (ruleCount > 0) {
+    interface EmbeddingRow {
+      source_id: string;
+      text: string;
+    }
+    const rows = db
+      .prepare('SELECT source_id, text FROM embeddings WHERE source_type = ? ORDER BY created_at DESC LIMIT 200')
+      .all('rule') as EmbeddingRow[];
+
+    const scored = rows
+      .map((r) => ({ ...r, score: keywordScore(queryTokens, r.text) }))
+      .filter((r) => r.score >= KEYWORD_THRESHOLD)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2);
+
+    if (scored.length > 0) {
+      const ruleHints = scored
+        .map((r) => {
+          const m = r.text.match(/Description:\s*([^.\n]+)/);
+          return m ? m[1].trim() : null;
+        })
+        .filter(Boolean);
+
+      if (ruleHints.length > 0) {
+        text += `. Follow these a11y rules: ${ruleHints.join('; ')}`;
+        additions.push('rag-rules');
+      }
+    }
+  }
+
+  return text.length > 0 ? { text, additions } : null;
 }
 
 /**
