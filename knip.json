@@ -4,6 +4,6 @@
   "project": ["src/**/*.ts"],
   "ignore": ["src/__tests__/**", "src/scripts/**"],
   "ignoreBinaries": ["tsx", "python"],
-  "ignoreDependencies": ["@jest/globals"],
+  "ignoreDependencies": ["@jest/globals", "tailwindcss-animate"],
   "ignoreExportsUsedInFile": true
 }

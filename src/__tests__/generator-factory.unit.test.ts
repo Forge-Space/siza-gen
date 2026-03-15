@@ -396,6 +396,40 @@ describe('GeneratorFactory', () => {
   });
 });
 
+describe('Framework generateComponent coverage', () => {
+  // Exercises the abstract method implementations across all frameworks and libraries
+  const frameworks: Framework[] = ['vue', 'angular', 'svelte', 'html'];
+  const libraries: ComponentLibraryId[] = ['shadcn', 'radix', 'headlessui', 'material', 'none'];
+  const componentTypes = ['button', 'card', 'input', 'modal'];
+
+  frameworks.forEach((framework) => {
+    describe(`${framework} generator`, () => {
+      it('generates a basic component without a library', () => {
+        const files = generateComponent(framework, 'button', { variant: 'primary' });
+        expect(files.length).toBeGreaterThan(0);
+        files.forEach((f) => {
+          expect(f.path.length).toBeGreaterThan(0);
+          expect(f.content.length).toBeGreaterThan(0);
+        });
+      });
+
+      libraries.forEach((lib) => {
+        it(`generates a component with ${lib} library`, () => {
+          const files = generateComponent(framework, 'button', { variant: 'primary' }, undefined, lib);
+          expect(files.length).toBeGreaterThan(0);
+        });
+      });
+
+      componentTypes.forEach((type) => {
+        it(`generates a ${type} component`, () => {
+          const files = generateComponent(framework, type, {});
+          expect(files.length).toBeGreaterThan(0);
+        });
+      });
+    });
+  });
+});
+
 describe('Convenience Functions', () => {
   describe('createGenerator', () => {
     it('should create a generator instance', () => {
