@@ -16,8 +16,18 @@ and this project adheres to
   API key manager, billing plan card (GitHub/Stripe/iOS inspired).
 - Native Gemini LLM provider using the `generateContent` REST API, replacing the
   previous OpenAI-compatible adapter. Reports `provider: 'gemini'` in responses.
+- Complete `generateProject()` for Vue (Vue 3 + Vite + Pinia + Vue Router),
+  Angular (Angular 19 standalone + Tailwind), and HTML (vanilla Vite +
+  Tailwind), replacing TODO stubs with full scaffolding implementations.
+- Replace Svelte generator stub with complete SvelteKit implementation (was
+  already written as `svelte-generator-complete.ts` but never imported).
+- Export generators (`GeneratorFactory`, `createGenerator`, `generateProject`,
+  `generateComponent`) from the `lite` entry point for consumers who want code
+  generation without the heavy ML/SQLite dependencies.
 
 ### Fixed
+
+- Resolve high-severity `flatted` DoS vulnerability via `npm audit fix`.
 
 - Replace raw color literals (`text-emerald-400`, `text-red-400`,
   `text-purple-400`) with semantic tokens in `data-table-sortable`,
@@ -27,6 +37,8 @@ and this project adheres to
 
 ### Changed
 
+- Bump React generator scaffolding dependencies to modern versions: React 19,
+  Vite 6, Tailwind 4, Zustand 5, Testing Library 16, Vitest 2.
 - Add npm/distribution metadata keywords and README install surfaces for
   `@forgespace/siza-gen`, including docs/community links and `ui-mcp` naming.
 - Apply repository-wide Prettier normalization for benchmark and registry files
