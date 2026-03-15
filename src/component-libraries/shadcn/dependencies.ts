@@ -383,14 +383,14 @@ export function generateTailwindConfig(config: ShadcnConfig = defaultConfig): IG
         },
       },
     },
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    plugins: [require('tailwindcss-animate')],
   };
 
   return {
     path: 'tailwind.config.js',
     content: `/** @type {import('tailwindcss').Config} */
-module.exports = ${JSON.stringify(tailwindConfig, null, 2)}`,
+const config = ${JSON.stringify(tailwindConfig, null, 2)};
+config.plugins = [require('tailwindcss-animate')];
+module.exports = config;`,
   };
 }
 

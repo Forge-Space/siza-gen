@@ -48,27 +48,19 @@ export function formatConsole(report: IBenchmarkReport): string {
   // Provider comparison table
   lines.push('  PROVIDER COMPARISON');
   lines.push(
-    '  ' +
-      pad('Provider', 12) +
-      pad('Score', 8) +
-      pad('Latency', 10) +
-      pad('Cost/gen', 10) +
-      pad('Traits', 8) +
-      pad('Errors', 8) +
-      'Grade'
+    `  ${pad('Provider', 12)}${pad('Score', 8)}${pad('Latency', 10)}${pad('Cost/gen', 10)}${pad('Traits', 8)}${pad(
+      'Errors',
+      8
+    )}Grade`
   );
-  lines.push('  ' + '─'.repeat(68));
+  lines.push(`  ${'─'.repeat(68)}`);
 
   for (const m of report.providerMetrics) {
     lines.push(
-      '  ' +
-        pad(m.provider, 12) +
-        pad(m.avgScore.toFixed(1), 8) +
-        pad(formatMs(m.avgLatencyMs), 10) +
-        pad(formatCost(m.avgCostUsd), 10) +
-        pad(formatPct(m.traitMatchRate), 8) +
-        pad(formatPct(m.errorRate), 8) +
-        m.grade
+      `  ${pad(m.provider, 12)}${pad(m.avgScore.toFixed(1), 8)}${pad(formatMs(m.avgLatencyMs), 10)}${pad(
+        formatCost(m.avgCostUsd),
+        10
+      )}${pad(formatPct(m.traitMatchRate), 8)}${pad(formatPct(m.errorRate), 8)}${m.grade}`
     );
   }
 
@@ -76,10 +68,10 @@ export function formatConsole(report: IBenchmarkReport): string {
 
   // Latency percentiles
   lines.push('  LATENCY PERCENTILES');
-  lines.push('  ' + pad('Provider', 12) + pad('p50', 10) + pad('p95', 10));
-  lines.push('  ' + '─'.repeat(32));
+  lines.push(`  ${pad('Provider', 12)}${pad('p50', 10)}${pad('p95', 10)}`);
+  lines.push(`  ${'─'.repeat(32)}`);
   for (const m of report.providerMetrics) {
-    lines.push('  ' + pad(m.provider, 12) + pad(formatMs(m.p50LatencyMs), 10) + pad(formatMs(m.p95LatencyMs), 10));
+    lines.push(`  ${pad(m.provider, 12)}${pad(formatMs(m.p50LatencyMs), 10)}${pad(formatMs(m.p95LatencyMs), 10)}`);
   }
 
   lines.push('');
