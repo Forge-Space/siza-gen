@@ -14,6 +14,8 @@ and this project adheres to
   actions grid, overview header (Vercel/Stripe/Raycast inspired).
 - 5 settings molecule snippets: notification toggles, profile form, danger zone,
   API key manager, billing plan card (GitHub/Stripe/iOS inspired).
+- Native Gemini LLM provider using the `generateContent` REST API, replacing the
+  previous OpenAI-compatible adapter. Reports `provider: 'gemini'` in responses.
 
 ### Fixed
 
