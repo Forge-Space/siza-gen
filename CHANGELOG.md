@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Changed
 
+- Add npm/distribution metadata keywords and README install surfaces for
+  `@forgespace/siza-gen`, including docs/community links and `ui-mcp` naming.
 - Apply repository-wide Prettier normalization for benchmark and registry files
   to restore `npm run format:check` pass in CI/local validation.
 - Add `sonar-project.properties` with targeted CPD exclusions for
