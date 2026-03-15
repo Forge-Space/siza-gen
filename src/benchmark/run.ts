@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { createProvider } from '../llm/provider-factory.js';
