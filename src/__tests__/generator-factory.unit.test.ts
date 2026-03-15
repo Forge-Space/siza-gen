@@ -101,6 +101,67 @@ describe('GeneratorFactory', () => {
       });
     });
 
+    it('should generate Vue project with framework-specific files', () => {
+      const files = factory.generateProject('vue', 'my-vue-app', 'flat', 'pinia');
+      const paths = files.map((f) => f.path);
+
+      expect(paths).toContain('package.json');
+      expect(paths).toContain('vite.config.ts');
+      expect(paths).toContain('src/App.vue');
+      expect(paths).toContain('src/main.ts');
+
+      const pkg = files.find((f) => f.path === 'package.json')!;
+      expect(pkg.content).toContain('"vue"');
+      expect(pkg.content).toContain('"pinia"');
+      expect(pkg.content).toContain('"@vitejs/plugin-vue"');
+    });
+
+    it('should generate Angular project with framework-specific files', () => {
+      const files = factory.generateProject('angular', 'my-angular-app', 'flat', 'none');
+      const paths = files.map((f) => f.path);
+
+      expect(paths).toContain('angular.json');
+      expect(paths).toContain('src/app/app.component.ts');
+      expect(paths).toContain('src/app/app.routes.ts');
+      expect(paths).toContain('src/main.ts');
+
+      const angularJson = files.find((f) => f.path === 'angular.json')!;
+      expect(angularJson.content).toContain('my-angular-app');
+    });
+
+    it('should generate Svelte project with framework-specific files', () => {
+      const files = factory.generateProject('svelte', 'my-svelte-app', 'flat', 'none');
+      const paths = files.map((f) => f.path);
+
+      expect(paths).toContain('package.json');
+      expect(paths).toContain('svelte.config.js');
+
+      const pkg = files.find((f) => f.path === 'package.json')!;
+      expect(pkg.content).toContain('"svelte"');
+    });
+
+    it('should generate HTML project with framework-specific files', () => {
+      const files = factory.generateProject('html', 'my-html-app', 'flat', 'none');
+      const paths = files.map((f) => f.path);
+
+      expect(paths).toContain('src/index.html');
+      expect(paths).toContain('src/style.css');
+      expect(paths).toContain('vite.config.js');
+
+      const html = files.find((f) => f.path === 'src/index.html')!;
+      expect(html.content).toContain('my-html-app');
+    });
+
+    it('should generate React project with modern dependency versions', () => {
+      const files = factory.generateProject('react', 'my-react-app', 'flat', 'zustand');
+      const pkg = files.find((f) => f.path === 'package.json')!;
+      const parsed = JSON.parse(pkg.content);
+
+      expect(parsed.dependencies.react).toMatch(/\^19/);
+      expect(parsed.dependencies.zustand).toMatch(/\^5/);
+      expect(parsed.devDependencies.vite).toMatch(/\^6/);
+    });
+
     it('should generate different architectures', () => {
       const architectures: Architecture[] = ['flat', 'feature-based', 'atomic'];
 
