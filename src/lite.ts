@@ -91,3 +91,10 @@ export { designContextStore, DEFAULT_CONTEXT } from './design-context.js';
 export type { Framework, IDesignContext, Architecture, StateManagement, ComponentLibraryId } from './types.js';
 
 export type { MoodTag, IndustryTag, VisualStyleId } from './registry/component-registry/types.js';
+
+export {
+  GeneratorFactory,
+  createGenerator,
+  generateProject,
+  generateComponent,
+} from './generators/generator-factory.js';

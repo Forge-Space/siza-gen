@@ -86,28 +86,28 @@ export class ReactGenerator extends BaseGenerator {
 
   private createPackageJsonFile(projectName: string, stateManagement: StateManagement): IGeneratedFile {
     const dependencies: Record<string, string> = {
-      react: '^18.2.0',
-      'react-dom': '^18.2.0',
-      'react-router-dom': '^6.8.0',
-      clsx: '^1.2.1',
+      react: '^19.0.0',
+      'react-dom': '^19.0.0',
+      'react-router-dom': '^7.1.0',
+      clsx: '^2.1.0',
     };
 
     const devDependencies: Record<string, string> = {
-      '@types/react': '^18.0.27',
-      '@types/react-dom': '^18.0.10',
-      '@vitejs/plugin-react': '^3.1.0',
-      vite: '^4.1.0',
-      tailwindcss: '^3.2.7',
-      autoprefixer: '^10.4.14',
-      postcss: '^8.4.21',
-      '@testing-library/react': '^14.0.0',
-      '@testing-library/jest-dom': '^5.16.5',
-      vitest: '^0.29.1',
+      '@types/react': '^19.0.0',
+      '@types/react-dom': '^19.0.0',
+      '@vitejs/plugin-react': '^4.3.0',
+      vite: '^6.0.0',
+      tailwindcss: '^4.0.0',
+      autoprefixer: '^10.4.0',
+      postcss: '^8.4.0',
+      '@testing-library/react': '^16.1.0',
+      '@testing-library/jest-dom': '^6.6.0',
+      vitest: '^2.1.0',
     };
 
     // Add state management dependencies
     if (stateManagement === 'zustand') {
-      dependencies.zustand = '^4.3.6';
+      dependencies.zustand = '^5.0.0';
     }
 
     return {
