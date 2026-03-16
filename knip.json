@@ -1,10 +1,8 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/index.ts", "src/lite.ts"],
   "project": ["src/**/*.ts"],
-  "ignore": ["src/__tests__/**", "src/scripts/**"],
   "ignoreBinaries": ["tsx", "python"],
-  "ignoreDependencies": ["@jest/globals", "tailwindcss-animate"],
+  "ignoreDependencies": ["tailwindcss-animate"],
   "ignoreExportsUsedInFile": true,
   "exclude": ["exports", "types"]
 }
