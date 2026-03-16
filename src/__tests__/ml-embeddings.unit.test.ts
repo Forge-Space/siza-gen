@@ -1,5 +1,15 @@
 import { getMemoryDatabase } from '../registry/database/store.js';
-import { cosineSimilarity, findSimilar } from '../ml/embeddings.js';
+import {
+  cosineSimilarity,
+  findSimilar,
+  configureEmbeddings,
+  getEmbeddingConfig,
+  isModelLoaded,
+  unloadModel,
+  embedBatch,
+  embed,
+} from '../ml/embeddings.js';
+import { setSidecarUrl, resetAvailabilityCache } from '../ml/sidecar-client.js';
 import {
   storeEmbedding,
   storeEmbeddings,
@@ -283,5 +293,143 @@ describe('tokenizeQuery', () => {
   it('lowercases all tokens', () => {
     const tokens = tokenizeQuery('Hero BANNER');
     expect(tokens).toEqual(['hero', 'banner']);
+  });
+});
+
+// ── configureEmbeddings / getEmbeddingConfig ───────────────
+
+describe('configureEmbeddings / getEmbeddingConfig', () => {
+  const DEFAULT_MODEL = 'Xenova/all-MiniLM-L6-v2';
+
+  afterEach(() => {
+    // Restore defaults after each test
+    configureEmbeddings({});
+  });
+
+  it('getEmbeddingConfig returns default config values', () => {
+    configureEmbeddings({});
+    const cfg = getEmbeddingConfig();
+    expect(cfg.modelId).toBe(DEFAULT_MODEL);
+    expect(cfg.dimensions).toBe(384);
+    expect(typeof cfg.cacheDir).toBe('string');
+  });
+
+  it('configureEmbeddings overrides modelId', () => {
+    configureEmbeddings({ modelId: 'Xenova/custom-model' });
+    expect(getEmbeddingConfig().modelId).toBe('Xenova/custom-model');
+  });
+
+  it('configureEmbeddings overrides dimensions', () => {
+    configureEmbeddings({ dimensions: 768 });
+    expect(getEmbeddingConfig().dimensions).toBe(768);
+  });
+
+  it('getEmbeddingConfig returns a copy, not reference', () => {
+    const cfg1 = getEmbeddingConfig();
+    cfg1.modelId = 'mutated';
+    expect(getEmbeddingConfig().modelId).toBe(DEFAULT_MODEL);
+  });
+});
+
+// ── isModelLoaded / unloadModel ────────────────────────────
+
+describe('isModelLoaded / unloadModel', () => {
+  it('isModelLoaded returns false initially (no extractor loaded)', () => {
+    unloadModel();
+    expect(isModelLoaded()).toBe(false);
+  });
+
+  it('unloadModel is idempotent', () => {
+    unloadModel();
+    unloadModel();
+    expect(isModelLoaded()).toBe(false);
+  });
+});
+
+// ── Fetch mock helpers (for sidecar path tests) ───────────
+
+const originalFetch = globalThis.fetch;
+let fetchResponses: Array<{ body: unknown; status: number }> = [];
+
+function enqueueFetchResponse(body: unknown, status = 200) {
+  fetchResponses.push({ body, status });
+}
+
+function installFetchMock() {
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = typeof input === 'string' ? input : input.toString();
+    const response = fetchResponses.shift();
+    if (!response) throw new Error(`No mock response for ${url}`);
+    return {
+      ok: response.status >= 200 && response.status < 300,
+      status: response.status,
+      json: async () => response.body,
+    } as Response;
+  }) as typeof fetch;
+}
+
+// ── embedBatch empty-array shortcut ───────────────────────
+
+describe('embedBatch', () => {
+  it('returns empty array immediately for empty input', async () => {
+    // Returns before checking sidecar — no fetch needed
+    const result = await embedBatch([]);
+    expect(result).toEqual([]);
+  });
+});
+
+// ── embed / embedBatch via sidecar (fetch mock) ───────────
+
+describe('embed (sidecar path)', () => {
+  beforeEach(() => {
+    setSidecarUrl('http://localhost:8100');
+    resetAvailabilityCache();
+    fetchResponses = [];
+    installFetchMock();
+  });
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  it('delegates to sidecarEmbed when sidecar is available', async () => {
+    const fakeVec = new Float32Array([0.5, 0.5]);
+    const base64 = Buffer.from(fakeVec.buffer).toString('base64');
+    // First fetch: /ready → { ready: true }
+    enqueueFetchResponse({ ready: true }, 200);
+    // Second fetch: /embed → { vector: base64, dimensions: 2 }
+    enqueueFetchResponse({ vector: base64, dimensions: 2 }, 200);
+
+    const result = await embed('hello world');
+    expect(result).toBeInstanceOf(Float32Array);
+    expect(result.length).toBe(2);
+  });
+});
+
+describe('embedBatch (sidecar path)', () => {
+  beforeEach(() => {
+    setSidecarUrl('http://localhost:8100');
+    resetAvailabilityCache();
+    fetchResponses = [];
+    installFetchMock();
+  });
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  it('delegates to sidecarEmbedBatch when sidecar is available', async () => {
+    const v1 = new Float32Array([0.1]);
+    const v2 = new Float32Array([0.2]);
+    const b1 = Buffer.from(v1.buffer).toString('base64');
+    const b2 = Buffer.from(v2.buffer).toString('base64');
+    // First fetch: /ready → { ready: true }
+    enqueueFetchResponse({ ready: true }, 200);
+    // Second fetch: /embed/batch → { vectors: [...], dimensions: 1, count: 2 }
+    enqueueFetchResponse({ vectors: [b1, b2], dimensions: 1, count: 2 }, 200);
+
+    const result = await embedBatch(['a', 'b']);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toBeInstanceOf(Float32Array);
   });
 });

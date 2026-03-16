@@ -1,11 +1,17 @@
 import {
   setSidecarUrl,
+  getSidecarUrl,
   isSidecarAvailable,
   resetAvailabilityCache,
   sidecarEmbed,
   sidecarEmbedBatch,
   sidecarScoreQuality,
   sidecarEnhancePrompt,
+  sidecarVectorSearch,
+  sidecarVectorIndex,
+  sidecarStartTraining,
+  sidecarGetTrainingStatus,
+  sidecarCancelTraining,
 } from '../ml/sidecar-client.js';
 
 const DIMS = 384;
@@ -154,12 +160,104 @@ describe('sidecarEnhancePrompt', () => {
   });
 });
 
-describe('setSidecarUrl', () => {
+describe('setSidecarUrl / getSidecarUrl', () => {
   it('changes the base URL for requests', async () => {
     setSidecarUrl('http://custom:9999');
     const vec = makeBase64Vector();
     mockFetchResponse({ vector: vec, dimensions: DIMS });
     await sidecarEmbed('test');
     expect(fetchCalls[0]!.url).toBe('http://custom:9999/embed');
+  });
+
+  it('getSidecarUrl returns the current URL', () => {
+    setSidecarUrl('http://myhost:1234');
+    expect(getSidecarUrl()).toBe('http://myhost:1234');
+  });
+});
+
+describe('sidecarVectorSearch', () => {
+  it('calls /vector/search with base64 vector and top_k', async () => {
+    const results = [{ id: 'btn-1', distance: 0.1 }];
+    mockFetchResponse(results);
+    const vec = new Float32Array([0.1, 0.2, 0.3]);
+    const res = await sidecarVectorSearch(vec, 3);
+    expect(res).toEqual(results);
+    const body = JSON.parse(fetchCalls[0]!.init?.body as string);
+    expect(body.top_k).toBe(3);
+    expect(typeof body.vector).toBe('string'); // base64
+    expect(fetchCalls[0]!.url).toBe('http://localhost:8100/vector/search');
+  });
+
+  it('defaults topK to 5', async () => {
+    mockFetchResponse([]);
+    await sidecarVectorSearch(new Float32Array([1]));
+    const body = JSON.parse(fetchCalls[0]!.init?.body as string);
+    expect(body.top_k).toBe(5);
+  });
+});
+
+describe('sidecarVectorIndex', () => {
+  it('calls /vector/index with entries array', async () => {
+    mockFetchResponse({ indexed: 2 });
+    const vec1 = new Float32Array([0.1, 0.2]);
+    const vec2 = new Float32Array([0.3, 0.4]);
+    const result = await sidecarVectorIndex([
+      { id: 'a', vector: vec1, metadata: { type: 'component' } },
+      { id: 'b', vector: vec2 },
+    ]);
+    expect(result.indexed).toBe(2);
+    const body = JSON.parse(fetchCalls[0]!.init?.body as string);
+    expect(body.entries).toHaveLength(2);
+    expect(body.entries[0].id).toBe('a');
+    expect(typeof body.entries[0].vector).toBe('string'); // base64
+    expect(body.entries[0].metadata).toEqual({ type: 'component' });
+    expect(fetchCalls[0]!.url).toBe('http://localhost:8100/vector/index');
+  });
+});
+
+describe('sidecarStartTraining', () => {
+  it('calls /train/start with correct payload', async () => {
+    const job = { job_id: 'job-1', status: 'queued' };
+    mockFetchResponse(job);
+    const result = await sidecarStartTraining('lora', '/data/train.jsonl', {
+      rank: 8,
+      epochs: 3,
+      learningRate: 0.0001,
+      batchSize: 4,
+    });
+    expect(result.job_id).toBe('job-1');
+    expect(result.status).toBe('queued');
+    const body = JSON.parse(fetchCalls[0]!.init?.body as string);
+    expect(body.adapter_type).toBe('lora');
+    expect(body.data_path).toBe('/data/train.jsonl');
+    expect(body.config.rank).toBe(8);
+    expect(fetchCalls[0]!.url).toBe('http://localhost:8100/train/start');
+  });
+
+  it('calls /train/start without config when omitted', async () => {
+    mockFetchResponse({ job_id: 'job-2', status: 'queued' });
+    await sidecarStartTraining('lora', '/data/train.jsonl');
+    const body = JSON.parse(fetchCalls[0]!.init?.body as string);
+    expect(body.config).toBeUndefined();
+  });
+});
+
+describe('sidecarGetTrainingStatus', () => {
+  it('calls GET /train/status/:jobId', async () => {
+    const status = { job_id: 'job-1', status: 'running', progress: 45 };
+    mockFetchResponse(status);
+    const result = await sidecarGetTrainingStatus('job-1');
+    expect(result.job_id).toBe('job-1');
+    expect(result.progress).toBe(45);
+    expect(fetchCalls[0]!.url).toBe('http://localhost:8100/train/status/job-1');
+  });
+});
+
+describe('sidecarCancelTraining', () => {
+  it('calls /train/cancel/:jobId', async () => {
+    mockFetchResponse({ cancelled: true });
+    const result = await sidecarCancelTraining('job-1');
+    expect(result.cancelled).toBe(true);
+    expect(fetchCalls[0]!.url).toBe('http://localhost:8100/train/cancel/job-1');
   });
 });

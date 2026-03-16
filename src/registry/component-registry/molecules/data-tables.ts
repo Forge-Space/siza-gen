@@ -52,7 +52,7 @@ export const dataTableSnippets: IComponentSnippet[] = [
       <tr className="hover:bg-muted/50 transition-colors">
         <td className="px-4 py-3 font-medium text-foreground">Beta Testing</td>
         <td className="px-4 py-3">
-          <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-700 dark:text-amber-400 ring-1 ring-inset ring-amber-500/20">Pending</span>
+          <span className="inline-flex items-center rounded-full bg-warning/10 px-2 py-1 text-xs font-medium text-warning ring-1 ring-inset ring-warning/20">Pending</span>
         </td>
         <td className="px-4 py-3 text-muted-foreground">Jan 20, 2025</td>
         <td className="px-4 py-3 text-right">
@@ -242,7 +242,7 @@ export const dataTableSnippets: IComponentSnippet[] = [
           </div>
         </td>
         <td className="px-4 py-3">
-          <span className="inline-flex items-center rounded-full bg-success/10 px-2 py-1 text-xs font-medium text-success dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20">Completed</span>
+          <span className="inline-flex items-center rounded-full bg-success/10 px-2 py-1 text-xs font-medium text-success ring-1 ring-inset ring-success/20">Completed</span>
         </td>
         <td className="px-4 py-3 text-right font-medium text-foreground">$1,299.00</td>
       </tr>
