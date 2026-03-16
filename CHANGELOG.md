@@ -8,6 +8,24 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.13.2] - 2026-03-16
+
+### Fixed
+
+- **Semantic tokens** — Replaced raw Tailwind color literals (`bg-amber-500/10`,
+  `text-amber-700`, `dark:text-amber-400`, `ring-amber-500/20`,
+  `dark:text-emerald-400`, `ring-emerald-500/20`) in `data-table-sortable` and
+  `data-table-expandable` snippets with design-system semantic tokens
+  (`warning`, `success`). All 402 registry snippets now pass
+  `check-semantic-tokens` validation.
+
+### Tests
+
+- **ML layer coverage** — Added unit tests for `embeddings.ts`,
+  `sidecar-client.ts`, `vector-index.ts`, and `diversity-tracker.ts`. Function
+  coverage raised from 69.35% to 84.61% (threshold 75%). Total test count: 820
+  tests, 33 suites.
+
 ## [0.13.1] - 2026-03-15
 
 ### Changed
