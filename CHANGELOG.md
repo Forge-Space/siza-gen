@@ -8,6 +8,22 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-03-15
+
+### Changed
+
+- **knip.json cleanup** — Removed 5 stale entries (`src/__tests__/**`,
+  `src/scripts/**`, `@jest/globals`, `src/index.ts`, `src/lite.ts`) from the
+  knip hints config. `npx knip` now exits 0 cleanly.
+
+### Tests
+
+- **Generator coverage** — Added direct-instantiation tests for
+  `AngularGenerator`, `VueGenerator`, `HtmlGenerator`, and `ReactGenerator`
+  covering all protected library-specific methods (`getShadcnDependencies`,
+  `getRadixDependencies`, `getHeadlessUIDependencies`, etc.). Function coverage
+  raised from 69.35% to 80.55% (439/545 functions).
+
 ## [0.13.0] - 2026-03-15
 
 ### Added
