@@ -42,6 +42,8 @@ const config: Config = {
     '!src/feedback/types.ts',
     '!src/ml/types.ts',
     '!src/registry/backend-registry/types.ts',
+    '!src/registry/template-compositions/types.ts',
+    '!src/registry/template-packs/types.ts',
     // Template/pattern files are tested indirectly via the generator and setup functions
     '!src/component-libraries/shadcn/templates.ts',
     '!src/component-libraries/shadcn/patterns.ts',
@@ -61,10 +63,8 @@ const config: Config = {
   coverageThreshold: {
     global: {
       branches: 60,
-      // Functions: 68% — template/pattern files (static string builders) and ML embeddings
-      // are excluded by collectCoverageFrom but generator abstract method impls lower this.
-      // Raise incrementally as coverage improves.
-      functions: 68,
+      // Functions: 75% — raised after adding decision-engine branch coverage
+      functions: 75,
       lines: 70,
       statements: 70,
     },
