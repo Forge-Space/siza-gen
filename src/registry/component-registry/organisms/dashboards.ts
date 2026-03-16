@@ -254,7 +254,7 @@ export const dashboardSnippets: IComponentSnippet[] = [
               <td className="px-6 py-4 text-sm font-medium text-foreground">#3210</td>
               <td className="px-6 py-4 text-sm text-muted-foreground">john@company.com</td>
               <td className="px-6 py-4">
-                <span className="inline-flex items-center rounded-full bg-green-600/10 px-2 py-1 text-xs font-medium text-success">Completed</span>
+                <span className="inline-flex items-center rounded-full bg-success/10 px-2 py-1 text-xs font-medium text-success">Completed</span>
               </td>
               <td className="px-6 py-4 text-sm text-foreground">$1,234.00</td>
               <td className="px-6 py-4 text-sm text-muted-foreground">Jan 15, 2024</td>

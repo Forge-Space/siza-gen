@@ -25,7 +25,7 @@ function makeSnippet(overrides: Partial<IComponentSnippet> = {}): IComponentSnip
     industry: overrides.industry ?? ['general'],
     visualStyles: overrides.visualStyles ?? ['linear-modern'],
     tags: overrides.tags ?? ['cta', 'action'],
-    tailwindClasses: overrides.tailwindClasses ?? { root: 'px-4 py-2 rounded-lg bg-blue-600 text-white' },
+    tailwindClasses: overrides.tailwindClasses ?? { root: 'px-4 py-2 rounded-lg bg-primary text-primary-foreground' },
     jsx: overrides.jsx ?? '<button>Click</button>',
     a11y: overrides.a11y ?? {
       roles: ['button'],

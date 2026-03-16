@@ -30,8 +30,8 @@ function makeSnippet(overrides: Partial<IComponentSnippet> = {}): IComponentSnip
     industry: ['general'],
     visualStyles: ['linear-modern'],
     tags: ['cta', 'action'],
-    tailwindClasses: { root: 'px-4 py-2 rounded-lg bg-blue-600 text-white' },
-    jsx: '<button className="px-4 py-2 rounded-lg bg-blue-600 text-white">Click me</button>',
+    tailwindClasses: { root: 'px-4 py-2 rounded-lg bg-primary text-primary-foreground' },
+    jsx: '<button className="px-4 py-2 rounded-lg bg-primary text-primary-foreground">Click me</button>',
     a11y: {
       roles: ['button'],
       ariaAttributes: ['aria-label'],

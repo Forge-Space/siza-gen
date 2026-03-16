@@ -26,7 +26,7 @@ export const listSnippets: IComponentSnippet[] = [
       <span className="text-sm font-medium text-foreground group-has-[:checked]:line-through group-has-[:checked]:text-muted-foreground transition-all">Review pull requests</span>
       <span className="text-xs text-muted-foreground">Completed 2 hours ago</span>
     </div>
-    <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-700 dark:text-info ring-1 ring-inset ring-blue-500/20">Medium</span>
+    <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary dark:text-info ring-1 ring-inset ring-primary/20">Medium</span>
   </label>
   <label className="flex items-start gap-3 rounded-lg border bg-card p-4 transition-colors hover:bg-accent cursor-pointer group">
     <input type="checkbox" className="mt-0.5 h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background" />

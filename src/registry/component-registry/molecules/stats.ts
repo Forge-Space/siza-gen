@@ -210,7 +210,7 @@ export const statSnippets: IComponentSnippet[] = [
         <p className="text-3xl font-bold tracking-tight text-foreground">3.2s</p>
       </div>
       <div className="mt-3 h-2 w-full rounded-full bg-destructive/20">
-        <div className="h-2 rounded-full bg-red-600 dark:bg-destructive" style={{ width: '80%' }}></div>
+        <div className="h-2 rounded-full bg-destructive dark:bg-destructive" style={{ width: '80%' }}></div>
       </div>
     </div>
     <svg className="h-6 w-6 shrink-0 text-muted-foreground" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>

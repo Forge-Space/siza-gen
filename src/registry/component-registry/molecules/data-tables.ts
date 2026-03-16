@@ -363,7 +363,7 @@ export const dataTableSnippets: IComponentSnippet[] = [
             </div>
           </td>
           <td className="px-4 py-3">
-            <span className="inline-flex items-center rounded-md bg-destructive/10 px-2 py-1 text-xs font-medium text-red-700 dark:text-red-400 ring-1 ring-inset ring-red-500/20">High</span>
+            <span className="inline-flex items-center rounded-md bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive dark:text-destructive/70 ring-1 ring-inset ring-destructive/20">High</span>
           </td>
           <td className="px-4 py-3 text-muted-foreground">Jan 28, 2025</td>
         </tr>
@@ -379,7 +379,7 @@ export const dataTableSnippets: IComponentSnippet[] = [
             </div>
           </td>
           <td className="px-4 py-3">
-            <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-400 ring-1 ring-inset ring-blue-500/20">Medium</span>
+            <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary dark:text-primary/70 ring-1 ring-inset ring-primary/20">Medium</span>
           </td>
           <td className="px-4 py-3 text-muted-foreground">Feb 2, 2025</td>
         </tr>
@@ -605,7 +605,7 @@ export const dataTableSnippets: IComponentSnippet[] = [
       <tr className="hover:bg-muted/50 transition-colors">
         <td className="px-2 py-1.5">
           <div className="flex items-center gap-2">
-            <svg className="h-3.5 w-3.5 shrink-0 text-primary dark:text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg>
+            <svg className="h-3.5 w-3.5 shrink-0 text-primary dark:text-primary/70" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /></svg>
             <span className="font-medium text-foreground truncate">components</span>
           </div>
         </td>
