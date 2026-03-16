@@ -7,6 +7,11 @@
 </div>
 
 [![npm version](https://img.shields.io/npm/v/@forgespace/siza-gen)](https://www.npmjs.com/package/@forgespace/siza-gen)
+[![CI](https://github.com/Forge-Space/siza-gen/actions/workflows/ci.yml/badge.svg)](https://github.com/Forge-Space/siza-gen/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D22-green)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 ## Overview
 
