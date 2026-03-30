@@ -101,7 +101,7 @@ export function truncateToTokenBudget(text: string, budget: number): string {
 export function checkTokenBudget(
   text: string,
   budget: number,
-  strategy: BudgetExceededStrategy = 'warn',
+  strategy: BudgetExceededStrategy = 'warn'
 ): BudgetCheckResult {
   const estimated = estimateTokens(text);
 
@@ -111,9 +111,7 @@ export function checkTokenBudget(
 
   switch (strategy) {
     case 'error':
-      throw new Error(
-        `Token budget exceeded: estimated ${estimated} tokens, budget is ${budget}`,
-      );
+      throw new Error(`Token budget exceeded: estimated ${estimated} tokens, budget is ${budget}`);
 
     case 'truncate': {
       const truncated = truncateToTokenBudget(text, budget);

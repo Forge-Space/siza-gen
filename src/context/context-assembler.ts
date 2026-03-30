@@ -33,7 +33,6 @@ export interface IAssembledContext {
   metadata: IContextMetadata;
 }
 
-
 export function assembleContext(params: IContextAssemblerParams): IAssembledContext {
   const budget = params.tokenBudget ?? 4000;
   const maxExamples = params.maxExamples ?? 3;
