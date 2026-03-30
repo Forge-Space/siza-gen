@@ -21,6 +21,7 @@ dependencies = [
     "transformers>=4.45.0",
     "datasets>=3.0.0",
     "accelerate>=1.0.0",
+    "turboquant @ git+https://github.com/TheTom/turboquant_plus.git",
 ]
 
 [project.optional-dependencies]

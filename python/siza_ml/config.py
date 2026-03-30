@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     embedding_dimensions: int = 384
     ollama_url: str = "http://localhost:11434"
     data_dir: str = str(Path.cwd() / ".uiforge")
+    turbo_bits: int = 3
 
     model_config = {"env_prefix": "SIZA_ML_"}
 

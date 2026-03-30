@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import logging
 import struct
+from contextlib import contextmanager
 
 import numpy as np
 from fastapi import APIRouter, HTTPException
@@ -10,6 +11,13 @@ from pydantic import BaseModel
 
 from .config import settings
 from .health import set_model_loaded
+from .turbo_cache import TurboConfig, turbo_attention
+
+
+@contextmanager
+def _noop():
+    yield
+
 
 router = APIRouter(tags=["embeddings"])
 logger = logging.getLogger("siza_ml.embeddings")
@@ -54,12 +62,14 @@ class EmbedResponse(BaseModel):
 
 class EmbedBatchRequest(BaseModel):
     texts: list[str]
+    turbo_bits: int | None = None
 
 
 class EmbedBatchResponse(BaseModel):
     vectors: list[str]
     dimensions: int
     count: int
+    turbo_compressed: bool = False
 
 
 @router.post("/embed", response_model=EmbedResponse)
@@ -81,17 +91,22 @@ async def embed_batch(req: EmbedBatchRequest) -> EmbedBatchResponse:
         raise HTTPException(status_code=400, detail="Texts list must not be empty")
 
     model = _get_model()
-    vecs = model.encode(
-        req.texts,
-        normalize_embeddings=True,
-        batch_size=settings.batch_size,
-    )
+    bits = req.turbo_bits if req.turbo_bits in (2, 3, 4) else settings.turbo_bits
+    cfg = TurboConfig(k_bits=bits, v_bits=bits) if bits else None
+
+    with turbo_attention(model, cfg) if cfg else _noop():
+        vecs = model.encode(
+            req.texts,
+            normalize_embeddings=True,
+            batch_size=settings.batch_size,
+        )
 
     encoded = [encode_vector_b64(v) for v in vecs]
     return EmbedBatchResponse(
         vectors=encoded,
         dimensions=vecs.shape[1],
         count=len(encoded),
+        turbo_compressed=cfg is not None,
     )
 
 
