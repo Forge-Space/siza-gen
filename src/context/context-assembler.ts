@@ -1,4 +1,5 @@
 import type { MoodTag, IndustryTag, VisualStyleId } from '../registry/component-registry/types.js';
+import { estimateTokens } from '../llm/token-budget.js';
 import { buildRoleSection } from './sections/role-section.js';
 import { buildQualityRulesSection } from './sections/quality-rules-section.js';
 import { buildFrameworkSection } from './sections/framework-section.js';
@@ -32,9 +33,6 @@ export interface IAssembledContext {
   metadata: IContextMetadata;
 }
 
-function estimateTokens(text: string): number {
-  return Math.ceil(text.length / 4);
-}
 
 export function assembleContext(params: IContextAssemblerParams): IAssembledContext {
   const budget = params.tokenBudget ?? 4000;

@@ -15,6 +15,28 @@ and this project adheres to
   intake, Issues for actionable delivery work, and Projects for
   roadmap/reporting.
 
+## [0.14.0] - 2026-03-29
+
+### Added
+
+- **TurboQuant KV cache compression** — `python/siza_ml/turbo_cache.py` hooks
+  `BertSelfAttention` layers via `register_forward_hook`, compressing K/V with
+  PolarQuant + QJL (turbo3 = 4.6x compression, ~1% PPL). On by default for all
+  `/embed/batch` calls via `SIZA_ML_TURBO_BITS=3`.
+- **Token budget enforcer** — `src/llm/token-budget.ts` replaces
+  `text.length / 4` with a BPE-aware estimator (~3-5% error vs tiktoken).
+  Exports `estimateTokens`, `truncateToTokenBudget`, `checkTokenBudget`,
+  `TokenBudgetTracker`.
+
+### Changed
+
+- `context-assembler.ts` uses new `estimateTokens` for more accurate token
+  counting on code-heavy prompts.
+- `EmbedBatchRequest` accepts optional `turbo_bits: 2 | 3 | 4`; defaults to
+  `SIZA_ML_TURBO_BITS` config. Response includes `turbo_compressed: bool`.
+- `python/pyproject.toml` — added `turboquant` dependency from
+  `TheTom/turboquant_plus`.
+
 ## [0.13.2] - 2026-03-16
 
 ### Fixed

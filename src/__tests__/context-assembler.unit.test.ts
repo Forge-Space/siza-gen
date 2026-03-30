@@ -1,4 +1,5 @@
 import { assembleContext } from '../context/context-assembler.js';
+import { estimateTokens } from '../llm/token-budget.js';
 import { initializeRegistry } from '../registry/component-registry/init.js';
 import { clearRegistry, registerSnippet } from '../registry/component-registry/index.js';
 import type { IComponentSnippet } from '../registry/component-registry/types.js';
@@ -200,7 +201,7 @@ describe('assembleContext', () => {
       tokenBudget: 4000,
     });
 
-    const reEstimate = Math.ceil(result.systemPrompt.length / 4);
+    const reEstimate = estimateTokens(result.systemPrompt);
     const diff = Math.abs(result.tokenEstimate - reEstimate);
     const tolerance = reEstimate * 0.1;
     expect(diff).toBeLessThanOrEqual(tolerance);
