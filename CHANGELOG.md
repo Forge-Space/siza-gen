@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.14.1] - 2026-04-04
+
 ### Changed
 
 - This repo now inherits the Forge Space org-level GitHub issue forms and
