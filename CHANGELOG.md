@@ -8,6 +8,28 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-04-06
+
+### Added
+
+- **TurboQuant KV cache compression** — `python/siza_ml/turbo_cache.py` hooks
+  `BertSelfAttention` layers via `register_forward_hook`, compressing K/V with
+  PolarQuant + QJL (turbo3 = 4.6x compression, ~1% PPL). On by default for all
+  `/embed/batch` calls via `SIZA_ML_TURBO_BITS=3`.
+- **Token budget enforcer** — `src/llm/token-budget.ts` replaces
+  `text.length / 4` with a BPE-aware estimator (~3-5% error vs tiktoken).
+  Exports `estimateTokens`, `truncateToTokenBudget`, `checkTokenBudget`,
+  `TokenBudgetTracker`.
+
+### Changed
+
+- `@huggingface/transformers` upgraded to 4.0.1 — HF Transformers.js v4 with
+  improved performance and updated model loading.
+- TypeScript peer dependency overrides added for tooling compatibility across
+  ESLint plugins, madge, and TypeScript-ESLint.
+- Dependency updates across devDependencies for Jest, TypeScript, and linting
+  tools.
+
 ## [0.14.1] - 2026-04-04
 
 ### Changed
