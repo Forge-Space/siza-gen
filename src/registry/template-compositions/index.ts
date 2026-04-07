@@ -13,7 +13,7 @@ export function getComposition(id: string): IPageComposition | undefined {
   return compositions.find((c) => c.id === id);
 }
 
-interface IFindOptions {
+export interface IFindOptions {
   mood?: MoodTag[];
   industry?: IndustryTag[];
   visualStyle?: VisualStyleId;
@@ -40,20 +40,20 @@ export function findBestComposition(
   return candidates[0];
 }
 
-interface IComposeOptions {
+export interface IComposeOptions {
   mood?: MoodTag[];
   industry?: IndustryTag[];
   visualStyle?: VisualStyleId;
 }
 
-interface IComposedSection {
+export interface IComposedSection {
   id: string;
   name: string;
   jsx: string;
   snippetId?: string;
 }
 
-interface IComposedPage {
+export interface IComposedPage {
   jsx: string;
   sections: IComposedSection[];
   metadata: {

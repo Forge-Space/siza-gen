@@ -21,7 +21,7 @@ export const ADAPTER_TYPES = ['quality-scorer', 'prompt-enhancer', 'style-recomm
 const DEFAULT_BASE_DIR = join(homedir(), '.uiforge');
 
 /** Model registry — known models and their download URLs. */
-const MODEL_REGISTRY = {
+export const MODEL_REGISTRY = {
   'qwen2.5-0.5b': {
     filename: 'qwen2.5-0.5b-instruct-q4_k_m.gguf',
     size: '~350MB',

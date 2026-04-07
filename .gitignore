@@ -66,3 +66,10 @@ benchmarks/
 *-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-*.md
 *-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-*.json
 opencode.jsonc
+
+# API Extractor outputs
+# - etc/*.api.md is COMMITTED (baseline reports, CI verifies)
+# - temp/ is transient (regenerated on every run)
+# - docs/api/ is generated via `npm run api:docs`, not committed
+temp/
+docs/api/

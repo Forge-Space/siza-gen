@@ -63,6 +63,7 @@ export {
   getDiskUsage,
 } from './model-manager.js';
 
+export { MODEL_REGISTRY } from './model-manager.js';
 export type { ModelId, IModelPaths } from './model-manager.js';
 
 export {
@@ -104,8 +105,12 @@ export { recommendStyle } from './style-recommender.js';
 export type { IStyleRecommendation, IStyleContext } from './style-recommender.js';
 
 export { extractDesignPatterns } from './image-design-analyzer.js';
+export type { IDesignAnalysis } from './image-design-analyzer.js';
 
 export { storeDesignLearning } from './design-to-training-data.js';
+export type { ITrainingDataResult } from './design-to-training-data.js';
+
+export type { IPromptEnhancerRow, IQualityScorerRow, IStyleRecommenderRow } from './training-data-exporter.js';
 
 export {
   setSidecarUrl,
