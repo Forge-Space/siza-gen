@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Auto-generated API surface report — owned by api-extractor
+etc/*.api.md
+# Generated API docs — owned by api-documenter (gitignored, but in case local)
+docs/api/**
+temp/

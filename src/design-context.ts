@@ -63,7 +63,7 @@ function deepMergeObjects(target: Record<string, unknown>, source: Record<string
   return result;
 }
 
-class DesignContextStore {
+export class DesignContextStore {
   private context: IDesignContext;
 
   constructor() {

@@ -86,9 +86,17 @@ export function assembleContext(params: IContextAssemblerParams): IAssembledCont
 
 export { brandToDesignContext, type BrandIdentityInput } from './brand-identity-transform.js';
 
-export { designContextStore, DEFAULT_CONTEXT } from './design-context.js';
+export { designContextStore, DEFAULT_CONTEXT, DesignContextStore } from './design-context.js';
 
-export type { Framework, IDesignContext, Architecture, StateManagement, ComponentLibraryId } from './types.js';
+export type {
+  Framework,
+  IDesignContext,
+  Architecture,
+  StateManagement,
+  ComponentLibraryId,
+  IGeneratedFile,
+  IButtonVariant,
+} from './types.js';
 
 export type { MoodTag, IndustryTag, VisualStyleId } from './registry/component-registry/types.js';
 
@@ -98,3 +106,6 @@ export {
   generateProject,
   generateComponent,
 } from './generators/generator-factory.js';
+export type { GeneratorConstructor } from './generators/generator-factory.js';
+
+export { BaseGenerator, type ComponentLibrary } from './generators/base-generator.js';

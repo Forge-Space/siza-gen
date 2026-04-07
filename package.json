@@ -18,6 +18,9 @@
   "scripts": {
     "build": "rm -rf dist && tsup",
     "dev": "tsc --watch",
+    "api:extract": "api-extractor run --local --config api-extractor.json && api-extractor run --local --config api-extractor-lite.json",
+    "api:check": "api-extractor run --config api-extractor.json && api-extractor run --config api-extractor-lite.json",
+    "api:docs": "api-documenter markdown --input-folder temp --output-folder docs/api",
     "clean": "rm -rf dist coverage .tsbuildinfo node_modules/.cache",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
@@ -56,6 +59,8 @@
     "@commitlint/config-conventional": "^20.4.3",
     "@eslint/js": "^10.0.1",
     "@jest/globals": "^30.3.0",
+    "@microsoft/api-documenter": "^7.29.10",
+    "@microsoft/api-extractor": "^7.58.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.5",

@@ -6,7 +6,7 @@ export type Scale = 'solo' | 'team' | 'enterprise';
 
 export type DeployTarget = 'vercel' | 'cloudflare' | 'docker' | 'aws';
 
-export type StateManagement = 'zustand' | 'redux-toolkit' | 'tanstack-query' | 'jotai';
+export type ScaffoldStateManagement = 'zustand' | 'redux-toolkit' | 'tanstack-query' | 'jotai';
 
 export interface IProjectTemplate {
   id: ProjectType;
@@ -37,6 +37,6 @@ export interface IScaffoldOptions {
   appType?: AppType;
   scale?: Scale;
   deployTarget?: DeployTarget;
-  stateManagement?: StateManagement;
+  stateManagement?: ScaffoldStateManagement;
   features?: string[];
 }

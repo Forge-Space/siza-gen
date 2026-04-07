@@ -6,6 +6,7 @@ export * from './ml/index.js';
 
 // Generators
 export { GeneratorFactory, generateComponent } from './generators/generator-factory.js';
+export type { GeneratorConstructor } from './generators/generator-factory.js';
 export { BaseGenerator, type ComponentLibrary } from './generators/base-generator.js';
 export { DEFAULT_DESIGN_CONTEXT } from './generators/default-design-context.js';
 export { ReactGenerator } from './generators/react-generator.js';
@@ -46,11 +47,21 @@ export type {
   MoodTag,
   IndustryTag,
   VisualStyleId,
+  IComponentA11y,
+  IComponentQuality,
+  IComponentResponsive,
+  IComponentSeo,
 } from './registry/component-registry/types.js';
 
 // Backend Registry
 export { initializeBackendRegistry, searchBackendSnippets } from './registry/backend-registry/index.js';
-export type { BackendCategory, BackendFramework, IBackendSnippet } from './registry/backend-registry/types.js';
+export type {
+  BackendCategory,
+  BackendFramework,
+  IBackendSnippet,
+  BackendPattern,
+  IBackendQuality,
+} from './registry/backend-registry/types.js';
 
 // Database
 export { getDatabase, closeDatabase } from './registry/database/store.js';
@@ -72,9 +83,18 @@ export {
   clearCompositions,
   getAllCompositions,
 } from './registry/template-compositions/index.js';
+export type {
+  IFindOptions,
+  IComposedPage,
+  IComposedSection,
+  IComposeOptions,
+  IPageComposition,
+  IPageSection,
+} from './registry/template-compositions/index.js';
 
 // Template Packs
 export { registerPack, getPack, getAllPacks, searchPacks } from './registry/template-packs/index.js';
+export type { ITemplatePack } from './registry/template-packs/types.js';
 
 // Micro-interactions
 export {
@@ -86,6 +106,8 @@ export {
   clearAllMicroInteractions,
   initializeInteractions,
 } from './registry/micro-interactions/index.js';
+export type { AnimationCategory, AnimationPurpose } from './registry/micro-interactions/index.js';
+export type { IMicroInteraction } from './registry/component-registry/types.js';
 
 // Scaffold Templates
 export * from './registry/scaffold-templates/index.js';
@@ -137,7 +159,7 @@ export {
 export * from './artifacts/index.js';
 
 // Design Context
-export { designContextStore, DEFAULT_CONTEXT } from './design-context.js';
+export { designContextStore, DEFAULT_CONTEXT, DesignContextStore } from './design-context.js';
 
 // Brand Identity Transform
 export { brandToDesignContext, type BrandIdentityInput } from './brand-identity-transform.js';
@@ -176,10 +198,19 @@ export type {
   IFigmaDesignToken,
   ITailwindMapping,
   IPatternMatch,
+  AccessibilitySeverity,
+  IAnimationPreset,
+  IButtonVariant,
+  IColorSystem,
+  IFontPairing,
+  IIconLibrary,
+  IInspirationSource,
+  ILayoutPattern,
+  ISpacingSystem,
 } from './types.js';
 
 // Config & Logger
-export { loadConfig, getConfig, safeJSONParse, type Config } from './config.js';
+export { loadConfig, getConfig, safeJSONParse, configSchema, type Config } from './config.js';
 export { createLogger, logger } from './logger.js';
 
 // Context Assembler

@@ -12,7 +12,7 @@ import { getDatabase } from '../registry/database/store.js';
 const logger = createLogger('generator-factory');
 
 // Type for generator constructor functions
-type GeneratorConstructor = new (framework: Framework) => BaseGenerator;
+export type GeneratorConstructor = new (framework: Framework) => BaseGenerator;
 
 /**
  * Generator Factory - Creates and manages framework generators
