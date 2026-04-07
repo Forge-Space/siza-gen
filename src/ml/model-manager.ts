@@ -20,14 +20,20 @@ export const ADAPTER_TYPES = ['quality-scorer', 'prompt-enhancer', 'style-recomm
 /** Default base directory for UIForge ML artifacts. */
 const DEFAULT_BASE_DIR = join(homedir(), '.uiforge');
 
-/** Model registry — known models and their download URLs. */
-export const MODEL_REGISTRY = {
-  'qwen2.5-0.5b': {
+/**
+ * Model registry — known models and their download URLs.
+ *
+ * Frozen at module init so consumers cannot mutate entries at runtime.
+ * `as const` only enforces compile-time immutability; `Object.freeze` is
+ * required to prevent runtime mutation breaking `getModelPath()` etc.
+ */
+export const MODEL_REGISTRY = Object.freeze({
+  'qwen2.5-0.5b': Object.freeze({
     filename: 'qwen2.5-0.5b-instruct-q4_k_m.gguf',
     size: '~350MB',
     url: 'https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf',
-  },
-} as const;
+  }),
+} as const);
 
 export type ModelId = keyof typeof MODEL_REGISTRY;
 

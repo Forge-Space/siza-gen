@@ -2388,13 +2388,13 @@ export const logger: pino__default.Logger;
 export function mergeStyles(...styles: (Record<string, string | number> | undefined)[]): Record<string, string | number>;
 
 // @public
-export const MODEL_REGISTRY: {
-    readonly 'qwen2.5-0.5b': {
-        readonly filename: "qwen2.5-0.5b-instruct-q4_k_m.gguf";
-        readonly size: "~350MB";
-        readonly url: "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf";
-    };
-};
+export const MODEL_REGISTRY: Readonly<{
+    readonly 'qwen2.5-0.5b': Readonly<{
+        filename: "qwen2.5-0.5b-instruct-q4_k_m.gguf";
+        size: "~350MB";
+        url: "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf";
+    }>;
+}>;
 
 // @public (undocumented)
 export type ModelId = keyof typeof MODEL_REGISTRY;
