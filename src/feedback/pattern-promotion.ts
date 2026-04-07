@@ -11,7 +11,6 @@ import { createHash } from 'node:crypto';
 import pino from 'pino';
 import type { ICodePattern } from './types.js';
 import { isPromotable } from './pattern-detector.js';
-import { registerSnippet } from '../registry/component-registry/index.js';
 import type { IComponentSnippet, ComponentCategory } from '../registry/component-registry/types.js';
 
 const logger = pino({ name: 'pattern-promotion' });
@@ -159,7 +158,8 @@ export function promotePattern(
   pattern: ICodePattern,
   componentType: string,
   category: ComponentCategory,
-  db: Database.Database
+  db: Database.Database,
+  registerSnippet: (snippet: IComponentSnippet) => void
 ): IComponentSnippet | null {
   if (!isPromotable(pattern)) {
     logger.debug({ patternId: pattern.id }, 'Pattern not eligible for promotion');
@@ -222,7 +222,10 @@ export function promotePattern(
  * Run the promotion cycle: find eligible patterns and promote them.
  * Returns the count of newly promoted patterns.
  */
-export function runPromotionCycle(db: Database.Database): number {
+export function runPromotionCycle(
+  db: Database.Database,
+  registerSnippet: (snippet: IComponentSnippet) => void
+): number {
   const candidates = getPromotablePatternsFromDb(db);
   let promoted = 0;
 
@@ -235,7 +238,7 @@ export function runPromotionCycle(db: Database.Database): number {
     const componentType = row?.component_type ?? 'unknown';
     const category = (row?.category as ComponentCategory) ?? 'atom';
 
-    const result = promotePattern(pattern, componentType, category, db);
+    const result = promotePattern(pattern, componentType, category, db, registerSnippet);
     if (result) promoted++;
   }
 

@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { swaggerPatternSnippets } from './swagger-patterns.js';
 import { apiVersioningSnippets } from './api-versioning.js';
 

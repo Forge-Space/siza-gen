@@ -5,7 +5,7 @@
  * Call this once at startup before using any registry search/retrieval functions.
  */
 
-import { clearRegistry, registerSnippets, getAllSnippets } from './index.js';
+import { clearRegistry, registerSnippets, getAllSnippets, searchComponents } from './index.js';
 import { registerAtoms } from './atoms/index.js';
 import { registerMolecules } from './molecules/index.js';
 import { registerOrganisms } from './organisms/index.js';
@@ -14,6 +14,7 @@ import { initializeStyles } from '../visual-styles/index.js';
 import { getDatabase, isSeeded, seedComponents, getAllComponents } from '../database/store.js';
 import { initializeCompositions } from '../template-compositions/init.js';
 import { initializePacks } from '../template-packs/init.js';
+import { initializeFeedbackBoostedSearch } from '../../feedback/feedback-boosted-search.js';
 import pino from 'pino';
 
 const logger = pino({ name: 'registry-init' });
@@ -62,6 +63,9 @@ export function initializeRegistry(): void {
   } catch (err) {
     logger.warn({ err }, 'Packs init failed; template packs still available');
   }
+
+  // Initialize feedback-boosted search to break circular dependency
+  initializeFeedbackBoostedSearch(searchComponents);
 
   initialized = true;
 }

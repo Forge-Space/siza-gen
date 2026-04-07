@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { prismaPatternSnippets } from './prisma-patterns.js';
 import { seedingSnippets } from './seeding.js';
 

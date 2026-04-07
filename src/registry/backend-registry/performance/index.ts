@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { bundleOptimizationSnippets } from './bundle-optimization.js';
 import { cachingStrategySnippets } from './caching-strategies.js';
 

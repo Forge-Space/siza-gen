@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { inputSanitizationSnippets } from './input-sanitization.js';
 import { secretsManagementSnippets } from './secrets-management.js';
 import { authSecuritySnippets } from './auth-security.js';
