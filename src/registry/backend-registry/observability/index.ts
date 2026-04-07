@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { structuredLoggingSnippets } from './structured-logging.js';
 import { healthCheckSnippets } from './health-checks.js';
 import { metricsSnippets } from './metrics.js';

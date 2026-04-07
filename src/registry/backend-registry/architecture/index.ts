@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { cleanArchitectureSnippets } from './clean-architecture.js';
 import { serviceLayerSnippets } from './service-layer.js';
 import { eventDrivenSnippets } from './event-driven.js';

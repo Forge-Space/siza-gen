@@ -7,7 +7,6 @@
 
 import type Database from 'better-sqlite3';
 import type { IComponentQuery, ISearchResult } from '../registry/component-registry/types.js';
-import { searchComponents } from '../registry/component-registry/index.js';
 
 /** Maximum boost factor from feedback (30% boost at max score). */
 const FEEDBACK_BOOST_FACTOR = 0.3;
@@ -15,16 +14,26 @@ const FEEDBACK_BOOST_FACTOR = 0.3;
 /** Minimum feedback count before we start boosting. */
 const MIN_FEEDBACK_FOR_BOOST = 3;
 
+// Cache the searchComponents function
+let cachedSearchComponents: ((query: IComponentQuery) => ISearchResult[]) | null = null;
+
 /**
- * Search components with feedback-based score boosting.
- *
- * 1. Runs the base registry search (in-memory scoring).
- * 2. Looks up aggregate feedback scores per component type from SQLite.
- * 3. Boosts/penalizes results by up to ±30% based on feedback history.
+ * Initialize the feedback-boosted search with the searchComponents function.
+ * This breaks the circular dependency by having the registry set itself up
+ * after initialization completes.
  */
-export function feedbackBoostedSearch(query: IComponentQuery, db: Database.Database): ISearchResult[] {
-  // 1. Base search
-  const baseResults = searchComponents(query);
+export function initializeFeedbackBoostedSearch(searchComponents: (query: IComponentQuery) => ISearchResult[]): void {
+  cachedSearchComponents = searchComponents;
+}
+
+/**
+ * Internal helper that applies the feedback boost logic to search results.
+ */
+function applyFeedbackBoost(
+  baseResults: ISearchResult[],
+  query: IComponentQuery,
+  db: Database.Database
+): ISearchResult[] {
   if (baseResults.length === 0) return [];
 
   // 2. Load feedback scores for relevant component types
@@ -106,6 +115,32 @@ export function feedbackBoostedSearch(query: IComponentQuery, db: Database.Datab
   boostedResults.sort((a, b) => b.score - a.score);
 
   return boostedResults;
+}
+
+/**
+ * Search components with feedback-based score boosting.
+ *
+ * 1. Runs the base registry search (in-memory scoring).
+ * 2. Looks up aggregate feedback scores per component type from SQLite.
+ * 3. Boosts/penalizes results by up to ±30% based on feedback history.
+ */
+export function feedbackBoostedSearch(
+  query: IComponentQuery,
+  db: Database.Database,
+  baseSearch?: (query: IComponentQuery) => ISearchResult[]
+): ISearchResult[] {
+  // Use provided baseSearch, cached one, or throw error if neither available
+  const search = baseSearch ?? cachedSearchComponents;
+  if (!search) {
+    throw new Error(
+      'feedbackBoostedSearch requires searchComponents to be initialized. ' +
+        'Call initializeFeedbackBoostedSearch() or provide baseSearch parameter.'
+    );
+  }
+
+  // 1. Base search
+  const baseResults = search(query);
+  return applyFeedbackBoost(baseResults, query, db);
 }
 
 /**

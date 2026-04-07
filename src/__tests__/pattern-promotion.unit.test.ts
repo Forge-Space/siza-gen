@@ -1,6 +1,6 @@
 import { getMemoryDatabase } from '../registry/database/store.js';
 import { initializeRegistry, resetInitialization } from '../registry/component-registry/init.js';
-import { getRegistrySize } from '../registry/component-registry/index.js';
+import { getRegistrySize, registerSnippet } from '../registry/component-registry/index.js';
 import {
   recordPattern,
   getPromotablePatternsFromDb,
@@ -147,7 +147,7 @@ describe('pattern-promotion', () => {
         0
       );
 
-      const result = promotePattern(pattern, 'card', 'molecule', db);
+      const result = promotePattern(pattern, 'card', 'molecule', db, registerSnippet);
       expect(result).not.toBeNull();
       expect(result!.id).toContain('promoted-');
       expect(result!.variant).toBe('user-proven');
@@ -187,12 +187,12 @@ describe('pattern-promotion', () => {
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
       ).run('cycle-2', 'ch2', 'section>nav', '<section>B</section>', 'nav', 'organism', 3, 0.6, 0);
 
-      const promoted = runPromotionCycle(db);
+      const promoted = runPromotionCycle(db, registerSnippet);
       expect(promoted).toBe(2);
     });
 
     it('returns 0 when no patterns are eligible', () => {
-      expect(runPromotionCycle(db)).toBe(0);
+      expect(runPromotionCycle(db, registerSnippet)).toBe(0);
     });
   });
 

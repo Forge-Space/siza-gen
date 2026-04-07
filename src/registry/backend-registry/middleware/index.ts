@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { authMiddlewareSnippets } from './auth-middleware.js';
 import { validationMiddlewareSnippets } from './validation-middleware.js';
 import { rateLimitingSnippets } from './rate-limiting.js';

@@ -1,4 +1,4 @@
-import { registerBackendSnippets } from '../index.js';
+import { registerBackendSnippets } from '../register.js';
 import { restCrudSnippets } from './rest-crud.js';
 import { restAdvancedSnippets } from './rest-advanced.js';
 import { authRouteSnippets } from './auth-routes.js';

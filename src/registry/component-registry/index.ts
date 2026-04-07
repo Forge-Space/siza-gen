@@ -432,7 +432,7 @@ export function getBestMatchWithFeedback(
  */
 export function triggerPatternPromotion(db: Database.Database): number {
   try {
-    const promoted = runPromotionCycle(db);
+    const promoted = runPromotionCycle(db, registerSnippet);
     return promoted;
   } catch (err) {
     logger.warn({ error: err }, 'Pattern promotion failed');
