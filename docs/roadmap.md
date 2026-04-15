@@ -8,8 +8,8 @@ _(none)_
 
 ## Next (proposed)
 
-- **2026-04-15-roadmap-placeholder**  _(proposed)_  `placeholder`
-- **2026-04-15-generator-roadmap-specs**  _(proposed)_  `roadmap,specs,generator`
+- **2026-04-15-roadmap-placeholder** _(proposed)_ `placeholder`
+- **2026-04-15-generator-roadmap-specs** _(proposed)_ `roadmap,specs,generator`
 
 ## Recently shipped
 
